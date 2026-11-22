@@ -16,6 +16,7 @@ function* flashScreen(times) {
 function startEncounter(species = 'amperite') {
   game.locked = true;
   game.runner.run((function* () {
+    music.play('battle');
     yield* flashScreen(3);
     yield* tween(24, k => { game.wipe = k; });
     const L = lead().level;
@@ -37,6 +38,7 @@ function endBattle(result) {
     clearPressed();
     game.view = 'overworld';
     game.locked = false;
+    music.play('overworld');
     if (result === 'lose') overworld.say(`Otuksesi lepäsivät ${CENTER_NAME}ssa ja ovat taas täysissä voimissa.`);
     yield* tween(20, k => { game.fade = 1 - k; });
     game.fade = 0;
@@ -46,6 +48,7 @@ function endBattle(result) {
 function startGame() {
   game.locked = true;
   game.runner.run((function* () {
+    music.play('overworld');
     yield* tween(20, k => { game.fade = k; });
     game.view = 'overworld';
     game.locked = false;

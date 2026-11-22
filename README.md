@@ -35,6 +35,15 @@ Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuk
 | Nuolet / WASD | Liiku, valitse valikossa |
 | Z / Enter / Välilyönti | OK, lue kyltti, mene HOITOLAAN (oven edessä ylös päin) |
 | X / Esc | Takaisin valikosta |
+| M | Musiikki päälle/pois (valinta muistetaan) |
+
+### Musiikki
+
+Pelissä on kaksi omaa sävellettyä chiptune-kappaletta vanhojen käsikonsolien tyyliin. Ne soitetaan suoraan selaimessa (Web Audio), joten äänitiedostoja ei tarvita:
+- **Metsä** (C-duuri, 126 BPM): rauhallinen ja iloinen kappale, joka soi metsissä.
+- **Taistelu** (A-molli, 168 BPM): nopea ja jännittävä kappale, joka alkaa, kun villi otus hyppää esiin.
+
+Molemmat ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää, kolmioaaltobasso ja kohinarummut. Musiikki alkaa, kun peli aloitetaan Z:lla (selaimet sallivat äänen vasta näppäimen painalluksen jälkeen), ja pysähtyy, kun välilehti on taustalla. Nuotit ovat tiedoston `js/music.js` alussa (`TRACKS`), ja niitä voi muokata.
 
 ## Pelin rakenne
 
@@ -152,6 +161,7 @@ Taistelussa 32×32-spritet piirretään 2× suurennettuna. Pikselit pysyvät ter
 | `js/core.js` | Kuvien lataus, näppäimet, tekstilaatikko, valikot, apufunktiot |
 | `js/overworld.js` | Kartat (`MAPS`), siirtymät karttojen välillä, alueen nimi, lomittaiset puut, liike, puskat, hohto, HOITOLA (parannus, kauppa, tiimi), kyltit |
 | `js/battle.js` | Lajit (`SPECIES`), liikkeet (`MOVES`), vahinkokaava, taistelu, nappaaminen, animaatiot, kehittyminen |
+| `js/music.js` | Chiptune-musiikki: nuotit (`TRACKS`), soittimet ja ajastus |
 | `js/main.js` | Näkymät, siirtymäefektit, pelisilmukka (60 fps), kolikot ja pallot (`game`) |
 
 Säädettäviä arvoja:
@@ -170,7 +180,8 @@ Uuden alueen saa lisäämällä `MAPS`-olioon uuden kartan (nimi, ruutukuva, riv
 
 ## Jatkoideoita
 
-- Ääniefektit (askel, osuma, salama) Web Audiolla.
+- Ääniefektit (askel, osuma, salama) samalla Web Audio -moottorilla.
+- Oma kappale HYUJAL METSÄLLE ja voittofanfaari.
 - Otuksen vaihto kesken taistelun.
 - Uusia otuksia omilla spriteillä ja tyypeillä (sähkö, kasvi, vesi…).
 - Johtaja seuraa pelaajaa metsässä.
