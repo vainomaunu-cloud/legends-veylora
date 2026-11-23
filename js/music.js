@@ -24,6 +24,32 @@ const TRACKS = {
       'k h s h k h s h', 'k h s h k h s h', 'k h s h k h s h', 'k h s h k s s s',
     ],
   },
+  // slow, mysterious theme for the glowing HYUJAL METSÄ (D minor): soft lead with echo, shimmering arpeggios
+  hyujal: {
+    bpm: 92,
+    echo: true,
+    drumVol: 0.45,
+    voices: {
+      lead: { wave: 'pulse12', vol: 0.20, legato: 0.98 },
+      harmony: { wave: 'triangle', vol: 0.16, legato: 0.85 },
+    },
+    lead: [
+      'D5 - - - F5 - E5 -', 'D5 - - - A4 - - -', 'C5 - D5 - E5 - G5 -', 'E5 - - - - - . .',
+      'A5 - - - G5 - F5 -', 'G5 - - - D5 - - -', 'E5 - F5 - E5 - C#5 -', 'D5 - - - - - . .',
+    ],
+    harmony: [
+      'D4 F4 A4 D5 A4 F4 D4 F4', 'A#3 D4 F4 A#4 F4 D4 A#3 D4', 'C4 E4 G4 C5 G4 E4 C4 E4', 'A3 C4 E4 A4 E4 C4 A3 C4',
+      'D4 F4 A4 D5 A4 F4 D4 F4', 'G3 A#3 D4 G4 D4 A#3 G3 A#3', 'A3 C#4 E4 A4 E4 C#4 A3 C#4', 'A3 C#4 E4 A4 E4 C#4 A3 E4',
+    ],
+    bass: [
+      'D3 - - - - - - -', 'A#2 - - - - - - -', 'C3 - - - - - - -', 'A2 - - - - - - -',
+      'D3 - - - - - - -', 'G2 - - - - - - -', 'A2 - - - - - - -', 'A2 - - - A2 - - -',
+    ],
+    drums: [
+      'k . . h . . h .', '. . . h . . h .', 'k . . h . . h .', '. . . h . . h h',
+      'k . . h . . h .', '. . . h . . h .', 'k . . h . . h .', '. . . h . h h h',
+    ],
+  },
   // fast, tense battle theme (A minor)
   battle: {
     bpm: 168,
@@ -82,6 +108,11 @@ const music = {
     this.master = this.ctx.createGain();
     this.master.gain.value = this.muted ? 0 : this.volume;
     this.master.connect(this.ctx.destination);
+    // echo bus (used by tracks with echo: true)
+    this.echoIn = this.ctx.createGain();
+    const delay = this.ctx.createDelay(1), feedback = this.ctx.createGain(), wet = this.ctx.createGain();
+    delay.delayTime.value = 0.33; feedback.gain.value = 0.38; wet.gain.value = 0.4;
+    this.echoIn.connect(delay); delay.connect(feedback); feedback.connect(delay); delay.connect(wet); wet.connect(this.master);
     // pulse waves with 25 % and 12.5 % duty, like old handheld consoles
     for (const [key, duty] of [['pulse25', 0.25], ['pulse12', 0.125]]) {
       const n = 40, real = new Float32Array(n), imag = new Float32Array(n);
@@ -136,7 +167,7 @@ const music = {
       if (tok === '-' || tok === '.') continue;
       let holds = 1;
       while (t[ch][(i + holds) % t.length] === '-' && holds < t.length) holds++;
-      this.tone(VOICES[ch], noteFreq(tok), time, holds * eighth);
+      this.tone((t.voices && t.voices[ch]) || VOICES[ch], noteFreq(tok), time, holds * eighth, t.echo && ch !== 'bass');
     }
     const dr = t.drums[i];
     if (dr === 'k') this.kick(time);
@@ -144,7 +175,7 @@ const music = {
     else if (dr === 'h') this.hat(time);
   },
 
-  tone(v, freq, time, length) {
+  tone(v, freq, time, length, echo) {
     const c = this.ctx, osc = c.createOscillator(), g = c.createGain();
     if (v.wave === 'triangle') osc.type = 'triangle'; else osc.setPeriodicWave(this.waves[v.wave]);
     osc.frequency.value = freq;
@@ -154,6 +185,7 @@ const music = {
     g.gain.linearRampToValueAtTime(v.vol * 0.6, Math.max(time + 0.01, end - 0.02));
     g.gain.linearRampToValueAtTime(0, end);
     osc.connect(g).connect(this.master);
+    if (echo) g.connect(this.echoIn);
     osc.start(time); osc.stop(end + 0.01);
   },
 
@@ -161,7 +193,7 @@ const music = {
     const c = this.ctx, src = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
     src.buffer = this.noise;
     f.type = filterType; f.frequency.value = freq;
-    g.gain.setValueAtTime(vol, time);
+    g.gain.setValueAtTime(vol * this.drumVol(), time);
     g.gain.exponentialRampToValueAtTime(0.001, time + length);
     src.connect(f).connect(g).connect(this.master);
     src.start(time, Math.random() * 0.5); src.stop(time + length);
@@ -171,11 +203,12 @@ const music = {
     osc.type = 'triangle';
     osc.frequency.setValueAtTime(160, time);
     osc.frequency.exponentialRampToValueAtTime(40, time + 0.1);
-    g.gain.setValueAtTime(0.7, time);
+    g.gain.setValueAtTime(0.7 * this.drumVol(), time);
     g.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
     osc.connect(g).connect(this.master);
     osc.start(time); osc.stop(time + 0.13);
   },
+  drumVol() { return (this.track && this.track.drumVol) || 1; },
   snare(time) { this.noiseHit(time, 0.12, 0.35, 'highpass', 1200); },
   hat(time) { this.noiseHit(time, 0.035, 0.12, 'highpass', 7000); },
 };

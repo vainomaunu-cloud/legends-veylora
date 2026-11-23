@@ -38,7 +38,7 @@ function endBattle(result) {
     clearPressed();
     game.view = 'overworld';
     game.locked = false;
-    music.play('overworld');
+    music.play(overworld.map.music);
     if (result === 'lose') overworld.say(`Otuksesi lepäsivät ${CENTER_NAME}ssa ja ovat taas täysissä voimissa.`);
     yield* tween(20, k => { game.fade = 1 - k; });
     game.fade = 0;

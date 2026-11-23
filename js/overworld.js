@@ -9,7 +9,7 @@ const BALL_PRICE = 50;
 const MAPS = {
   forest: {
     name: 'PUSKAMETSÄ',
-    tiles: 'tiles', rustle: 'bushRustle', shade: '#2a6a30',
+    tiles: 'tiles', rustle: 'bushRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTT',
@@ -45,7 +45,7 @@ const MAPS = {
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
-    tiles: 'tilesHyujal', rustle: 'bushRustleHyujal', shade: '#3a1d6e', glow: true,
+    tiles: 'tilesHyujal', rustle: 'bushRustleHyujal', shade: '#3a1d6e', glow: true, music: 'hyujal',
     rows: [
       'TTTTTTTTTTTTXTTTTTTTTTTT',
       'TTTTTTTTTTTT=TTTTTTTTTTT',
@@ -359,6 +359,7 @@ function warpTo(w) {
   game.runner.run((function* () {
     yield* tween(14, k => { game.fade = k; });
     overworld.enterMap(w.to, w.x, w.y, w.dir);
+    music.play(overworld.map.music);
     overworld.stepsSinceBattle = 0;
     clearPressed();
     game.locked = false;
