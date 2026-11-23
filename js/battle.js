@@ -179,6 +179,10 @@ function calcDamage(att, def, move) {
 
 // speStage: -1..-3 from STICKY WEB (reset every battle)
 const SHINY_CHANCE = 1 / 100;
+const SHINY_CHANCE_CHARM = 1 / 75;   // with the SHINY CHARM
+const shinyChance = () => (game.shinyCharm ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
+// every species that can be caught (the starter can only be chosen, not caught)
+const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckonda');
 const FIRE = ['#fff06a', '#ffb43d', '#ff7a2a', '#dd3d3d'];
 // shiny creatures use the 'shiny_' version of every sprite
 const spriteKey = (mon, key) => (mon.shiny ? 'shiny_' + key : key);
@@ -208,7 +212,7 @@ const battle = {
     this.from = from;
     this.me = game.party.find(m => m.hp > 0);
     this.foe = makeMon(foeSpecies, foeLevel);
-    this.foe.shiny = Math.random() < SHINY_CHANCE;
+    this.foe.shiny = Math.random() < shinyChance();
     for (const m of game.party) { m.speStage = 0; m.flinch = false; m.trapTurns = 0; }
     this.tint = 0; this.tintRGB = null;
     this.thrown = null; this.parts = null; this.waves = null; this.webFx = null; this.slashes = null;
@@ -399,6 +403,7 @@ const battle = {
       game.party.push(caughtMon);
       this.thrown = null;
       yield* textBox.say(`${foe.name} liittyi tiimiisi! (${game.party.length}/6)`);
+      yield* this.registerCatch(foe.species);
       if (sp.catchCoins) {
         game.coins += sp.catchCoins;
         yield* textBox.say(`Sait ${sp.catchCoins} kolikkoa nappaamisesta! Kolikoita yhteensä: ${game.coins}.`);
@@ -412,6 +417,22 @@ const battle = {
     fv.scale = 1;
     yield* textBox.say(['Voi ei! Se karkasi pallosta!', 'Melkein! Se pääsi irti!', 'Argh! Niin lähellä!'][wobbles]);
     return false;
+  },
+
+  // KOKOELMA: remember a new species, and hand out the SHINY CHARM when every species has been caught
+  *registerCatch(species) {
+    if (!game.caught.includes(species)) {
+      game.caught.push(species);
+      const all = catchableSpecies();
+      yield* textBox.say(`${SPECIES[species].name} lisättiin KOKOELMAAN! (${game.caught.filter(id => all.includes(id)).length}/${all.length})`);
+    }
+    if (!game.shinyCharm && catchableSpecies().every(id => game.caught.includes(id))) {
+      game.shinyCharm = true;
+      this.flash = 8;
+      for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
+      yield* textBox.say('Olet napannut KAIKKI otukset! Sait SHINY CHARMin!');
+      yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/75 (ennen 1/100).');
+    }
   },
 
   *chooseMain() {

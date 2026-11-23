@@ -138,6 +138,7 @@ const held = {}, pressed = {};
 const dirStack = [];
 let tapDir = null;   // a direction tapped this frame (even if already released)
 addEventListener('keydown', e => {
+  if (window.adminOpen) return;   // typing in the admin panel
   const k = KEYMAP[e.code];
   if (!k) return;
   e.preventDefault();

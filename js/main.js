@@ -6,6 +6,8 @@ const game = {
   coins: 0,
   balls: 0,
   greatBalls: 0,
+  caught: [],           // species caught at least once (KOKOELMA)
+  shinyCharm: false,
   runner: new Runner(), // transitions
   fade: 0, wipe: 0, white: 0, t: 0,
 };
@@ -54,6 +56,7 @@ function newGame() {
   starter.shiny = Math.random() < SPECIES.duckonda.shinyChance;
   game.party = [starter];
   game.coins = 0; game.balls = 0; game.greatBalls = 0;
+  game.caught = []; game.shinyCharm = false;
   overworld.init();
   startGame();
 }

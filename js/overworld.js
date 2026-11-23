@@ -362,7 +362,7 @@ const overworld = {
     yield* textBox.say(`Tervetuloa ${CENTER_NAME}an!`);
     while (true) {
       textBox.show('Miten voin auttaa?');
-      const c = yield* menuBox.choose(['PARANNA', 'OSTA PALLO', 'TIIMI', 'POISTU'], 146, 54, 90);
+      const c = yield* menuBox.choose(['PARANNA', 'OSTA PALLO', 'TIIMI', 'KOKOELMA', 'POISTU'], 146, 42, 90);
       if (c === 0) {
         textBox.hide();
         yield* flashScreen(2);
@@ -389,6 +389,16 @@ const overworld = {
           game.party.unshift(m);
           yield* textBox.say(`${m.name} johtaa nyt tiimiä.`);
         }
+      } else if (c === 3) {
+        // KOKOELMA: which species have been caught (unknown ones show as -----)
+        const all = catchableSpecies();
+        const got = all.filter(id => game.caught.includes(id)).length;
+        textBox.show(`NAPATTU ${got}/${all.length}\nSHINY CHARM: ${game.shinyCharm ? 'ON' : 'EI'}`, 128, 112);
+        this.showWallet = false;
+        const rows = all.map(id => game.caught.includes(id) ? SPECIES[id].name : '-----');
+        yield* menuBox.choose(rows, 4, 4, 120);
+        this.showWallet = true;
+        if (!game.shinyCharm) yield* textBox.say('Nappaa jokaista otusta vähintään yksi, niin saat SHINY CHARMin. Sen kanssa kiiltäviä näkee useammin!');
       } else {
         break;
       }

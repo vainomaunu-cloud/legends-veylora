@@ -25,6 +25,8 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 ### Kiiltävät muodot
 
 - Jokainen kohdattu villi otus on **1/100** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
+- **SHINY CHARM:** kun olet napannut jokaista otusta vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/75** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
+- **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (tuntemattomat näkyvät viivoina), montako on napattu ja onko SHINY CHARM jo saatu. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi. Se ilmestyy kipinöiden kanssa, ja teksti kertoo, että se on KIILTÄVÄ.
 - Nimen perässä näkyy keltainen ★ taistelussa ja HOITOLAN tiimilistassa.
