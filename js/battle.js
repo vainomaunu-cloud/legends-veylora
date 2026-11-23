@@ -95,6 +95,32 @@ const SPECIES = {
     xpYield: 90, coins: 35, catchRate: 0.45, feetY: -2,
     sprites: { front: 'moonorg', blink: 'moonorgBlink', hurt: 'moonorgHurt', attack: 'moonorgAttack', back: 'moonorgBack', backAttack: 'moonorgBackAttack' },
   },
+  // SNOW MOUNTAIN bushes (files: binchulin.png, overchill.png, underchill.png)
+  binchulin: {
+    name: 'BINCHULCIN',
+    base: { hp: 45, atk: 45, def: 45, spa: 55, spd: 45, spe: 50 },
+    moves: ['icecreamthrow', 'blizzard'],
+    xpYield: 55, coins: 15, catchRate: 0.7,
+    evolveAt: 9, evolveTo: 'overchill',
+    feetY: 14,
+    sprites: { front: 'binchulin', blink: 'binchulinBlink', hurt: 'binchulinHurt', attack: 'binchulinAttack', back: 'binchulinBack', backAttack: 'binchulinBackAttack' },
+  },
+  overchill: {
+    name: 'OVERCHILL',
+    base: { hp: 60, atk: 65, def: 60, spa: 70, spd: 60, spe: 60 },
+    moves: ['icefang', 'icecreamthrow', 'blizzard'],
+    xpYield: 100, coins: 35, catchRate: 0.45,
+    evolveAt: 16, evolveTo: 'underchill',
+    feetY: 4,
+    sprites: { front: 'overchill', blink: 'overchillBlink', hurt: 'overchillHurt', attack: 'overchillAttack', back: 'overchillBack', backAttack: 'overchillBackAttack' },
+  },
+  underchill: {
+    name: 'UNDERCHILL',
+    base: { hp: 80, atk: 85, def: 75, spa: 85, spd: 70, spe: 65 },
+    moves: ['ironhead', 'icefang', 'icecreamthrow', 'blizzard'],
+    xpYield: 170, coins: 55, catchRate: 0.25, feetY: 2,
+    sprites: { front: 'underchill', blink: 'underchillBlink', hurt: 'underchillHurt', attack: 'underchillAttack', back: 'underchillBack', backAttack: 'underchillBackAttack' },
+  },
   // the starter: never appears in bushes, 1 in 10 is shiny
   duckonda: {
     name: 'DUCKONDA',
@@ -129,6 +155,9 @@ const MOVES = {
   psychic: { id: 'psychic', name: 'PSYCHIC', power: 90, acc: 100, pp: 10, special: true, anim: 'psychic' },
   crunch: { id: 'crunch', name: 'CRUNCH', power: 80, acc: 100, pp: 15, special: false, anim: 'crunch' },
   darkpulse: { id: 'darkpulse', name: 'DARK PULSE', power: 80, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'darkpulse' },
+  icecreamthrow: { id: 'icecreamthrow', name: 'ICE CREAM THROW', power: 65, acc: 95, pp: 15, special: true, slowChance: 0.3, anim: 'icecream' },
+  blizzard: { id: 'blizzard', name: 'BLIZZARD', power: 110, acc: 70, pp: 5, special: true, anim: 'blizzard' },
+  icefang: { id: 'icefang', name: 'ICE FANG', power: 65, acc: 95, pp: 15, special: false, flinch: 0.1, anim: 'icefang' },
   sleeppowder: { id: 'sleeppowder', name: 'SLEEP POWDER', power: 0, powerText: '-', acc: 75, pp: 15, special: true, sleep: true, anim: 'powder' },
 };
 // used automatically when every move is out of PP
@@ -545,6 +574,9 @@ const battle = {
     else if (move.anim === 'psychic') yield* this.animPsychic(av, dv);
     else if (move.anim === 'crunch') yield* this.animCrunch(av, dv, mine ? 1 : -1);
     else if (move.anim === 'darkpulse') yield* this.animDarkPulse(av, dv);
+    else if (move.anim === 'icecream') yield* this.animIceCream(av, dv);
+    else if (move.anim === 'blizzard') yield* this.animBlizzard(av, dv);
+    else if (move.anim === 'icefang') yield* this.animCrunch(av, dv, mine ? 1 : -1, true);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
     def.hp = Math.max(0, def.hp - dmg);
@@ -573,6 +605,10 @@ const battle = {
     if (def.hp > 0 && move.slowAfter && (def.speStage || 0) > -3) {
       def.speStage = (def.speStage || 0) - 1;
       yield* textBox.say(`${target} on mudan peitossa! Sen nopeus laski!`);
+    }
+    if (def.hp > 0 && move.slowChance && Math.random() < move.slowChance && (def.speStage || 0) > -3) {
+      def.speStage = (def.speStage || 0) - 1;
+      yield* textBox.say(`${target} on jäätelön peitossa! Sen nopeus laski!`);
     }
     if (move.drain && att.hp < att.maxHp) {
       att.hp = Math.min(att.maxHp, att.hp + Math.max(1, Math.floor(dmg * move.drain)));
@@ -779,18 +815,25 @@ const battle = {
   },
 
   // CRUNCH: a lunge, then two rows of fangs snap shut on the target
-  *animCrunch(av, dv, dir) {
+  *animCrunch(av, dv, dir, icy = false) {
     yield* tween(5, k => { av.dx = Math.round(10 * dir * k); av.dy = Math.round(-4 * dir * k); });
     const cx = dv.x + 32, cy = dv.y + 34;
+    const edge = icy ? '#2a5a8a' : '#283040', tooth = icy ? '#bff4ff' : '#ffffff';
     for (let i = 0; i <= 12; i++) {
       const gap = 22 - Math.min(i, 8) * 2.5;
       this.parts = [];
       for (let n = -3; n <= 3; n++) {
         const x = cx + n * 6;
         for (const [y0, sgn] of [[cy - gap, 1], [cy + gap, -1]]) {
-          this.parts.push({ x, y: y0, c: '#283040', s: 5 });
-          this.parts.push({ x, y: y0, c: '#ffffff', s: 3 });
-          this.parts.push({ x, y: y0 + sgn * 4, c: '#ffffff', s: 2 });
+          this.parts.push({ x, y: y0, c: edge, s: 5 });
+          this.parts.push({ x, y: y0, c: tooth, s: 3 });
+          this.parts.push({ x, y: y0 + sgn * 4, c: tooth, s: 2 });
+        }
+      }
+      if (icy && i >= 8) {   // ice shards burst out when the fangs meet
+        for (let n = 0; n < 8; n++) {
+          const a = n * Math.PI / 4, r = (i - 7) * 5;
+          this.parts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, c: n % 2 ? '#ffffff' : '#7fdfff', s: 2 });
         }
       }
       if (i === 8) { this.shake = 10; this.flash = 2; }
@@ -799,6 +842,54 @@ const battle = {
     this.parts = null;
     yield* tween(6, k => { av.dx = Math.round(10 * dir * (1 - k)); av.dy = Math.round(-4 * dir * (1 - k)); });
     av.dx = av.dy = 0;
+  },
+
+  // ICE CREAM THROW: a three-colour scoop flies in an arc and splats on the target
+  *animIceCream(av, dv) {
+    av.pose = 'attack';
+    const sx = av.x + 32, sy = av.y + 20, tx = dv.x + 32, ty = dv.y + 30;
+    for (let i = 0; i <= 22; i++) {
+      const k = i / 22, x = sx + (tx - sx) * k, y = sy + (ty - sy) * k - Math.sin(k * Math.PI) * 34;
+      this.parts = [];
+      // cone + three scoops
+      this.parts.push({ x, y: y + 5, c: '#c89a5a', s: 4 }, { x, y: y + 8, c: '#a87a3a', s: 2 });
+      this.parts.push({ x: x - 2, y: y + 1, c: '#a8e6b0', s: 4 }, { x: x + 2, y: y + 1, c: '#f0a090', s: 4 }, { x, y: y - 2, c: '#7a8cf0', s: 4 });
+      yield;
+    }
+    av.pose = 'idle';
+    this.shake = 8;
+    for (let i = 0; i < 14; i++) {   // splat
+      this.parts = [];
+      for (let n = 0; n < 12; n++) {
+        const a = n * Math.PI / 6, r = 3 + i * 1.6;
+        this.parts.push({ x: tx + Math.cos(a) * r, y: ty + Math.sin(a) * r * 0.7, c: ['#a8e6b0', '#f0a090', '#7a8cf0', '#ffffff'][n % 4], s: 3 });
+      }
+      yield;
+    }
+    this.parts = null;
+  },
+
+  // BLIZZARD: the screen goes icy blue and a storm of snow blows across, hammering the target
+  *animBlizzard(av, dv) {
+    av.pose = 'attack';
+    this.tintRGB = '200,230,255';
+    yield* tween(8, k => { this.tint = 0.45 * k; });
+    const dir = dv.x > av.x ? 1 : -1;
+    for (let i = 0; i < 54; i++) {
+      this.parts = [];
+      for (let n = 0; n < 60; n++) {
+        const x = ((n * 53 + i * (6 + (n % 4))) % (W + 40)) - 20;
+        const y = (n * 29 + i * 2 + Math.sin(i / 4 + n) * 6) % 112;
+        this.parts.push({ x: dir > 0 ? x : W - x, y, c: n % 3 ? '#ffffff' : '#bff4ff', s: n % 5 ? 2 : 3 });
+      }
+      if (i % 6 === 0) { this.shake = 4; dv.dx = rnd(-2, 2); }
+      yield;
+    }
+    dv.dx = 0;
+    this.parts = null;
+    av.pose = 'idle';
+    yield* tween(8, k => { this.tint = 0.45 * (1 - k); });
+    this.tint = 0; this.tintRGB = null;
   },
 
   // SLEEP POWDER: pale powder drifts down onto the target

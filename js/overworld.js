@@ -104,9 +104,13 @@ const MAPS = {
       'TTTTTTTTTTT.==.TTTTTTTTTTT',
       'TTTTTTTTTTTTXTTTTTTTTTTTTT',
     ],
-    encounters: [],   // no creatures here yet
+    encounters: [
+      { species: 'binchulin', chance: 0.30 },
+      { species: 'overchill', chance: 0.10 },
+      { species: 'underchill', chance: 0.03 },
+    ],
     warps: { '12,19': { to: 'forest', x: 18, y: 1, dir: 'down' } },
-    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa ei vielä näy otuksia.',
+    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa piileskelee BINCHULCINeja, OVERCHILLejä ja harvinaisia UNDERCHILLejä.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)

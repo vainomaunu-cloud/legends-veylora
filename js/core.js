@@ -77,7 +77,7 @@ const SPRITES = {
   hit: 'sprites/hit.png',                 // 2 frames 32x32
 };
 // Creatures whose files follow the plain pattern: <name>.png + sprites/<name>_blink.png ... _back_attack.png
-for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg']) {
+for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg', 'binchulin', 'overchill', 'underchill']) {
   SPRITES[k] = k + '.png';
   for (const [suffix, name] of [['Blink', 'blink'], ['Hurt', 'hurt'], ['Attack', 'attack'], ['Back', 'back'], ['BackAttack', 'back_attack']]) {
     SPRITES[k + suffix] = `sprites/${k}_${name}.png`;
@@ -87,6 +87,7 @@ for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg']) {
 // Shiny forms (your "kiiltävä ..." files) + their animation frames: key = 'shiny_' + normal key
 const SHINY_FILES = {
   psistiel: 'kiiltävä psistiel.png', algish: 'kiiltävä algish.png', serpenalge: 'kiiltävä serpenalge.png', moonorg: 'kiiltävä moonorg.png',
+  binchulin: 'kiiltävä binchulin.png', overchill: 'kiiltävä overchill.png', underchill: 'kiiltävä undechill.png',
   moi: 'kiiltävä ampereem.png', amperite: 'kiiltävä amperite.png', zubug: 'kiiltävä zubug.png',
   golbug: 'kiiltävä golbug.png', squishroom: 'kiiltävä squishroom.png', shroocid: 'kiiltävä shroocid.png',
   duckonda: 'duckonda kiiltävä.png',

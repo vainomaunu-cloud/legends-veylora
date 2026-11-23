@@ -17,10 +17,13 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | ALGISH | 1. vaihe | `algish.png` + `sprites/algish_*.png` | POISON JAB, SLEEP POWDER | kalastus 40 % (SAARIMERI) | 25 kolikkoa | helppo (0,7) |
 | SERPENALGE | 2. vaihe (kehittyy tasolla 12) | `serpenalge.png` + `sprites/serpenalge_*.png` | CRUNCH, FLAMETHROWER, POISON JAB, SLEEP POWDER | kalastus 10 % | 50 kolikkoa | vaikea (0,35) |
 | MOONORG | ei kehity | `moonorg.png` + `sprites/moonorg_*.png` | DARK PULSE, CRUNCH, POISON JAB | kalastus 15 % | 35 kolikkoa | keskitaso (0,45) |
+| BINCHULCIN | 1. vaihe | `binchulin.png` + `sprites/binchulin_*.png` | ICE CREAM THROW, BLIZZARD | 30 % (SNOW MOUNTAIN) | 15 kolikkoa | helppo (0,7) |
+| OVERCHILL | 2. vaihe (kehittyy tasolla 9) | `overchill.png` + `sprites/overchill_*.png` | ICE FANG, ICE CREAM THROW, BLIZZARD | 10 % (SNOW MOUNTAIN) | 35 kolikkoa | keskitaso (0,45) |
+| UNDERCHILL | 3. vaihe (kehittyy tasolla 16) | `underchill.png` + `sprites/underchill_*.png` | IRON HEAD, ICE FANG, ICE CREAM THROW, BLIZZARD | 3 % (SNOW MOUNTAIN) | 55 kolikkoa | hyvin vaikea (0,25) |
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
-PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 45 % (SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin.
+PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 45 % (SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin. SNOW MOUNTAINilla puskissa on 43 % (BINCHULCIN 30 %, OVERCHILL 10 %, UNDERCHILL 3 %). BINCHULCIN oppii ICE FANGin kehittyessään OVERCHILLiksi, ja OVERCHILL oppii IRON HEADin kehittyessään UNDERCHILLiksi.
 
 ### Kiiltävät muodot
 
@@ -97,8 +100,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
 4. **SNOW MOUNTAIN** (26 × 20 ruutua)
    - Luminen metsä PUSKAMETSÄN pohjoispuolella: lumiset kuuset, lumihuippuiset puskat, kimaltelevaa lunta ja tallattu lumipolku keskellä. Lunta sataa koko ajan.
-   - Puskista ei vielä tule otuksia (kartan `encounters`-lista on tyhjä). Kyltti on polun varrella.
-   - Taistelutausta on valmiiksi luminen, kun alueelle lisätään otuksia.
+   - Lumisista puskista voi tulla **BINCHULCIN** (30 %), **OVERCHILL** (10 %) tai **UNDERCHILL** (3 %). Kyltti on polun varrella.
+   - Täällä taistellaan lumisella taustalla.
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
    - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Sitten joko jokin nappaa ja otus **nousee vedestä** taisteluun (ALGISH, MOONORG tai SERPENALGE), tai "Mikään ei näykkinyt". Merellä taistellaan meren taustalla (vesi ja hiekkasärkät). Lista on kartan `fishing`-kohdassa.
@@ -145,6 +148,9 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 | CRUNCH | 80 | 100 % | 15 | Fyysinen hyökkäys. Kaksi hammasriviä napsahtaa kiinni |
 | DARK PULSE | 80 | 100 % | 15 | Erikoishyökkäys, tummat renkaat. 20 %: kohde säpsähtää |
 | SLEEP POWDER | – | 75 % | 15 | Ei vahinkoa. Unijauhe nukuttaa kohteen 1–3 vuoroksi |
+| ICE CREAM THROW | 65 | 95 % | 15 | Erikoishyökkäys (oma liike). Kolmen pallon jäätelötötterö lentää kaaressa ja läsähtää. 30 %: kohteen nopeus laskee |
+| BLIZZARD | 110 | 70 % | 5 | Erikoishyökkäys. Ruutu muuttuu jäänsiniseksi ja lumimyrsky pyyhkii yli |
+| ICE FANG | 65 | 95 % | 15 | Fyysinen hyökkäys, jäiset hampaat ja jääsirpaleet. 10 %: kohde säpsähtää |
 | FIRE SPIN | 35 | 85 % | 15 | Erikoishyökkäys. Tulirengas pyörii kohteen ympärillä, ja kohde jää tulipyörteen vangiksi 4–5 vuoroksi: menettää vuoron lopussa 1/8 maksimi-HP:sta |
 | FLAMETHROWER | 90 | 100 % | 15 | Erikoishyökkäys, paksu tulisuihku. 10 % mahdollisuus palovammaan |
 | FLAME TORNADO | 100 | 90 % | 5 | Erikoishyökkäys (oma liike, ei oikeaa esikuvaa). Ruutu hehkuu punaisena ja kohteen nielaisee pyörivä tulipatsas. 30 % mahdollisuus palovammaan |
@@ -181,6 +187,7 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/squishroom_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | SQUISHROOM: räpytys, osuma (siristys), hyökkäys (vihainen kulma, hehkuva hattu, itiöt), takaa (peilattu, kasvot ja vatsa piilossa) |
 | `shroocid.png` | 32×32 | Sinun spritesi = SHROOCID edestä |
 | `psistiel.png`, `algish.png`, `serpenalge.png`, `moonorg.png` (+ `kiiltävä …`) | 32×32 | Sinun spritesi uusille otuksille ja niiden kiiltäville muodoille |
+| `binchulin.png` (BINCHULCIN), `overchill.png`, `underchill.png` (+ `kiiltävä binchulin.png`, `kiiltävä overchill.png`, `kiiltävä undechill.png`) | 32×32 | Sinun jääotuksesi. Animaatiokuvat: `sprites/binchulin_*`, `overchill_*`, `underchill_*` (selkäkuvat peilattu, kasvot piilossa) |
 | `sprites/<laji>_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | Animaatiokuvat (`<laji>` = psistiel, algish, serpenalge, moonorg). PSISTIEL, ALGISH ja SERPENALGE on peilattu selkäkuvissa (kasvot piilossa). MOONORG on AMPERITEN tapaan 3/4-kuvakulmassa, joten sitä ei peilattu: selästä näkyvät silmien takaosat, eivät kieli, suu tai vaalea vatsa |
 | `sprites/shroocid_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | SHROOCID: räpytys, osuma (> <), hyökkäys (vihaiset hehkuvat silmät, myrkkypisarat), takaa (silmät pois, raita jalassa) |
 | `duckonda.png` | 32×32 | Sinun spritesi = DUCKONDA edestä (sivuprofiili, nokka vasemmalle) |
