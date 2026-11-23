@@ -118,6 +118,12 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Luminen metsä PUSKAMETSÄN pohjoispuolella: lumiset kuuset, lumihuippuiset puskat, kimaltelevaa lunta ja tallattu lumipolku keskellä. Lunta sataa koko ajan.
    - Lumisista puskista voi tulla **BINCHULCIN** (30 %), **OVERCHILL** (10 %) tai **UNDERCHILL** (3 %). Kyltti on polun varrella.
    - Täällä taistellaan lumisella taustalla.
+   - Polku jatkuu pohjoisreunan läpi **TEMPPELIIN**.
+4b. **TEMPPELI** (24 × 20 ruutua, SNOW MOUNTAINin yläpuolella)
+   - Violetti-pinkki temppeli: kivilaattalattia, violetti matto keskellä, hehkuvat riimut lattiassa, pinkillä liekillä palavat kivimaljat, tiiliseinät ja vaaleanpunaisia kipinöitä ilmassa. Soi HYUJAL METSÄN musiikki.
+   - **Ei puskia eikä villejä otuksia.**
+   - **Violetit patsaat:** yhdeksän patsasta jalustoillaan (mattoa pitkin perällä PSIDUOCIPE, sivuilla PSISTIEL, MOONORG, AMPEREEM, DUCKONDA, HUMMIRDING, UNDERCHILL, SERPENALGE ja GOLBUG). Patsaat tehdään peliä ajettaessa sinun otuskuvistasi: kuvan valot ja varjot säilyvät, mutta väri muuttuu violetiksi kiveksi. Kartassa patsas on `AA` (2 ruutua leveä, ei pääse läpi); lajit ovat kartan `statues`-listassa lukujärjestyksessä.
+   - Etelän ovesta pääsee takaisin SNOW MOUNTAINille. Kyltti on oven lähellä.
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
    - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Sitten joko jokin nappaa ja otus **nousee vedestä** taisteluun (ALGISH, MOONORG tai SERPENALGE), tai "Mikään ei näykkinyt". Merellä taistellaan meren taustalla (vesi ja hiekkasärkät). Lista on kartan `fishing`-kohdassa.
@@ -230,6 +236,7 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/bush_rustle.png` | 48×16 | Puskan heilunta, 3 kuvaa |
 | `sprites/tiles_hyujal.png` | 208×16 | HYUJAL METSÄN ruudut samassa järjestyksessä kuin `tiles.png`, paitsi: 3–4 pienet hohtavat sienet (animaatio), 7–8 iso hohtava sieni (animaatio, ei pääse läpi) |
 | `sprites/bush_rustle_hyujal.png` | 48×16 | Liilan puskan heilunta, 3 kuvaa |
+| `sprites/tiles_temple.png` | 208×16 | TEMPPELIN ruudut: lattia (0–1, 5–6, 10), matto (2), hehkuva riimu (3–4), kivimalja pinkillä liekillä (7–8), kivitaulu (9), tiiliseinän etupuoli (11) ja seinän yläosa (12) |
 | `sprites/tiles_snow.png` | 208×16 | SNOW MOUNTAINin ruudut samassa järjestyksessä kuin `tiles.png`: lumi, lumi 2, lumipolku, kimalteleva lumi (3–4), lumiset kuuset (5, 11–12), lumihuippuinen puska (6, 10), kyltti (9) |
 | `sprites/bush_rustle_snow.png` | 48×16 | Lumisen puskan heilunta (lunta tippuu), 3 kuvaa |
 | `sprites/thunderbolt.png` | 48×32 | Salaman palat, 3 kuvaa 16×32 (pinotaan pystyyn) |

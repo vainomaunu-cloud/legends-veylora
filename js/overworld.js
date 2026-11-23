@@ -84,13 +84,13 @@ const MAPS = {
     name: 'SNOW MOUNTAIN',
     tiles: 'tilesSnow', rustle: 'bushRustleSnow', shade: '#2f5a3a', music: 'overworld', snowfall: true,
     rows: [
-      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'TTT....,....TT....,....TTT',
-      'TT..T.......TT........T.TT',
-      'TT....BBBB......BBBB....TT',
-      'TT...BBBBBB....BBBBBB...TT',
-      'TT...BBBBBB.**.BBBBBB...TT',
+      'TTTTTTTTTTTTXTTTTTTTTTTTTT',
+      'TTTTTTTTTTTT==TTTTTTTTTTTT',
+      'TTT....,....==....,....TTT',
+      'TT..T.......==........T.TT',
+      'TT....BBBB..==..BBBB....TT',
+      'TT...BBBBBB.==.BBBBBB...TT',
+      'TT...BBBBBB.==.BBBBBB...TT',
       'TT....BBBB..==..BBBB....TT',
       'TT..........==....S.....TT',
       'TTT.....T...==...T.....TTT',
@@ -110,8 +110,44 @@ const MAPS = {
       { species: 'overchill', chance: 0.10 },
       { species: 'underchill', chance: 0.03 },
     ],
-    warps: { '12,19': { to: 'forest', x: 18, y: 1, dir: 'down' } },
-    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa piileskelee BINCHULCINeja, OVERCHILLejä ja harvinaisia UNDERCHILLejä.',
+    warps: {
+      '12,19': { to: 'forest', x: 18, y: 1, dir: 'down' },
+      '12,0': { to: 'temple', x: 11, y: 18, dir: 'up' },
+    },
+    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa piileskelee BINCHULCINeja, OVERCHILLejä ja harvinaisia UNDERCHILLejä. Polku ylös vie TEMPPELIIN.',
+  },
+  // purple-pink temple on top of SNOW MOUNTAIN: no bushes, no creatures, just statues
+  // T wall (drawn as bricks, not trees)  A statue (2 tiles wide, AA)  M brazier with a pink flame  * glowing rune
+  temple: {
+    name: 'TEMPPELI',
+    tiles: 'tilesTemple', rustle: 'bushRustle', shade: '#2e1248', music: 'hyujal', walls: true, sparkle: true,
+    // statues in reading order (left to right, top to bottom); each shows that creature in violet stone
+    statues: ['psistiel', 'psiduocipe', 'moonorg', 'ampereem', 'duckonda', 'hummirding', 'underchill', 'serpenalge', 'golbug'],
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'TT....................TT',
+      'TT.M.AA....AA....AA.M.TT',
+      'TT.........==.........TT',
+      'TT...*.....==.....*...TT',
+      'TT.........==.........TT',
+      'TT..AA.....==.....AA..TT',
+      'TT.........==.........TT',
+      'TT.M.......==.......M.TT',
+      'TT.........==.........TT',
+      'TT..AA.....==.....AA..TT',
+      'TT.........==.........TT',
+      'TT...*.....==.....*...TT',
+      'TT.........==.........TT',
+      'TT..AA.....==.....AA..TT',
+      'TT.......S.==.........TT',
+      'TT.M.......==.......M.TT',
+      'TTTTTTTTTTT==TTTTTTTTTTT',
+      'TTTTTTTTTTTXTTTTTTTTTTTT',
+    ],
+    encounters: [],
+    warps: { '11,19': { to: 'snow', x: 12, y: 1, dir: 'down' } },
+    sign: 'TEMPPELI\nVanha violetti temppeli vuoren huipulla. Patsaat esittävät metsien, vuorten ja meren otuksia. Täällä on hiljaista: ei puskia eikä villejä otuksia.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
@@ -167,14 +203,23 @@ for (const [id, m] of Object.entries(MAPS)) {
     if (ch === 'H') m.center = { x, y };   // ends at the top-left H
     if (ch === 'Q') m.kiosk = { x, y };    // ends at the top-left Q
   }
+  // statues: each "AA" pair is one statue; species from m.statues in reading order
+  m.statueList = [];
+  for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
+    if (m.rows[y][x] === 'A' && m.rows[y][x - 1] !== 'A') {
+      const list = m.statues || ['psistiel'];
+      m.statueList.push({ x, y, species: list[m.statueList.length % list.length] });
+    }
+  }
 }
 
-const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17 };
+const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0 };
+const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (TEMPPELI) draw T as bricks
 const WATER = '~';
 const GREAT_NAME = 'GREAT PALLO';
 const GREAT_PRICE = 75;
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
-const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R']);
+const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
 const WALK_SPEED = 1.5;        // pixels per frame (16 px tile = about 11 frames)
 const TREE_LIFT = 6;           // trees are drawn this many px up so the rows overlap
@@ -192,6 +237,7 @@ const MINI_COLORS_MAP = {
   hyujal: { '.': '#6b4f9e', ',': '#6b4f9e', '*': '#8e6cc4', '=': '#5a5f8c', 'X': '#5a5f8c', 'T': '#4a2580', 'B': '#9a62e0' },
   sea: { '=': '#f2db9a', '*': '#f2db9a', '.': '#8ed45a', ',': '#8ed45a', 'T': '#3fa34a' },
   snow: { '.': '#eef4fb', ',': '#eef4fb', '*': '#ffffff', '=': '#b4c4d8', 'X': '#b4c4d8', 'T': '#2f5a3a', 'B': '#5f8a6a' },
+  temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'M': '#ff7ad8', 'S': '#5a3a78' },
 };
 
 function buildMinimap(m) {
@@ -246,6 +292,7 @@ const lead = () => game.party.find(m => m.hp > 0) || game.party[0];
 // Returns, per row, the x pixel positions of the trees to draw.
 function buildTreeRows(m) {
   const out = [];
+  if (m.walls) return m.rows.map(() => []);   // walls are ground tiles, no trees
   for (let y = 0; y < m.h; y++) {
     const xs = [], row = m.rows[y];
     let x = 0;
@@ -513,6 +560,10 @@ const overworld = {
       for (let tx = x0; tx <= x1; tx++) {
         const ch = this.tileAt(tx, ty);
         const sx = tx * TILE - camX, sy = ty * TILE - camY;
+        if (ch === 'T' && m.walls) {   // brick face where a wall meets the floor, dark top elsewhere
+          drawFrame(tiles, this.tileAt(tx, ty + 1) === 'T' ? WALL_TOP : WALL_FACE, 16, 16, sx, sy);
+          continue;
+        }
         if (ch === 'T') {
           if (this.tileAt(tx, ty + 1) === 'T') { ctx.fillStyle = m.shade; ctx.fillRect(sx, sy, TILE, TILE); }
           else drawFrame(tiles, m.treeGround || 0, 16, 16, sx, sy);
@@ -548,12 +599,14 @@ const overworld = {
       }
       if (m.center && ty === m.center.y + 2) ctx.drawImage(IMG.center, m.center.x * TILE - camX, m.center.y * TILE - camY);
       if (m.kiosk && ty === m.kiosk.y + 1) ctx.drawImage(IMG.kiosk, m.kiosk.x * TILE - camX, m.kiosk.y * TILE - camY);
+      for (const s of m.statueList) if (s.y === ty) this.drawStatue(s, s.x * TILE - camX, ty * TILE - camY);
       if (ty === playerRow) this.drawPlayer(px - camX, py - camY, camX, camY);
     }
     if (this.fishing) this.drawFishing(px - camX, py - camY, camX, camY);
     this.drawExitArrows(camX, camY);
 
     if (m.glow) this.drawGlow();
+    if (m.sparkle) this.drawGlow(['#ff9cf2', '#ffe0fa'], 0);
     if (m.snowfall) this.drawSnowfall();
     if (!menuBox.active) this.drawMinimap(px, py);
 
@@ -678,19 +731,53 @@ const overworld = {
   },
 
   // floating glowing specks (HYUJAL METSÄ)
-  drawGlow() {
-    ctx.fillStyle = 'rgba(30,0,70,0.16)';
-    ctx.fillRect(0, 0, W, H);
+  drawGlow(colors = ['#9fe3ff', '#e3b5ff'], dim = 0.16) {
+    if (dim) { ctx.fillStyle = `rgba(30,0,70,${dim})`; ctx.fillRect(0, 0, W, H); }
     const t = this.t;
     for (let i = 0; i < 26; i++) {
       const x = ((i * 53 + t * (0.15 + (i % 3) * 0.08) + Math.sin(t / 70 + i) * 14) % (W + 20) + W + 20) % (W + 20) - 10;
       const y = ((i * 37 - t * (0.1 + (i % 4) * 0.05) + Math.cos(t / 55 + i * 2) * 10) % (H + 20) + H + 20) % (H + 20) - 10;
       ctx.globalAlpha = 0.45 + 0.55 * Math.abs(Math.sin(t / 30 + i));
-      ctx.fillStyle = i % 2 ? '#9fe3ff' : '#e3b5ff';
+      ctx.fillStyle = colors[i % 2];
       ctx.fillRect(Math.round(x), Math.round(y), 1, 1);
       if (i % 5 === 0) { ctx.globalAlpha *= 0.4; ctx.fillRect(Math.round(x) - 1, Math.round(y), 3, 1); ctx.fillRect(Math.round(x), Math.round(y) - 1, 1, 3); }
     }
     ctx.globalAlpha = 1;
+  },
+
+  // ----- TEMPPELI statues: your creature sprite turned to violet stone, on a pedestal (2 tiles wide) -----
+  // Made with blend modes only (no pixel reading), so it also works when the game is opened as a file.
+  statueImg(species) {
+    this.statueCache = this.statueCache || {};
+    if (this.statueCache[species]) return this.statueCache[species];
+    const src = IMG[SPECIES[species].sprites.front];
+    const c = document.createElement('canvas');
+    c.width = c.height = 32;
+    const g = c.getContext('2d');
+    g.imageSmoothingEnabled = false;
+    g.drawImage(src, 0, 0, 32, 32, 0, 0, 32, 32);
+    g.globalCompositeOperation = 'color';           // keep the light and dark of the sprite, take the violet colour
+    g.fillStyle = '#9a5ccc'; g.fillRect(0, 0, 32, 32);
+    g.globalCompositeOperation = 'multiply';        // darker stone so it stands out from the light floor
+    g.fillStyle = '#9468c4'; g.fillRect(0, 0, 32, 32);
+    g.globalCompositeOperation = 'destination-in';  // back to the creature's shape
+    g.drawImage(src, 0, 0, 32, 32, 0, 0, 32, 32);
+    return (this.statueCache[species] = c);
+  },
+
+  drawStatue(s, sx, sy) {
+    const sp = SPECIES[s.species];
+    if (!sp) return;
+    // pedestal: 28x10 block in the lower part of the two tiles
+    const px = sx + 2, py = sy + 5;
+    ctx.fillStyle = '#2a1240'; ctx.fillRect(px, py, 28, 10);
+    ctx.fillStyle = '#b48ad4'; ctx.fillRect(px + 1, py + 1, 26, 3);
+    ctx.fillStyle = '#6a3a94'; ctx.fillRect(px + 1, py + 4, 26, 5);
+    ctx.fillStyle = '#ff9cf2'; ctx.fillRect(px + 1, py + 5, 26, 1);
+    ctx.fillStyle = 'rgba(42,18,64,0.35)'; ctx.fillRect(px + 1, py + 10, 26, 2);   // shadow on the floor
+    // the creature stands on top (AMPEREEM's feet are on row 30; feetY = how much higher, in 2x pixels)
+    const feet = 30 - Math.round((sp.feetY || 0) / 2);
+    ctx.drawImage(this.statueImg(s.species), sx, py + 1 - feet);
   },
 
   // area name that slides in from the top for a moment

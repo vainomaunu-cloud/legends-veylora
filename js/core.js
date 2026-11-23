@@ -74,6 +74,7 @@ const SPRITES = {
   bushRustleHyujal: 'sprites/bush_rustle_hyujal.png',
   tilesSnow: 'sprites/tiles_snow.png',            // SNOW MOUNTAIN tiles (same order as tiles.png)
   bushRustleSnow: 'sprites/bush_rustle_snow.png',
+  tilesTemple: 'sprites/tiles_temple.png',        // TEMPLE tiles (floor, carpet, runes, braziers, tablet, walls)
   thunderbolt: 'sprites/thunderbolt.png', // 3 frames 16x32
   spark: 'sprites/spark.png',             // 3 frames 32x32
   hit: 'sprites/hit.png',                 // 2 frames 32x32
