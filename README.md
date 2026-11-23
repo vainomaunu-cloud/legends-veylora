@@ -174,7 +174,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 - **Palovamma** (BRN): otus menettää jokaisen vuoron lopussa 1/16 maksimi-HP:staan, ja sen fyysiset hyökkäykset tekevät puolet vähemmän vahinkoa. Pysyy, kunnes otus parannetaan HOITOLASSA.
 - **Myrkytetty** (PSN) otus menettää jokaisen vuoron lopussa 1/8 maksimi-HP:staan. Myrkky jää taistelun jälkeen voimaan, kunnes otus parannetaan HOITOLASSA. Tila näkyy merkkinä tietolaatikon vieressä.
 - Tilasta kärsivä villi otus on helpompi napata (×1,5).
-- **Tasot:** XP-raja on taso³. Villit otukset ovat tasoilla (johtajan taso − 2) … johtajan taso. Pelaaja aloittaa DUCKONDAlla tasolta 5.
+- **Tasot:** XP-raja on taso³. Villien otusten taso riippuu alueesta, ei omasta tiimistä: PUSKAMETSÄ 2–9, HYUJAL METSÄ 6–14, SAARIMERI (ranta, palmut ja kalastus) 9–18 ja SNOW MOUNTAIN 18–26 (`WILD_LEVELS` tiedostossa `js/main.js`). Pelaaja aloittaa DUCKONDAlla tasolta 5.
 - **Kokemuspisteet** (vain taistelussa olevalle) = lajin XP-arvo · vihollisen taso / 7 (AMPERITE 50, AMPEREEM 120).
 - **Pakeneminen** onnistuu ensin 75 %:n todennäköisyydellä, ja jokainen epäonnistunut yritys nostaa mahdollisuutta.
 - Jos PP:t loppuvat kesken taistelun, otus käyttää automaattisesti RIMPUILU-hyökkäystä.

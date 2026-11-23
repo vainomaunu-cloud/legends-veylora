@@ -17,14 +17,26 @@ function* flashScreen(times) {
   for (let i = 0; i < times; i++) { game.white = 1; yield* wait(4); game.white = 0; yield* wait(4); }
 }
 
+// wild creature levels per area (min, max), no matter how strong your own team is
+const WILD_LEVELS = {
+  forest: [2, 9],     // PUSKAMETSÄ
+  hyujal: [6, 14],    // HYUJAL METSÄ
+  sea: [9, 18],       // SAARIMERI (beach, palms and fishing)
+  snow: [18, 26],     // SNOW MOUNTAIN
+};
+
+function wildLevel() {
+  const [lo, hi] = WILD_LEVELS[overworld.map.id] || WILD_LEVELS.forest;
+  return rnd(lo, hi);
+}
+
 function startEncounter(species = 'amperite', from = 'bush') {
   game.locked = true;
   game.runner.run((function* () {
     music.play('battle');
     yield* flashScreen(3);
     yield* tween(24, k => { game.wipe = k; });
-    const L = lead().level;
-    battle.start(species, Math.max(2, rnd(L - 2, L)), from);
+    battle.start(species, wildLevel(), from);
     game.view = 'battle';
     game.locked = false;
     yield* tween(16, k => { game.wipe = 1 - k; });
