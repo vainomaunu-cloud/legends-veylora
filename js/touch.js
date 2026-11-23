@@ -79,11 +79,11 @@ if (isTouchDevice) setupTouch();
 // Canvas size: keep whole-pixel scaling, and on touch screens leave room for the buttons
 function fitCanvasTouch() {
   const dpr = window.devicePixelRatio || 1;
-  let availW = innerWidth, availH = innerHeight - 70;
+  let availW = innerWidth, availH = innerHeight - 120;   // room for the save button and help line
   if (document.body.classList.contains('touch')) {
     const portrait = innerHeight >= innerWidth;
     document.body.classList.toggle('portrait', portrait);
-    if (portrait) { availW = innerWidth - 16; availH = innerHeight - 200; }   // buttons below the game
+    if (portrait) { availW = innerWidth - 16; availH = innerHeight - 250; }   // save button + controls below the game
     else { availW = innerWidth - 2 * 190; availH = innerHeight - 16; }          // buttons beside the game
   }
   let s = Math.floor(Math.min(availW * dpr / W, availH * dpr / H));

@@ -38,6 +38,16 @@ Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuk
 | F | Kalasta (seiso veden edessä ja katso veteen) |
 | M | Musiikki päälle/pois (valinta muistetaan) |
 
+### Tallennus
+
+Peli tallentuu automaattisesti selaimeen, joten sivun voi päivittää tai sulkea:
+- Tallennus tapahtuu taistelun jälkeen, alueelta toiselle siirtyessä, HOITOLASTA ja rantakioskista lähtiessä, 10 sekunnin välein kävellessä sekä silloin, kun sivu suljetaan tai laitetaan taustalle.
+- Pelin alla on lisäksi **💾 Tallenna**-nappi, jolla voi tallentaa itse milloin tahansa kävellessä. Napin vieressä näkyy, milloin peli tallentui viimeksi. Puhelimella vaakasuunnassa nappi on oikeassa yläkulmassa.
+- Mukaan tallentuvat tiimi (tasot, XP, HP, PP, tilat, kiiltävyys), kolikot, pallot ja paikka kartalla.
+- Kesken taistelua ei tallenneta. Jos sivu suljetaan taistelussa, peli jatkuu viimeisestä tallennuksesta ennen taistelua.
+- Aloitusruudussa on **JATKA** (näyttää johtajan ja tiimin koon) ja **UUSI PELI**. Uusi peli kysyy varmistuksen, koska vanha tallennus poistuu.
+- Tallennus on selain- ja laitekohtainen: puhelimella ja tietokoneella on omat tallennuksensa. Yksityinen selaustila tai selaimen tietojen tyhjentäminen poistaa sen.
+
 ### Puhelin ja tabletti
 
 Kosketusnäytöllisillä laitteilla (puhelin, iPad) ruudulle tulee nappulat, joten näppäimistöä ei tarvita:
@@ -186,6 +196,7 @@ Taistelussa 32×32-spritet piirretään 2× suurennettuna. Pikselit pysyvät ter
 | `js/core.js` | Kuvien lataus, näppäimet, tekstilaatikko, valikot, apufunktiot |
 | `js/overworld.js` | Kartat (`MAPS`), siirtymät karttojen välillä, alueen nimi, lomittaiset puut, liike, puskat, hohto, HOITOLA (parannus, kauppa, tiimi), kyltit |
 | `js/battle.js` | Lajit (`SPECIES`), liikkeet (`MOVES`), vahinkokaava, taistelu, nappaaminen, animaatiot, kehittyminen |
+| `js/save.js` | Tallennus ja lataus selaimen muistiin (localStorage) |
 | `js/touch.js` | Kosketusnäytön nappulat ja pelin koko puhelimella/tabletilla |
 | `js/music.js` | Chiptune-musiikki: nuotit (`TRACKS`), soittimet ja ajastus |
 | `js/main.js` | Näkymät, siirtymäefektit, pelisilmukka (60 fps), kolikot ja pallot (`game`) |
@@ -212,4 +223,3 @@ Uuden alueen saa lisäämällä `MAPS`-olioon uuden kartan (nimi, ruutukuva, riv
 - Otuksen vaihto kesken taistelun.
 - Uusia otuksia omilla spriteillä ja tyypeillä (sähkö, kasvi, vesi…).
 - Johtaja seuraa pelaajaa metsässä.
-- Tallennus selaimeen (localStorage).

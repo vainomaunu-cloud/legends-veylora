@@ -314,6 +314,7 @@ const overworld = {
     textBox.hide();
     yield* textBox.say('Kiitos ja hyviä kalastushetkiä!');
     this.showWallet = false;
+    saveGame.save(true);
   },
 
   *centerVisit() {
@@ -355,6 +356,7 @@ const overworld = {
     textBox.hide();
     yield* textBox.say('Tervetuloa uudelleen!');
     this.showWallet = false;
+    saveGame.save(true);
   },
 
   draw() {
@@ -524,5 +526,6 @@ function warpTo(w) {
     game.locked = false;
     yield* tween(14, k => { game.fade = 1 - k; });
     game.fade = 0;
+    saveGame.save();
   })());
 }

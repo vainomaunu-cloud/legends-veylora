@@ -16,6 +16,18 @@
   kbd { background: #2a2a38; color: #dde; border-radius: 3px; padding: 1px 5px; font-size: 12px; }
   #error { color: #ff8080; white-space: pre-wrap; max-width: 640px; }
 
+  /* save button */
+  #saveBar { margin-top: 12px; display: flex; align-items: center; gap: 10px; font-size: 13px; min-height: 34px; }
+  #saveBtn { font: 600 14px system-ui, sans-serif; color: #fff; background: #2f8a3a; border: 2px solid #5cc46a;
+             border-radius: 8px; padding: 6px 14px; cursor: pointer; touch-action: manipulation; }
+  #saveBtn:hover { filter: brightness(1.15); }
+  #saveBtn:active { transform: scale(0.96); }
+  #saveMsg.bad { color: #ff9a8a; }
+  body.touch.portrait #saveBar { margin-top: 14px; }
+  body.touch:not(.portrait) #saveBar { position: fixed; top: max(10px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right));
+                                      margin: 0; flex-direction: column; align-items: flex-end; gap: 4px; max-width: 170px; }
+  body.touch:not(.portrait) #saveMsg { text-align: right; font-size: 12px; }
+
   /* ---------- on-screen controls (phones and tablets) ---------- */
   #touch { display: none; }
   body.touch { touch-action: none; overscroll-behavior: none; -webkit-user-select: none; user-select: none;
@@ -51,6 +63,7 @@
 </head>
 <body>
 <canvas id="game" width="240" height="160"></canvas>
+<div id="saveBar"><button id="saveBtn" type="button">💾 Tallenna</button><span id="saveMsg"></span></div>
 <div id="help"><kbd>Nuolet</kbd> / <kbd>WASD</kbd> liiku · <kbd>Z</kbd> / <kbd>Enter</kbd> OK · <kbd>X</kbd> / <kbd>Esc</kbd> takaisin · <kbd>F</kbd> kalasta · <kbd>M</kbd> musiikki päälle/pois</div>
 <div id="error"></div>
 <div id="touch">
@@ -70,6 +83,7 @@
 <script src="js/music.js"></script>
 <script src="js/overworld.js"></script>
 <script src="js/battle.js"></script>
+<script src="js/save.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
