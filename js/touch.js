@@ -62,7 +62,7 @@ function setupTouch() {
   // no long-press menus, double-tap zoom or pinch on the game
   addEventListener('contextmenu', e => e.preventDefault());
   document.addEventListener('gesturestart', e => e.preventDefault());
-  document.addEventListener('touchmove', e => { if (!e.target.closest('#inventory, #admin, #pcScreen')) e.preventDefault(); }, { passive: false });
+  document.addEventListener('touchmove', e => { if (!e.target.closest('#inventory, #admin, #pcScreen, #nameDlg')) e.preventDefault(); }, { passive: false });
 
   // iPhones/iPads only allow sound to start inside a touch: unlock it on the first touch
   const unlock = () => {

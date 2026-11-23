@@ -1,25 +1,86 @@
-// ---------- Saving: the game is stored in this browser (localStorage) ----------
+// ---------- Saving: the games are stored in this browser (localStorage) ----------
 // Saved automatically after battles, area changes, the HOITOLA / kiosk, every few seconds while walking,
-// and when the page is closed or hidden. Each browser/device has its own save.
-const SAVE_KEY = 'veylora-save-v1';
+// and when the page is closed or hidden. Each browser/device has its own saves.
+// There can be many games, each with its own name; UUSI PELI never removes the old ones.
+const SAVE_KEY = 'veylora-save-v1';        // the old single save: moved into the list on first load
+const SLOTS_KEY = 'veylora-slots-v1';      // list of games: [{ id, name, time }]
+const slotKey = id => 'veylora-slot-' + id;
+const NAME_MAX = 12;
+
+const validSave = d => (d && d.v === 1 && Array.isArray(d.party) && d.party.length ? d : null);
 
 const saveGame = {
   flash: 0,          // frames to show "TALLENNETTU"
+  slotId: null,      // the game being played
+  slotName: '',
 
-  exists() { return !!this.load(); },
+  slots() {
+    try { const l = JSON.parse(localStorage.getItem(SLOTS_KEY)); return Array.isArray(l) ? l : []; } catch (e) { return []; }
+  },
+  writeSlots(l) { try { localStorage.setItem(SLOTS_KEY, JSON.stringify(l)); } catch (e) { /* storage blocked */ } },
 
-  load() {
+  // the save from before there were several games becomes "PELI 1"
+  migrate() {
     try {
-      const d = JSON.parse(localStorage.getItem(SAVE_KEY));
-      return d && d.v === 1 && Array.isArray(d.party) && d.party.length ? d : null;
-    } catch (e) { return null; }
+      if (localStorage.getItem(SLOTS_KEY)) return;
+      const old = validSave(JSON.parse(localStorage.getItem(SAVE_KEY)));
+      if (!old) return;
+      const id = this.newId();
+      localStorage.setItem(slotKey(id), JSON.stringify(old));
+      this.writeSlots([{ id, name: 'PELI 1', time: old.time || Date.now() }]);
+      localStorage.removeItem(SAVE_KEY);
+    } catch (e) { /* storage blocked */ }
+  },
+
+  newId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); },
+
+  // all games that can be continued, newest first: [{ id, name, time, data }]
+  list() {
+    return this.slots()
+      .map(s => ({ ...s, data: this.load(s.id) }))
+      .filter(s => s.data)
+      .sort((a, b) => (b.data.time || 0) - (a.data.time || 0));
+  },
+
+  exists() { return this.list().length > 0; },
+
+  load(id = this.slotId) {
+    if (!id) return null;
+    try { return validSave(JSON.parse(localStorage.getItem(slotKey(id)))); } catch (e) { return null; }
+  },
+
+  // start a new, empty game in the list
+  create(name) {
+    const id = this.newId();
+    this.slotId = id; this.slotName = name;
+    this.writeSlots([...this.slots(), { id, name, time: Date.now() }]);
+  },
+
+  rename(id, name) {
+    this.writeSlots(this.slots().map(s => (s.id === id ? { ...s, name } : s)));
+    if (id === this.slotId) this.slotName = name;
+  },
+
+  remove(id) {
+    this.writeSlots(this.slots().filter(s => s.id !== id));
+    try { localStorage.removeItem(slotKey(id)); } catch (e) { /* storage blocked */ }
+  },
+
+  // continue this game
+  use(slot) { this.slotId = slot.id; this.slotName = slot.name; },
+
+  // a free default name: PELI 1, PELI 2, ...
+  defaultName() {
+    const names = new Set(this.slots().map(s => s.name));
+    let n = 1; while (names.has('PELI ' + n)) n++;
+    return 'PELI ' + n;
   },
 
   // only while walking around: never in the middle of a battle or a transition
   canSave() { return game.view === 'overworld' && !game.locked && game.party.length > 0; },
 
   save(show = false) {
-    if (!this.canSave()) return false;
+    if (!this.canSave() || !this.slotId) return false;
     const p = overworld.player;
     const pack = m => ({
       species: m.species, level: m.level, xp: m.xp, hp: m.hp, status: m.status || null, sleepTurns: m.sleepTurns || 0, shiny: !!m.shiny,
@@ -33,13 +94,16 @@ const saveGame = {
       caught: game.caught, shinyCharm: game.shinyCharm,
       map: overworld.map.id, x: p.tx, y: p.ty, dir: p.dir,
     };
-    try { localStorage.setItem(SAVE_KEY, JSON.stringify(d)); } catch (e) { return false; }
+    try { localStorage.setItem(slotKey(this.slotId), JSON.stringify(d)); } catch (e) { return false; }
+    // keep the game in the list (it may have been removed in another tab)
+    const l = this.slots();
+    const s = l.find(x => x.id === this.slotId);
+    if (s) s.time = d.time; else l.push({ id: this.slotId, name: this.slotName, time: d.time });
+    this.writeSlots(l);
     if (show) this.flash = 90;
-    showSaveMsg('Tallennettu klo ' + clockTime(d.time));
+    showSaveMsg(`${this.slotName}: tallennettu klo ${clockTime(d.time)}`);
     return true;
   },
-
-  clear() { try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* storage blocked */ } },
 
   // put a save back into the game; skips anything that no longer exists in the code
   apply(d) {
@@ -109,8 +173,67 @@ function showSaveMsg(text, bad = false) {
   });
   // keep touches on the button from reaching the game controls
   btn.addEventListener('pointerdown', e => e.stopPropagation());
-  const old = saveGame.load();
-  if (old) showSaveMsg('Viimeksi tallennettu klo ' + clockTime(old.time));
+  saveGame.migrate();
+  const last = saveGame.list()[0];
+  if (last) showSaveMsg(`Viimeksi tallennettu: ${last.name} klo ${clockTime(last.data.time)}`);
+})();
+
+// ---------- naming a game: a small dialog with a text field (works with phone keyboards too) ----------
+window.nameOpen = false;
+const NAME_OK = /[A-Z0-9ÄÖÅ .,!?:'\-\/()+%]/;
+
+function askName(title, initial, done) {
+  window.nameOpen = true;
+  for (const k in held) held[k] = false;
+  dirStack.length = 0;
+  const el = document.createElement('div');
+  el.id = 'nameDlg';
+  el.innerHTML = `
+    <form class="nameBox">
+      <label for="nameInput">${title}</label>
+      <input id="nameInput" type="text" maxlength="${NAME_MAX}" autocomplete="off" spellcheck="false" enterkeyhint="done">
+      <div class="nameHint">Enintään ${NAME_MAX} merkkiä: kirjaimet, numerot ja välilyönti.</div>
+      <div class="nameBtns"><button type="button" data-cancel>Peruuta</button><button type="submit">OK</button></div>
+    </form>`;
+  document.body.appendChild(el);
+  const input = el.querySelector('input');
+  input.value = initial;
+  const clean = s => [...s.toUpperCase()].filter(c => NAME_OK.test(c)).join('').replace(/\s+/g, ' ').slice(0, NAME_MAX);
+  input.addEventListener('input', () => {
+    const c = clean(input.value);
+    if (c !== input.value) input.value = c;
+  });
+  const finish = name => {
+    el.remove();
+    window.nameOpen = false;
+    done(name);
+  };
+  el.querySelector('form').addEventListener('submit', e => {
+    e.preventDefault();
+    finish(clean(input.value).trim() || initial);
+  });
+  el.querySelector('[data-cancel]').addEventListener('click', () => finish(null));
+  el.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Escape') finish(null); });
+  el.addEventListener('pointerdown', e => e.stopPropagation());
+  setTimeout(() => { input.focus(); input.select(); }, 30);
+}
+
+(function nameDlgStyle() {
+  const style = document.createElement('style');
+  style.textContent = `
+    #nameDlg { position: fixed; inset: 0; z-index: 980; background: rgba(8,8,14,.6); display: flex; align-items: center; justify-content: center; }
+    #nameDlg .nameBox { width: min(340px, 92vw); box-sizing: border-box; padding: 16px; background: #1d2030; color: #e6e9f2;
+                 border: 2px solid #f4df1a; border-radius: 10px; font: 14px system-ui, sans-serif; display: grid; gap: 10px;
+                 box-shadow: 0 10px 40px rgba(0,0,0,.6); }
+    #nameDlg label { font-weight: 700; font-size: 16px; }
+    #nameDlg input { font: 700 20px monospace; letter-spacing: .08em; padding: 8px 10px; border-radius: 6px; border: 2px solid #6a74a0;
+                 background: #f8f8f0; color: #283040; text-transform: uppercase; }
+    #nameDlg .nameHint { font-size: 12px; color: #9aa3b5; }
+    #nameDlg .nameBtns { display: flex; justify-content: flex-end; gap: 8px; }
+    #nameDlg button { font: 600 14px system-ui, sans-serif; color: #fff; background: #3a4260; border: 1px solid #6a74a0;
+                 border-radius: 6px; padding: 7px 16px; cursor: pointer; }
+    #nameDlg button[type=submit] { background: #3f8a3c; border-color: #6fc06a; }`;
+  document.head.appendChild(style);
 })();
 
 // save when the page is closed, reloaded or put in the background

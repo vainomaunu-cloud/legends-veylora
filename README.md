@@ -57,7 +57,12 @@ Peli tallentuu automaattisesti selaimeen, joten sivun voi päivittää tai sulke
 - Napin vieressä on **🎒 Reppu**-nappi: se näyttää pallojen ja kolikoiden määrän sekä oman tiimin (HP, XP, tila, liikkeet ja PP). PC:ssä olevat otukset eivät näy repussa. Reppu suljetaan Sulje-napista, taustaa klikkaamalla tai Esc/X-näppäimellä.
 - Mukaan tallentuvat tiimi ja PC:n otukset (tasot, XP, HP, PP, tilat, kiiltävyys), kolikot, pallot ja paikka kartalla.
 - Kesken taistelua ei tallenneta. Jos sivu suljetaan taistelussa, peli jatkuu viimeisestä tallennuksesta ennen taistelua.
-- Aloitusruudussa on **JATKA** (näyttää johtajan ja tiimin koon) ja **UUSI PELI**. Uusi peli kysyy varmistuksen, koska vanha tallennus poistuu.
+- **Useita pelejä:** aloitusruudussa on **JATKA** ja **UUSI PELI**. Uusi peli ei poista vanhoja, vaan jokainen peli tallentuu omaksi pelikseen.
+  - UUSI PELI kysyy pelille nimen (enintään 12 merkkiä; ehdotus PELI 1, PELI 2, …). Nimellä pelit erottaa toisistaan.
+  - JATKA avaa listan **VALITSE PELI**: nimi, viimeisin tallennusaika sekä johtaja ja tiimin koko. Uusin ensin, 4 per sivu (vasen/oikea vaihtaa sivua).
+  - Pelin valinnasta aukeaa JATKA / NIMEÄ / POISTA / TAKAISIN. POISTA kysyy varmistuksen (oletuksena EI), koska poistettua peliä ei voi palauttaa.
+  - Tallenna-napin vieressä näkyy, mikä peli tallentui ja milloin.
+  - Vanha tallennus (ajalta ennen useita pelejä) siirtyy listaan nimellä PELI 1.
 - Tallennus on selain- ja laitekohtainen: puhelimella ja tietokoneella on omat tallennuksensa. Yksityinen selaustila tai selaimen tietojen tyhjentäminen poistaa sen.
 
 ### Puhelin ja tabletti
@@ -239,7 +244,7 @@ Taistelussa 32×32-spritet piirretään 2× suurennettuna. Pikselit pysyvät ter
 | `js/core.js` | Kuvien lataus, näppäimet, tekstilaatikko, valikot, apufunktiot |
 | `js/overworld.js` | Kartat (`MAPS`), siirtymät karttojen välillä, alueen nimi, lomittaiset puut, liike, puskat, hohto, HOITOLA (parannus, kauppa, tiimi), kyltit |
 | `js/battle.js` | Lajit (`SPECIES`), liikkeet (`MOVES`), vahinkokaava, taistelu, nappaaminen, animaatiot, kehittyminen |
-| `js/save.js` | Tallennus ja lataus selaimen muistiin (localStorage) |
+| `js/save.js` | Tallennus ja lataus selaimen muistiin (localStorage), useat nimetyt pelit ja nimen kysyminen |
 | `js/touch.js` | Kosketusnäytön nappulat ja pelin koko puhelimella/tabletilla |
 | `js/inventory.js` | 🎒 Reppu: pallot, kolikot ja tiimi |
 | `js/pcscreen.js` | HOITOLAN PC -ruutu: tiimi, laatikko ja raahaamalla vaihtaminen |

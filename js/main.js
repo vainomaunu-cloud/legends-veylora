@@ -63,8 +63,9 @@ function endBattle(result) {
 }
 
 // a brand new game: DUCKONDA (only obtainable here), 1 in 10 is shiny
-function newGame() {
-  saveGame.clear();
+// older games stay saved; this one gets its own name in the list
+function newGame(name = saveGame.defaultName()) {
+  saveGame.create(name);
   const starter = makeMon('duckonda', 5);
   starter.shiny = Math.random() < SPECIES.duckonda.shinyChance;
   game.party = [starter];
@@ -74,12 +75,13 @@ function newGame() {
   startGame();
 }
 
-// continue from the save in this browser
-function continueGame(d) {
+// continue one of the games saved in this browser
+function continueGame(slot) {
   game.locked = true;
+  saveGame.use(slot);
   game.runner.run((function* () {
     yield* tween(20, k => { game.fade = k; });
-    if (!saveGame.apply(d)) { game.locked = false; game.fade = 0; newGame(); return; }
+    if (!saveGame.apply(slot.data)) { game.locked = false; game.fade = 0; newGame(); return; }
     music.play(overworld.map.music);
     game.view = 'overworld';
     game.locked = false;
@@ -106,22 +108,72 @@ function startGame() {
 }
 
 // ---------- Title screen ----------
+// modes: 'main' (JATKA / UUSI PELI), 'list' (pick a game), 'slot' (JATKA / NIMEÄ / POISTA / TAKAISIN),
+// 'delete' (are you sure?), 'naming' (the name dialog is open)
+const TITLE_PER_PAGE = 4;
+const SLOT_OPTIONS = ['JATKA', 'NIMEÄ', 'POISTA', 'TAKAISIN'];
+const shortDate = t => { const d = new Date(t); return `${d.getDate()}.${d.getMonth() + 1}. ${clockTime(t)}`; };
+
 const title = {
-  index: 0,          // 0 = JATKA, 1 = UUSI PELI (when a save exists)
-  confirm: false,    // asking "start over?"
-  save: null,
-  enter() { this.save = saveGame.load(); this.index = 0; this.confirm = false; },
+  mode: 'main',
+  index: 0,          // main menu / slot menu / delete cursor
+  pick: 0,           // selected game in the list
+  games: [],
+  enter() { this.refresh(); this.mode = 'main'; this.index = 0; this.pick = 0; },
+  refresh() {
+    this.games = saveGame.list();
+    if (this.pick >= this.games.length) this.pick = Math.max(0, this.games.length - 1);
+  },
+  startNew() {
+    this.mode = 'naming'; this.namingFrom = 'main';
+    askName('Anna uudelle pelille nimi', saveGame.defaultName(), name => {
+      if (name) newGame(name); else this.mode = 'main';
+    });
+  },
   update() {
-    if (!this.save) { if (take('a')) newGame(); return; }
-    if (take('up') || take('down')) this.index ^= 1;
-    if (this.confirm) {
-      if (take('b')) { this.confirm = false; this.index = 1; return; }
-      if (take('a')) { this.confirm = false; if (this.index === 0) newGame(); else this.index = 1; }
-      return;
-    }
-    if (take('a')) {
-      if (this.index === 0) continueGame(this.save);
-      else { this.confirm = true; this.index = 1; }   // default to EI
+    const m = this.mode, g = this.games[this.pick];
+    if (m === 'naming') return;
+    if (m === 'main') {
+      if (!this.games.length) { if (take('a')) this.startNew(); return; }
+      if (take('up') || take('down')) this.index ^= 1;
+      if (take('a')) {
+        if (this.index === 1) this.startNew();
+        else { this.mode = 'list'; this.pick = 0; }
+      }
+    } else if (m === 'list') {
+      const n = this.games.length;
+      if (take('up')) this.pick = (this.pick + n - 1) % n;
+      if (take('down')) this.pick = (this.pick + 1) % n;
+      if (take('left')) this.pick = Math.max(0, this.pick - TITLE_PER_PAGE);
+      if (take('right')) this.pick = Math.min(n - 1, this.pick + TITLE_PER_PAGE);
+      if (take('b')) { this.mode = 'main'; this.index = 0; }
+      if (take('a')) { this.mode = 'slot'; this.index = 0; }
+    } else if (m === 'slot') {
+      if (take('up')) this.index = (this.index + 3) % 4;
+      if (take('down')) this.index = (this.index + 1) % 4;
+      if (take('b')) { this.mode = 'list'; return; }
+      if (take('a')) {
+        if (this.index === 0) continueGame(g);
+        else if (this.index === 1) {
+          this.mode = 'naming'; this.namingFrom = 'slot';
+          askName('Uusi nimi pelille', g.name, name => {
+            if (name) saveGame.rename(g.id, name);
+            this.refresh(); this.mode = 'slot';
+          });
+        } else if (this.index === 2) { this.mode = 'delete'; this.index = 1; }   // default to EI
+        else this.mode = 'list';
+      }
+    } else if (m === 'delete') {
+      if (take('left') || take('right') || take('up') || take('down')) this.index ^= 1;
+      if (take('b')) { this.mode = 'slot'; this.index = 2; return; }
+      if (take('a')) {
+        if (this.index === 0) {
+          saveGame.remove(g.id);
+          this.refresh();
+          this.mode = this.games.length ? 'list' : 'main';
+          this.index = 0;
+        } else { this.mode = 'slot'; this.index = 2; }
+      }
     }
   },
   draw() {
@@ -136,22 +188,53 @@ const title = {
     fillEllipse(W / 2, 108, 30, 6, 'rgba(30,74,34,0.35)');
     const bob = Math.floor(game.t / 30) % 2;
     ctx.drawImage(IMG.moi, 0, 0, 32, 32, W / 2 - 32, 50 + bob, 64, 64);
-    if (this.save) {
-      if (this.confirm) {
-        drawBox(30, 104, 180, 50);
-        drawTextCenter(ctx, 'VANHA TALLENNUS POISTUU.', W / 2, 109);
-        drawTextCenter(ctx, 'ALOITETAANKO ALUSTA?', W / 2, 119);
-        drawText(ctx, 'KYLLÄ', 84, 136); drawText(ctx, 'EI', 138, 136);
-        drawText(ctx, '►', this.index === 0 ? 76 : 130, 136, '#e04838');
-      } else {
-        drawBox(36, 110, 168, 44);
-        drawText(ctx, 'JATKA', 86, 116); drawText(ctx, 'UUSI PELI', 86, 130);
-        drawText(ctx, '►', 76, 116 + this.index * 14, '#e04838');
-        drawTextCenter(ctx, saveGame.summary(this.save), W / 2, 143, '#586070');
-      }
+    if (['list', 'slot', 'delete'].includes(this.mode) || (this.mode === 'naming' && this.namingFrom === 'slot')) {
+      this.drawList();
+      return;
+    }
+    if (this.games.length) {
+      drawBox(36, 110, 168, 44);
+      drawText(ctx, 'JATKA', 86, 116); drawText(ctx, 'UUSI PELI', 86, 130);
+      drawText(ctx, '►', 76, 116 + this.index * 14, '#e04838');
+      const n = this.games.length;
+      drawTextCenter(ctx, `${n} ${n === 1 ? 'PELI' : 'PELIÄ'} TALLESSA`, W / 2, 143, '#586070');
     } else if (Math.floor(game.t / 30) % 2 === 0) {
       drawBox(W / 2 - 34, 122, 68, 17);
       drawTextCenter(ctx, document.body.classList.contains('touch') ? 'PAINA A' : 'PAINA Z', W / 2, 127);
+    }
+  },
+
+  // the list of saved games, with the game menu / delete question on top
+  drawList() {
+    drawBox(6, 4, 228, 152);
+    drawTextCenter(ctx, 'VALITSE PELI', W / 2, 10, '#c07020');
+    const n = this.games.length, page = Math.floor(this.pick / TITLE_PER_PAGE), pages = Math.ceil(n / TITLE_PER_PAGE);
+    for (let r = 0; r < TITLE_PER_PAGE; r++) {
+      const i = page * TITLE_PER_PAGE + r, g = this.games[i];
+      if (!g) break;
+      const y = 24 + r * 28;
+      if (i === this.pick) {
+        ctx.fillStyle = '#e8ecf4'; ctx.fillRect(12, y - 3, 216, 25);
+        drawText(ctx, '►', 15, y + 4, '#e04838');
+      }
+      drawText(ctx, g.name, 26, y);
+      drawTextRight(ctx, shortDate(g.data.time), 224, y, '#8890a0');
+      drawText(ctx, saveGame.summary(g.data), 26, y + 11, '#586070');
+    }
+    drawTextCenter(ctx, pages > 1 ? `SIVU ${page + 1}/${pages}  (VASEN/OIKEA)` : 'B: TAKAISIN', W / 2, 140, '#8890a0');
+    if (this.mode === 'slot' || (this.mode === 'naming')) {
+      // beside the chosen game, on the right where its date is
+      const r = this.pick % TITLE_PER_PAGE, by = r < 2 ? 24 + r * 28 + 22 : 24 + r * 28 - 60;
+      drawBox(156, by, 72, 58);
+      SLOT_OPTIONS.forEach((s, i) => drawText(ctx, s, 170, by + 6 + i * 12, i === 2 ? '#c03828' : '#283040'));
+      drawText(ctx, '►', 161, by + 6 + this.index * 12, '#e04838');
+    } else if (this.mode === 'delete') {
+      const g = this.games[this.pick];
+      drawBox(20, 54, 200, 54);
+      drawTextCenter(ctx, `POISTETAANKO ${g.name}?`, W / 2, 60);
+      drawTextCenter(ctx, 'SITÄ EI VOI PALAUTTAA.', W / 2, 72, '#c03828');
+      drawText(ctx, 'KYLLÄ', 84, 90); drawText(ctx, 'EI', 138, 90);
+      drawText(ctx, '►', this.index === 0 ? 76 : 130, 90, '#e04838');
     }
   },
 };

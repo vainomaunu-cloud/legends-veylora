@@ -143,7 +143,7 @@ const held = {}, pressed = {};
 const dirStack = [];
 let tapDir = null;   // a direction tapped this frame (even if already released)
 addEventListener('keydown', e => {
-  if (window.adminOpen || window.invOpen || window.pcOpen) return;   // a panel (admin / reppu / PC) is open
+  if (window.adminOpen || window.invOpen || window.pcOpen || window.nameOpen) return;   // a panel (admin / reppu / PC / name) is open
   const k = KEYMAP[e.code];
   if (!k) return;
   e.preventDefault();
