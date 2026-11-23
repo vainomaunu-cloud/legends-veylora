@@ -122,7 +122,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Rannan vasempaan reunaan kulkeva hiekkapolku vie takaisin PUSKAMETSÄÄN.
    - Jokaisen alueen uloskäynnillä on pieni vilkkuva nuoli, joka osoittaa poistumissuuntaan.
 6. **Taistelu** (vuoropohjainen)
-   - Valikko: TAISTELE / PALLO / PAKENE.
+   - Valikko: TAISTELE / PALLO / VAIHDA / PAKENE.
+   - **VAIHDA:** valitse tiimistä toinen otus taisteluun (näkyy HP). Uupunutta tai jo taistelevaa ei voi valita, ja B peruu. Vaihto vie vuoron, joten villi otus hyökkää heti uutta vastaan. Pois vaihdetun nopeusmuutokset ja tulipyörre nollautuvat. XP:n saa se, joka on taistelussa voiton hetkellä.
    - Nopeampi otus hyökkää ensin. Tasatilanteessa järjestys arvotaan.
    - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10.
    - Jos oma otus uupuu, seuraava tiimiläinen, jolla on HP:ta, lähtee taisteluun.

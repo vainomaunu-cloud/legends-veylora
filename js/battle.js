@@ -323,10 +323,14 @@ const battle = {
     yield* this.sendOut();
 
     while (true) {
-      const me = this.me;
+      let me = this.me;
       const choice = yield* this.chooseMain();
       let myMove = null;
-      if (choice === 1) {
+      if (choice === 2) {
+        // switch to another team member; the switch uses up this turn and the foe attacks the newcomer
+        if (!(yield* this.switchMon())) continue;
+        me = this.me;
+      } else if (choice === 1) {
         if (game.balls + game.greatBalls <= 0) { yield* textBox.say(`Sinulla ei ole yhtään palloa! Osta niitä ${CENTER_NAME}sta tai rantakioskista.`); continue; }
         let great = game.balls <= 0;
         if (game.balls > 0 && game.greatBalls > 0) {   // both kinds: let the player pick
@@ -337,7 +341,7 @@ const battle = {
           great = pick === 1;
         }
         if (yield* this.throwBall(great)) { this.result = 'catch'; return; }
-      } else if (choice === 2) {
+      } else if (choice === 3) {
         this.runAttempts++;
         if (Math.random() < 0.5 + 0.25 * this.runAttempts) {
           yield* textBox.say('Pääsit turvallisesti pakoon!');
@@ -398,6 +402,39 @@ const battle = {
       if (this.me.hp <= 0) return (yield* this.myFainted()) ? 'switch' : 'lose';
     }
     return null;
+  },
+
+  // VAIHDA: pick a team member to send out instead; returns false if cancelled
+  *switchMon() {
+    const party = game.party;
+    if (!party.some(m => m !== this.me && m.hp > 0)) {
+      yield* textBox.say('Tiimissäsi ei ole ketään muuta, joka jaksaa taistella!');
+      return false;
+    }
+    while (true) {
+      textBox.show('Kenet lähetät taisteluun?', 0, 136);
+      const labels = party.map(m => `${m.name}${m.shiny ? '★' : ''} ${m.hp}/${m.maxHp}`);
+      const i = yield* menuBox.choose(labels, 64, 4, 172);
+      textBox.hide();
+      if (i < 0) return false;
+      const m = party[i];
+      if (m === this.me) { yield* textBox.say(`${m.name} on jo taistelussa!`); continue; }
+      if (m.hp <= 0) { yield* textBox.say(`${m.name} on uupunut eikä jaksa taistella.`); continue; }
+      // call the current one back
+      const old = this.me, mv = this.meV;
+      old.speStage = 0; old.trapTurns = 0; old.flinch = false;
+      yield* textBox.say(`Tule takaisin, ${old.name}!`, { auto: 6, keep: true });
+      this.addFx('spark', mv.x + 32, mv.y + 36, [0, 0, 1, 1, 2, 2]);
+      yield* tween(12, k => { mv.scale = 1 - 0.9 * k; });
+      mv.show = false; mv.scale = 1;
+      this.showMeInfo = false;
+      textBox.hide();
+      yield* wait(8);
+      this.me = m;
+      m.speStage = 0; m.trapTurns = 0; m.flinch = false;
+      yield* this.sendOut();
+      return true;
+    }
   },
 
   // returns true if another team member was sent out
@@ -496,8 +533,8 @@ const battle = {
     this.menu = { type: 'main', index: this.lastMain || 0 };
     textBox.show(`Mitä ${this.me.name} tekee?`, 0, 136);
     while (true) {
-      if (take('up')) this.menu.index = (this.menu.index + 2) % 3;
-      if (take('down')) this.menu.index = (this.menu.index + 1) % 3;
+      if (take('up')) this.menu.index = (this.menu.index + 3) % 4;
+      if (take('down')) this.menu.index = (this.menu.index + 1) % 4;
       if (take('a')) {
         this.lastMain = this.menu.index;
         this.menu = null; textBox.hide();
@@ -1296,10 +1333,11 @@ const battle = {
     if (!this.menu) return;
     if (this.menu.type === 'main') {
       drawBox(136, 112, 104, 48);
-      drawText(ctx, 'TAISTELE', 158, 117);
-      drawText(ctx, 'PALLO', 158, 129); drawTextRight(ctx, 'X' + (game.balls + game.greatBalls), 230, 129, '#586070');
-      drawText(ctx, 'PAKENE', 158, 141);
-      drawText(ctx, '►', 147, 117 + this.menu.index * 12, '#e04838');
+      drawText(ctx, 'TAISTELE', 158, 115);
+      drawText(ctx, 'PALLO', 158, 125); drawTextRight(ctx, 'X' + (game.balls + game.greatBalls), 230, 125, '#586070');
+      drawText(ctx, 'VAIHDA', 158, 135);
+      drawText(ctx, 'PAKENE', 158, 145);
+      drawText(ctx, '►', 147, 115 + this.menu.index * 10, '#e04838');
     } else {
       drawBox(0, 112, 152, 48);
       const n = this.me.moves.length, y0 = n > 3 ? 116 : n > 2 ? 117 : 121, dy = n > 3 ? 10 : n > 2 ? 12 : 16;
