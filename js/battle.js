@@ -69,7 +69,16 @@ const SPECIES = {
     base: { hp: 55, atk: 60, def: 50, spa: 85, spd: 65, spe: 75 },
     moves: ['psistrike', 'psychic', 'ironhead'],
     xpYield: 80, coins: 30, catchRate: 0.45, feetY: 0,
+    evolveAt: 20, evolveTo: 'psiduocipe',
     sprites: { front: 'psistiel', blink: 'psistielBlink', hurt: 'psistielHurt', attack: 'psistielAttack', back: 'psistielBack', backAttack: 'psistielBackAttack' },
+  },
+  // PSISTIEL evolves at level 20 (and learns PSYCHO CUT); also 5 % in HYUJAL METSÄ bushes
+  psiduocipe: {
+    name: 'PSIDUOCIPE',
+    base: { hp: 75, atk: 90, def: 70, spa: 110, spd: 85, spe: 95 },
+    moves: ['psychocut', 'psistrike', 'psychic', 'ironhead'],
+    xpYield: 165, coins: 55, catchRate: 0.25, feetY: 0,
+    sprites: { front: 'psiduocipe', blink: 'psiduocipeBlink', hurt: 'psiduocipeHurt', attack: 'psiduocipeAttack', back: 'psiduocipeBack', backAttack: 'psiduocipeBackAttack' },
   },
   // SAARIMERI fishing
   algish: {
@@ -172,6 +181,7 @@ const MOVES = {
   flametornado: { id: 'flametornado', name: 'FLAME TORNADO', power: 100, acc: 90, pp: 5, special: true, burn: 0.3, anim: 'flametornado' },
   psistrike: { id: 'psistrike', name: 'PSI STRIKE', power: 100, acc: 100, pp: 10, special: true, anim: 'psistrike' },
   psychic: { id: 'psychic', name: 'PSYCHIC', power: 90, acc: 100, pp: 10, special: true, anim: 'psychic' },
+  psychocut: { id: 'psychocut', name: 'PSYCHO CUT', power: 70, acc: 100, pp: 20, special: false, highCrit: true, anim: 'psychocut' },
   crunch: { id: 'crunch', name: 'CRUNCH', power: 80, acc: 100, pp: 15, special: false, anim: 'crunch' },
   darkpulse: { id: 'darkpulse', name: 'DARK PULSE', power: 80, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'darkpulse' },
   icecreamthrow: { id: 'icecreamthrow', name: 'ICE CREAM THROW', power: 65, acc: 95, pp: 15, special: true, slowChance: 0.3, anim: 'icecream' },
@@ -222,7 +232,7 @@ function calcDamage(att, def, move) {
   const A = move.special ? att.spa : att.atk * (att.status === 'brn' ? 0.5 : 1);   // burn halves physical attacks
   const D = move.special ? def.spd : def.def;
   let dmg = Math.floor(Math.floor(Math.floor(2 * att.level / 5 + 2) * movePower(move, att, def) * A / D) / 50) + 2;
-  const crit = Math.random() < 1 / 16;
+  const crit = Math.random() < (move.highCrit ? 1 / 8 : 1 / 16);   // PSYCHO CUT crits twice as often
   if (crit) dmg = Math.floor(dmg * 1.5);
   dmg = Math.max(1, Math.floor(dmg * (0.85 + Math.random() * 0.15)));
   return { dmg, crit };
@@ -636,6 +646,7 @@ const battle = {
     else if (move.anim === 'flametornado') yield* this.animFlameTornado(av, dv);
     else if (move.anim === 'psistrike') yield* this.animPsiStrike(av, dv);
     else if (move.anim === 'psychic') yield* this.animPsychic(av, dv);
+    else if (move.anim === 'psychocut') yield* this.animPsychoCut(av, dv);
     else if (move.anim === 'crunch') yield* this.animCrunch(av, dv, mine ? 1 : -1);
     else if (move.anim === 'darkpulse') yield* this.animDarkPulse(av, dv);
     else if (move.anim === 'icecream') yield* this.animIceCream(av, dv);
@@ -852,6 +863,41 @@ const battle = {
     this.parts = null;
     av.pose = 'idle';
     this.shake = 6;
+    yield* wait(6);
+  },
+
+  // PSYCHO CUT: the sky turns violet and two glowing pink crescent blades slice across the target
+  *animPsychoCut(av, dv) {
+    av.pose = 'attack';
+    this.tintRGB = '170,60,190';
+    yield* tween(6, k => { this.tint = 0.25 * k; });
+    const cx = dv.x + 32, cy = dv.y + 34;
+    for (const flip of [1, -1]) {
+      const rot = flip > 0 ? -0.7 : Math.PI + 0.7;
+      for (let i = 0; i < 16; i++) {
+        const k = i / 15;
+        const ox = (k - 0.5) * 70 * flip, oy = (k - 0.5) * 36;
+        this.parts = [];
+        for (let tr = 0; tr < 3; tr++) {   // the blade and two fading copies behind it
+          const bx = cx + ox - tr * 7 * flip, by = cy + oy - tr * 3.6;
+          for (let a = -1.2; a <= 1.2; a += 0.1) {
+            const R = 15 - tr * 2, w = Math.cos(a) * 3;
+            for (let t = 0; t <= w; t += 1.5) {
+              this.parts.push({
+                x: bx + Math.cos(a + rot) * (R - t), y: by + Math.sin(a + rot) * (R - t) * 0.9,
+                c: tr ? (tr === 1 ? '#e9b9ef' : '#c78bff') : t < 1 ? '#ffffff' : '#ff9cf2', s: tr ? 1 : 2,
+              });
+            }
+          }
+        }
+        if (i === 8) { this.addFx('hit', cx + rnd(-4, 4), cy + rnd(-4, 4), [0, 0, 1, 1, 1]); this.shake = 6; this.flash = 2; }
+        yield;
+      }
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    yield* tween(6, k => { this.tint = 0.25 * (1 - k); });
+    this.tint = 0; this.tintRGB = null;
     yield* wait(6);
   },
 
