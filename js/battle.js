@@ -232,9 +232,17 @@ const battle = {
       const choice = yield* this.chooseMain();
       let myMove = null;
       if (choice === 1) {
-        if (game.balls <= 0) { yield* textBox.say(`Sinulla ei ole yhtään ${BALL_NAME}A! Osta niitä ${CENTER_NAME}sta.`); continue; }
+        if (game.balls + game.greatBalls <= 0) { yield* textBox.say(`Sinulla ei ole yhtään palloa! Osta niitä ${CENTER_NAME}sta tai rantakioskista.`); continue; }
         if (game.party.length >= 6) { yield* textBox.say('Tiimisi on täynnä (6 otusta)!'); continue; }
-        if (yield* this.throwBall()) { this.result = 'catch'; return; }
+        let great = game.balls <= 0;
+        if (game.balls > 0 && game.greatBalls > 0) {   // both kinds: let the player pick
+          textBox.show('Mikä pallo?', 0, 136);
+          const pick = yield* menuBox.choose([`PYYDYS X${game.balls}`, `GREAT X${game.greatBalls}`], 136, 112, 104);
+          textBox.hide();
+          if (pick < 0) continue;
+          great = pick === 1;
+        }
+        if (yield* this.throwBall(great)) { this.result = 'catch'; return; }
       } else if (choice === 2) {
         this.runAttempts++;
         if (Math.random() < 0.5 + 0.25 * this.runAttempts) {
@@ -314,12 +322,13 @@ const battle = {
   },
 
   // ----- catching -----
-  *throwBall() {
-    game.balls--;
+  // GREAT PALLO doubles the catch chance
+  *throwBall(great) {
+    if (great) game.greatBalls--; else game.balls--;
     const foe = this.foe, fv = this.foeV;
-    yield* textBox.say(`Heitit ${BALL_NAME}N!`, { auto: 4, keep: true });
+    yield* textBox.say(`Heitit ${great ? GREAT_NAME : BALL_NAME}N!`, { auto: 4, keep: true });
     const sx = 40, sy = 100, tx = fv.x + 32, ty = fv.y + 30;
-    this.thrown = { x: sx, y: sy, f: 0 };
+    this.thrown = { x: sx, y: sy, f: 0, img: great ? IMG.greatBall : IMG.ball };
     yield* tween(22, k => {
       this.thrown.x = sx + (tx - sx) * k;
       this.thrown.y = sy + (ty - sy) * k - Math.sin(k * Math.PI) * 40;
@@ -334,7 +343,7 @@ const battle = {
     yield* wait(16);
 
     const sp = SPECIES[foe.species];
-    let p = sp.catchRate * (1 - (2 / 3) * foe.hp / foe.maxHp) * (foe.status ? 1.5 : 1);
+    let p = sp.catchRate * (1 - (2 / 3) * foe.hp / foe.maxHp) * (foe.status ? 1.5 : 1) * (great ? 2 : 1);
     const caught = Math.random() < Math.min(1, p);
     const wobbles = caught ? 3 : rnd(0, 2);
     for (let i = 0; i < wobbles; i++) {
@@ -940,7 +949,7 @@ const battle = {
     if (this.menu.type === 'main') {
       drawBox(136, 112, 104, 48);
       drawText(ctx, 'TAISTELE', 158, 117);
-      drawText(ctx, 'PALLO', 158, 129); drawTextRight(ctx, 'X' + game.balls, 230, 129, '#586070');
+      drawText(ctx, 'PALLO', 158, 129); drawTextRight(ctx, 'X' + (game.balls + game.greatBalls), 230, 129, '#586070');
       drawText(ctx, 'PAKENE', 158, 141);
       drawText(ctx, '►', 147, 117 + this.menu.index * 12, '#e04838');
     } else {
@@ -1002,7 +1011,7 @@ const battle = {
     if (this.parts) {
       for (const p of this.parts) { ctx.fillStyle = p.c; ctx.fillRect(Math.round(p.x - p.s / 2), Math.round(p.y - p.s / 2), p.s, p.s); }
     }
-    if (this.thrown) drawFrame(IMG.ball, this.thrown.f, 16, 16, Math.round(this.thrown.x - 8), Math.round(this.thrown.y - 8));
+    if (this.thrown) drawFrame(this.thrown.img, this.thrown.f, 16, 16, Math.round(this.thrown.x - 8), Math.round(this.thrown.y - 8));
     for (const f of this.fx) drawFrame(f.img, f.frames[f.t], f.fw, f.fh, f.x, f.y, f.scale);
     if (this.evo) {
       const img = this.evo.white ? makeWhite(this.evo.key) : IMG[this.evo.key];
@@ -1012,6 +1021,7 @@ const battle = {
     this.drawInfo();
     textBox.draw();
     this.drawMenu();
+    menuBox.draw();
     if (this.flash > 0) { ctx.fillStyle = 'rgba(255,255,255,0.75)'; ctx.fillRect(0, 0, W, H); }
   },
 };

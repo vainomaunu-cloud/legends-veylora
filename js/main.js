@@ -5,6 +5,7 @@ const game = {
   party: [],            // the player's team (max 6), first one leads
   coins: 0,
   balls: 0,
+  greatBalls: 0,
   runner: new Runner(), // transitions
   fade: 0, wipe: 0, white: 0, t: 0,
 };

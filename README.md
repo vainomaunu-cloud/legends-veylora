@@ -35,6 +35,7 @@ Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuk
 | Nuolet / WASD | Liiku, valitse valikossa |
 | Z / Enter / Välilyönti | OK, lue kyltti, mene HOITOLAAN (oven edessä ylös päin) |
 | X / Esc | Takaisin valikosta |
+| F | Kalasta (seiso veden edessä ja katso veteen) |
 | M | Musiikki päälle/pois (valinta muistetaan) |
 
 ### Musiikki
@@ -60,13 +61,23 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
      - Kolikot ja pallot näkyvät vasemmassa yläkulmassa.
    - **Kyltti:** ohjeteksti.
    - Metsän alareunasta polku vie etelään **HYUJAL METSÄÄN**.
+   - HOITOLAN ohi itään kulkeva polku jatkuu metsän oikean reunan läpi **SAARIMERELLE**.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
    - Hohtava metsä: liilat puut, ruoho ja puskat, hohtavat siniset ja liilat sienet (pienet sienet ja isot, kiinteät sienet sykkivät) sekä leijuvat valopisteet.
    - Liiloista puskista voi tulla **SQUISHROOM** (20 %) tai **SHROOCID** (15 %) askelta kohden.
    - Täällä taistellessa taustakin on liila, ja taivaalla tuikkii sinisiä ja liiloja valoja.
    - Kun menet alueelle, sen nimi liukuu hetkeksi ruudun yläreunaan. Sama tapahtuu palatessa PUSKAMETSÄÄN.
    - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
-4. **Taistelu** (vuoropohjainen)
+4. **SAARIMERI** (30 × 20 ruutua)
+   - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
+   - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Otuksia ei vielä ole, joten mikään ei nappaa (kartan `fishing`-lista on tyhjä). Lisäämällä otuksia listaan kalastus alkaa käynnistää taisteluja.
+   - **RANTAKIOSKI:** mene tiskin eteen ja paina Z. Kioskista saa:
+     - PYYDYSPALLO, 50 kolikkoa.
+     - GREAT PALLO, 75 kolikkoa (`GREAT_PRICE`). Nappaa **kaksi kertaa** paremmin.
+   - Puskia ei ole, eikä otuksia tule vastaan.
+   - Rannan vasempaan reunaan kulkeva hiekkapolku vie takaisin PUSKAMETSÄÄN.
+   - Jokaisen alueen uloskäynnillä on pieni vilkkuva nuoli, joka osoittaa poistumissuuntaan.
+5. **Taistelu** (vuoropohjainen)
    - Valikko: TAISTELE / PALLO / PAKENE.
    - Nopeampi otus hyökkää ensin. Tasatilanteessa järjestys arvotaan.
    - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10.
@@ -75,7 +86,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 
 ## Nappaaminen
 
-- Valitse taistelussa PALLO. Pallo lentää villin otuksen luo, otus imeytyy palloon, ja pallo heiluu.
+- Valitse taistelussa PALLO. Jos sinulla on sekä PYYDYSPALLOJA että GREAT PALLOJA, peli kysyy, kumpaa heität. Pallo lentää villin otuksen luo, otus imeytyy palloon, ja pallo heiluu.
+- GREAT PALLO kertoo nappausmahdollisuuden kahdella.
 - Kolme heilahdusta = napattu, ja otus liittyy tiimiin (enintään 6).
 - Todennäköisyys = lajin nappausvaikeus · (1 − ⅔ · HP / max HP), ja halvaantuneella ×1,5. Heikennä otus ensin!
 - Jos otus karkaa, vihollinen saa vuoron.
@@ -140,6 +152,9 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/slash.png` | 32×32 | AIR SLASH -sirppi |
 | `sprites/electroball.png` | 32×16 | ELECTROBALL-pallo, 2 kuvaa 16×16 |
 | `sprites/ball.png` | 48×16 | PYYDYSPALLO: pysty, kallistus vasemmalle, kallistus oikealle (16×16) |
+| `sprites/great_ball.png` | 48×16 | GREAT PALLO: vaaleansininen, kultainen raita, samat 3 asentoa |
+| `sprites/tiles_sea.png` | 272×16 | SAARIMEREN ruudut: 0–1 saaren ruoho, 2 hiekka, 3–4 simpukat ja meritähti (animaatio), 9 kyltti, 11–12 palmut (läpinäkyvät), 13–14 vesi (animaatio), 15 silta vasen–oikea, 16 silta ylös–alas |
+| `sprites/kiosk.png` | 48×32 | RANTAKIOSKI (3×2 ruutua): raidallinen markiisi, hyllyillä palloja |
 | `sprites/center.png` | 48×48 | HOITOLA-rakennus (3×3 ruutua) |
 | `sprites/player.png` | 48×64 | Pelaaja: 3 saraketta (seisoo, askel A, askel B) × 4 riviä (alas, ylös, vasen, oikea), 16×16/kuva |
 | `sprites/trainer_back.png` | 32×32 | Pelaaja selkä päin taistelun alussa |
@@ -175,6 +190,7 @@ Kartan muuttaminen: muokkaa kartan `rows`-taulukkoa `MAPS`-oliossa tiedostossa `
 - `T` puu, `.` ruoho, `,` ruoho 2, `=` polku, `*` kukat / pienet sienet, `B` puska, `S` kyltti
 - `H` HOITOLA (3×3), `D` HOITOLAN ovi, `P` aloituspaikka
 - `M` iso hohtava sieni
+- `~` vesi (kalastus), `#` silta vasemmalta oikealle, `|` silta ylhäältä alas, `Q` RANTAKIOSKI (3×2), `R` kioskin tiski
 - `X` uloskäynti toiseen karttaan. Kohde määritellään kartan `warps`-kohdassa, esim. `'12,20': { to: 'hyujal', x: 12, y: 2, dir: 'down' }`.
 
 Uuden alueen saa lisäämällä `MAPS`-olioon uuden kartan (nimi, ruutukuva, rivit, `encounters`, `warps`, kyltin teksti).

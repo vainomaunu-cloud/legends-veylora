@@ -21,7 +21,7 @@ const MAPS = {
       'TT..*.....========........TT',
       'TT........=.HHH..=..*.....TT',
       'TT....S====.HHH..=........TT',
-      'TT...,....=.HDH..======...TT',
+      'TT...,....=.HDH..==========X',
       'TT..*.....=......=....,...TT',
       'TT........==P=====........TT',
       'TT..T.......=......T......TT',
@@ -40,7 +40,10 @@ const MAPS = {
       { species: 'golbug', chance: 0.08 },
       { species: 'zubug', chance: 0.15 },
     ],
-    warps: { '12,20': { to: 'hyujal', x: 12, y: 2, dir: 'down' } },
+    warps: {
+      '12,20': { to: 'hyujal', x: 12, y: 2, dir: 'down' },
+      '27,10': { to: 'sea', x: 1, y: 10, dir: 'right' },
+    },
     sign: 'PUSKAMETSÄ\nPuskissa piileskelee AMPERITEja, ZUBUGeja, GOLBUGeja ja harvinaisia AMPEREEMeja. ' + CENTER_NAME + ' parantaa ja myy palloja. Etelään: HYUJAL METSÄ.',
   },
   hyujal: {
@@ -73,6 +76,41 @@ const MAPS = {
     warps: { '12,0': { to: 'forest', x: 12, y: 18, dir: 'up' } },
     sign: 'HYUJAL METSÄ\nPuut ja sienet hohtavat... Liilojen puskien seassa piileskelee SQUISHROOMeja ja myrkyllisiä SHROOCIDeja.',
   },
+  // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
+  // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
+  sea: {
+    name: 'SAARIMERI',
+    tiles: 'tilesSea', rustle: 'bushRustle', shade: '#2f7cc4', music: 'overworld', treeGround: 2, exitTile: 17,
+    rows: [
+      '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+      '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+      '======~~~~~~~~~~~~~~~~~~~~~~~~',
+      '=T==T=~~~~======~~~~=======~~~',
+      '======~~~~=..T.=~~~~=.*..T=~~~',
+      '======####=....=####=...,.=~~~',
+      '=QQQ==~~~~=.,..=~~~~=.T...=~~~',
+      '=QRQ==~~~~======~~~~=======~~~',
+      '======~~~~~~~|~~~~~~=======~~~',
+      '====S=~~~~~~~|~~~~~~~~~~~~~~~~',
+      'X:::==~~~~~~~|~~~~~~~~~~~~~~~~',
+      '======~~~~~~~|~~~~~~~~~~~~~~~~',
+      '=T====~~~~~~~=======~~~~~~~~~~',
+      '======~~~~~~~=.*.T.=~~~~~~~~~~',
+      '==*===~~~~~~~=..S..=~~~~~~~~~~',
+      'T====T~~~~~~~=,..T.=~~~~~~~~~~',
+      '======~~~~~~~=======~~~~~~~~~~',
+      '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+      '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+      '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
+    ],
+    encounters: [],   // no creatures here yet
+    fishing: [],      // nothing bites yet
+    warps: { '0,10': { to: 'forest', x: 26, y: 10, dir: 'left' } },
+    signs: {
+      '4,9': 'SAARIMERI\nRantakioskista saa palloja. Kalasta menemällä veden eteen ja painamalla F. Polku vasemmalle vie PUSKAMETSÄÄN.',
+      '16,14': 'PIKKUSAARI\nVesi on tyyntä... mutta mikään ei vielä nappaa.',
+    },
+  },
 };
 
 for (const [id, m] of Object.entries(MAPS)) {
@@ -85,12 +123,16 @@ for (const [id, m] of Object.entries(MAPS)) {
     if (ch === 'P') m.spawn = { x, y };
     if (ch === 'D') m.door = { x, y };
     if (ch === 'H') m.center = { x, y };   // ends at the top-left H
+    if (ch === 'Q') m.kiosk = { x, y };    // ends at the top-left Q
   }
 }
 
-const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0 };
+const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17 };
+const WATER = '~';
+const GREAT_NAME = 'GREAT PALLO';
+const GREAT_PRICE = 75;
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
-const SOLID = new Set(['T', 'S', 'H', 'D', 'M']);
+const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
 const WALK_SPEED = 1.5;        // pixels per frame (16 px tile = about 11 frames)
 const TREE_LIFT = 6;           // trees are drawn this many px up so the rows overlap
@@ -153,6 +195,7 @@ const overworld = {
   enterMap(id, x, y, dir) {
     this.map = MAPS[id];
     this.rustles = [];
+    this.fishing = null;
     Object.assign(this.player, { tx: x, ty: y, dir, moving: false, offset: 0, justWalked: false });
     this.banner = { text: this.map.name, t: 0 };
   },
@@ -184,6 +227,7 @@ const overworld = {
     }
 
     if (take('a')) { this.interact(); return; }
+    if (take('f')) { this.runner.run(this.fish()); return; }
 
     const d = heldDir();
     if (!d) { p.justWalked = false; p.turnDelay = 0; return; }
@@ -214,9 +258,62 @@ const overworld = {
 
   interact() {
     const p = this.player;
-    const tile = this.tileAt(p.tx + DIRS[p.dir][0], p.ty + DIRS[p.dir][1]);
-    if (tile === 'S') this.say(this.map.sign);
+    const fx = p.tx + DIRS[p.dir][0], fy = p.ty + DIRS[p.dir][1];
+    const tile = this.tileAt(fx, fy);
+    if (tile === 'S') this.say((this.map.signs && this.map.signs[`${fx},${fy}`]) || this.map.sign);
     if (tile === 'D') this.runner.run(this.centerVisit());
+    if (tile === 'R') this.runner.run(this.kioskVisit());
+  },
+
+  // ----- fishing: face the water and press F -----
+  *fish() {
+    const p = this.player;
+    const fx = p.tx + DIRS[p.dir][0], fy = p.ty + DIRS[p.dir][1];
+    if (this.tileAt(fx, fy) !== WATER) {
+      yield* textBox.say('Kalastaaksesi mene veden eteen ja paina F.');
+      return;
+    }
+    this.fishing = { x: fx, y: fy, t: 0, bite: false };
+    yield* textBox.say('Heitit siiman veteen...', { auto: 20 });
+    const waitFrames = rnd(100, 200);
+    for (let i = 0; i < waitFrames; i++) { this.fishing.t++; yield; }
+    const species = rollEncounter(this.map.fishing || []);
+    if (species) {
+      this.fishing.bite = true;
+      yield* textBox.say('Jokin nappasi!', { auto: 20 });
+      this.fishing = null;
+      startEncounter(species);
+      return;
+    }
+    yield* textBox.say('Mikään ei näykkinyt...');
+    this.fishing = null;
+  },
+
+  // ----- beach kiosk shop -----
+  *kioskVisit() {
+    this.showWallet = true;
+    yield* textBox.say('Tervetuloa RANTAKIOSKILLE!');
+    while (true) {
+      textBox.show('Mitä saisi olla?');
+      const c = yield* menuBox.choose([`${BALL_NAME} ${BALL_PRICE}`, `${GREAT_NAME} ${GREAT_PRICE}`, 'POISTU'], 122, 54, 114);
+      if (c !== 0 && c !== 1) break;
+      const great = c === 1;
+      const name = great ? GREAT_NAME : BALL_NAME, price = great ? GREAT_PRICE : BALL_PRICE;
+      if (game.coins < price) {
+        yield* textBox.say(`${name} maksaa ${price} kolikkoa. Sinulla on vain ${game.coins}.`);
+        continue;
+      }
+      textBox.show(`Ostatko ${name}N ${price} kolikolla?` + (great ? ' Se nappaa kaksi kertaa paremmin!' : ''));
+      const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
+      if (yes === 0) {
+        game.coins -= price;
+        if (great) game.greatBalls++; else game.balls++;
+        yield* textBox.say(`Ostit ${name}N!`);
+      }
+    }
+    textBox.hide();
+    yield* textBox.say('Kiitos ja hyviä kalastushetkiä!');
+    this.showWallet = false;
   },
 
   *centerVisit() {
@@ -276,7 +373,12 @@ const overworld = {
         const sx = tx * TILE - camX, sy = ty * TILE - camY;
         if (ch === 'T') {
           if (this.tileAt(tx, ty + 1) === 'T') { ctx.fillStyle = m.shade; ctx.fillRect(sx, sy, TILE, TILE); }
-          else drawFrame(tiles, 0, 16, 16, sx, sy);
+          else drawFrame(tiles, m.treeGround || 0, 16, 16, sx, sy);
+          continue;
+        }
+        if (ch === WATER) {
+          drawFrame(tiles, 13 + (Math.floor((this.t + (tx + ty) * 7) / 45) % 2), 16, 16, sx, sy);
+          this.drawFoam(tx, ty, sx, sy);
           continue;
         }
         const rustle = ch === 'B' && this.rustles.find(r => r.x === tx && r.y === ty);
@@ -284,6 +386,7 @@ const overworld = {
         let idx = TILE_INDEX[ch];
         if (ch === '*') idx = 3 + (Math.floor(this.t / 40) % 2);
         if (ch === 'M') idx = 7 + (Math.floor((this.t + tx * 13) / 36) % 2);
+        if (ch === 'X' && m.exitTile) idx = m.exitTile;
         drawFrame(tiles, idx, 16, 16, sx, sy);
       }
     }
@@ -298,19 +401,75 @@ const overworld = {
         drawFrame(tiles, v, 16, 16, x - camX, ty * TILE - TREE_LIFT - camY);
       }
       if (m.center && ty === m.center.y + 2) ctx.drawImage(IMG.center, m.center.x * TILE - camX, m.center.y * TILE - camY);
+      if (m.kiosk && ty === m.kiosk.y + 1) ctx.drawImage(IMG.kiosk, m.kiosk.x * TILE - camX, m.kiosk.y * TILE - camY);
       if (ty === playerRow) this.drawPlayer(px - camX, py - camY, camX, camY);
     }
+    if (this.fishing) this.drawFishing(px - camX, py - camY, camX, camY);
+    this.drawExitArrows(camX, camY);
 
     if (m.glow) this.drawGlow();
 
     if (this.banner) this.drawBanner();
     if (this.showWallet) {
-      drawBox(4, 4, 92, 30);
+      drawBox(4, 4, 92, 42);
       drawText(ctx, 'KOLIKOT', 10, 9); drawTextRight(ctx, String(game.coins), 90, 9);
       drawText(ctx, 'PALLOT', 10, 21); drawTextRight(ctx, String(game.balls), 90, 21);
+      drawText(ctx, 'GREAT', 10, 33, '#2f7acb'); drawTextRight(ctx, String(game.greatBalls), 90, 33);
     }
     textBox.draw();
     menuBox.draw();
+  },
+
+  // small bouncing arrows on every exit, pointing out of the map, so the way onward is easy to see
+  drawExitArrows(camX, camY) {
+    const m = this.map, bounce = Math.floor(this.t / 15) % 2;
+    for (const key of Object.keys(m.warps)) {
+      const [x, y] = key.split(',').map(Number);
+      const dir = x === 0 ? 'left' : x === m.w - 1 ? 'right' : y === 0 ? 'up' : 'down';
+      const [dx, dy] = DIRS[dir];
+      const cx = x * TILE - camX + 8 + dx * bounce * 2, cy = y * TILE - camY + 8 + dy * bounce * 2;
+      // arrow: a 7px wide triangle pointing in dir, dark outline then white fill
+      for (const [col, grow] of [['#283040', 1], ['#ffffff', 0]]) {
+        ctx.fillStyle = col;
+        for (let i = 0; i <= 3; i++) {
+          const half = 3 - i + grow;
+          const along = i - 1;   // distance from the arrow's back towards its tip
+          if (dx) ctx.fillRect(cx + dx * along, cy - half, 1, half * 2 + 1);
+          else ctx.fillRect(cx - half, cy + dy * along, half * 2 + 1, 1);
+        }
+      }
+    }
+  },
+
+  // light foam where water meets land (bridges count as water)
+  drawFoam(tx, ty, sx, sy) {
+    const m = this.map, t = this.t;
+    const land = (x, y) => x >= 0 && y >= 0 && x < m.w && y < m.h && !'~#|'.includes(m.rows[y][x]);
+    const wave = Math.floor(t / 30) % 2;
+    ctx.fillStyle = '#d8f4ff';
+    if (land(tx, ty - 1)) for (let i = wave; i < 16; i += 3) ctx.fillRect(sx + i, sy, 2, 1);
+    if (land(tx, ty + 1)) for (let i = 1 - wave; i < 16; i += 3) ctx.fillRect(sx + i, sy + 15, 2, 1);
+    if (land(tx - 1, ty)) for (let i = wave; i < 16; i += 3) ctx.fillRect(sx, sy + i, 1, 2);
+    if (land(tx + 1, ty)) for (let i = 1 - wave; i < 16; i += 3) ctx.fillRect(sx + 15, sy + i, 1, 2);
+  },
+
+  // fishing line from the player's hand to a bobbing float on the water
+  drawFishing(psx, psy, camX, camY) {
+    const f = this.fishing, p = this.player;
+    const hand = { down: [11, 10], up: [4, 2], left: [2, 6], right: [13, 6] }[p.dir];
+    const hx = psx + hand[0], hy = psy - 4 + hand[1];
+    const bob = f.bite ? 3 : Math.round(Math.sin(f.t / 9) * 1.2);
+    const bx = f.x * TILE - camX + 8, by = f.y * TILE - camY + 8 + bob;
+    ctx.fillStyle = '#e8e8e8';
+    const n = Math.max(Math.abs(bx - hx), Math.abs(by - hy));
+    for (let i = 0; i <= n; i++) {
+      const k = i / n, sag = Math.sin(k * Math.PI) * 4;
+      ctx.fillRect(Math.round(hx + (bx - hx) * k), Math.round(hy + (by - hy) * k + sag), 1, 1);
+    }
+    // rings on the water and the red-white float
+    if (f.t % 60 < 30) { ctx.fillStyle = 'rgba(216,244,255,0.8)'; ctx.fillRect(bx - 4, by + 3, 9, 1); }
+    ctx.fillStyle = '#e04838'; ctx.fillRect(bx - 1, by - 2, 3, 2);
+    ctx.fillStyle = '#ffffff'; ctx.fillRect(bx - 1, by, 3, 2);
   },
 
   // floating glowing specks (HYUJAL METSÄ)

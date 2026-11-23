@@ -53,6 +53,9 @@ const SPRITES = {
   shroocidBackAttack: 'sprites/shroocid_back_attack.png',
   web: 'sprites/web.png',               // 32x32 STICKY WEB
   slash: 'sprites/slash.png',             // 32x32 AIR SLASH crescent
+  tilesSea: 'sprites/tiles_sea.png',      // SAARIMERI tiles (13-14 water, 15-16 bridges, 11-12 palms)
+  kiosk: 'sprites/kiosk.png',             // 48x32 beach kiosk
+  greatBall: 'sprites/great_ball.png',    // 3 frames 16x16 GREAT PALLO
   center: 'sprites/center.png',          // 48x48 healing center building (HOITOLA)
   ball: 'sprites/ball.png',               // 3 frames 16x16 catch ball (upright, tilt L, tilt R)
   moi: 'moi.png',                         // 32x32 AMPEREEM front (your original)
@@ -120,7 +123,7 @@ function drawFrame(img, i, fw, fh, x, y, scale = 1, cols = 0) {
 const KEYMAP = {
   ArrowUp: 'up', KeyW: 'up', ArrowDown: 'down', KeyS: 'down',
   ArrowLeft: 'left', KeyA: 'left', ArrowRight: 'right', KeyD: 'right',
-  KeyZ: 'a', Enter: 'a', Space: 'a', KeyX: 'b', Escape: 'b', Backspace: 'b',
+  KeyZ: 'a', Enter: 'a', Space: 'a', KeyX: 'b', Escape: 'b', Backspace: 'b', KeyF: 'f',
 };
 const held = {}, pressed = {};
 const dirStack = [];
