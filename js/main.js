@@ -14,14 +14,14 @@ function* flashScreen(times) {
   for (let i = 0; i < times; i++) { game.white = 1; yield* wait(4); game.white = 0; yield* wait(4); }
 }
 
-function startEncounter(species = 'amperite') {
+function startEncounter(species = 'amperite', from = 'bush') {
   game.locked = true;
   game.runner.run((function* () {
     music.play('battle');
     yield* flashScreen(3);
     yield* tween(24, k => { game.wipe = k; });
     const L = lead().level;
-    battle.start(species, Math.max(2, rnd(L - 2, L)));
+    battle.start(species, Math.max(2, rnd(L - 2, L)), from);
     game.view = 'battle';
     game.locked = false;
     yield* tween(16, k => { game.wipe = 1 - k; });

@@ -13,10 +13,14 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | GOLBUG | 2. vaihe (kehittyy tasolla 10) | `golbug.png` + `sprites/golbug_*.png` | AIR SLASH, BUG BUZZ, STICKY WEB | 8 % | 50 kolikkoa | vaikea (0,35) |
 | SQUISHROOM | ei kehity | `squishroom.png` + `sprites/squishroom_*.png` | MUD SHOT, FAIRY WIND, GIGA DRAIN | 20 % (vain HYUJAL METSÄ) | 30 kolikkoa, nappaamisesta myös 30 | keskitaso (0,5) |
 | SHROOCID | ei kehity | `shroocid.png` + `sprites/shroocid_*.png` | POISON JAB, IRON HEAD, SLUDGE WAVE | 15 % (vain HYUJAL METSÄ) | 20 kolikkoa, nappaamisesta myös 20 | keskitaso (0,5) |
+| PSISTIEL | ei kehity | `psistiel.png` + `sprites/psistiel_*.png` | PSI STRIKE, PSYCHIC, IRON HEAD | 10 % (vain HYUJAL METSÄ) | 30 kolikkoa | keskitaso (0,45) |
+| ALGISH | 1. vaihe | `algish.png` + `sprites/algish_*.png` | POISON JAB, SLEEP POWDER | kalastus 40 % (SAARIMERI) | 25 kolikkoa | helppo (0,7) |
+| SERPENALGE | 2. vaihe (kehittyy tasolla 12) | `serpenalge.png` + `sprites/serpenalge_*.png` | CRUNCH, FLAMETHROWER, POISON JAB, SLEEP POWDER | kalastus 10 % | 50 kolikkoa | vaikea (0,35) |
+| MOONORG | ei kehity | `moonorg.png` + `sprites/moonorg_*.png` | DARK PULSE, CRUNCH, POISON JAB | kalastus 15 % | 35 kolikkoa | keskitaso (0,45) |
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
-PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 35 % (SQUISHROOM 20 %, SHROOCID 15 %).
+PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 45 % (SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin.
 
 ### Kiiltävät muodot
 
@@ -84,13 +88,13 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - HOITOLAN ohi itään kulkeva polku jatkuu metsän oikean reunan läpi **SAARIMERELLE**.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
    - Hohtava metsä: liilat puut, ruoho ja puskat, hohtavat siniset ja liilat sienet (pienet sienet ja isot, kiinteät sienet sykkivät) sekä leijuvat valopisteet.
-   - Liiloista puskista voi tulla **SQUISHROOM** (20 %) tai **SHROOCID** (15 %) askelta kohden.
+   - Liiloista puskista voi tulla **SQUISHROOM** (20 %), **SHROOCID** (15 %) tai **PSISTIEL** (10 %) askelta kohden.
    - Täällä taistellessa taustakin on liila, ja taivaalla tuikkii sinisiä ja liiloja valoja.
    - Kun menet alueelle, sen nimi liukuu hetkeksi ruudun yläreunaan. Sama tapahtuu palatessa PUSKAMETSÄÄN.
    - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
 4. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
-   - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Otuksia ei vielä ole, joten mikään ei nappaa (kartan `fishing`-lista on tyhjä). Lisäämällä otuksia listaan kalastus alkaa käynnistää taisteluja.
+   - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Sitten joko jokin nappaa ja otus **nousee vedestä** taisteluun (ALGISH, MOONORG tai SERPENALGE), tai "Mikään ei näykkinyt". Merellä taistellaan meren taustalla (vesi ja hiekkasärkät). Lista on kartan `fishing`-kohdassa.
    - **RANTAKIOSKI:** mene tiskin eteen ja paina Z. Kioskista saa:
      - PYYDYSPALLO, 50 kolikkoa.
      - GREAT PALLO, 75 kolikkoa (`GREAT_PRICE`). Nappaa **kaksi kertaa** paremmin.
@@ -129,6 +133,11 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 | POISON JAB | 80 | 100 % | 20 | Fyysinen hyökkäys. 30 % mahdollisuus myrkyttää |
 | IRON HEAD | 80 | 100 % | 15 | Fyysinen hyökkäys, käyttäjä hohtaa metallinvalkoisena. 30 %: kohde säpsähtää ja menettää vuoronsa, jos se ei ole vielä ehtinyt liikkua |
 | SLUDGE WAVE | 95 | 100 % | 10 | Erikoishyökkäys, myrkkyaalto. 10 % mahdollisuus myrkyttää |
+| PSI STRIKE | 100 | 100 % | 10 | Erikoishyökkäys. Ruutu muuttuu violetiksi ja valorenkaat iskeytyvät kohteeseen |
+| PSYCHIC | 90 | 100 % | 10 | Erikoishyökkäys. Aallot sykkivät kohteesta, ja kohde huojuu ilmassa |
+| CRUNCH | 80 | 100 % | 15 | Fyysinen hyökkäys. Kaksi hammasriviä napsahtaa kiinni |
+| DARK PULSE | 80 | 100 % | 15 | Erikoishyökkäys, tummat renkaat. 20 %: kohde säpsähtää |
+| SLEEP POWDER | – | 75 % | 15 | Ei vahinkoa. Unijauhe nukuttaa kohteen 1–3 vuoroksi |
 | FIRE SPIN | 35 | 85 % | 15 | Erikoishyökkäys. Tulirengas pyörii kohteen ympärillä, ja kohde jää tulipyörteen vangiksi 4–5 vuoroksi: menettää vuoron lopussa 1/8 maksimi-HP:sta |
 | FLAMETHROWER | 90 | 100 % | 15 | Erikoishyökkäys, paksu tulisuihku. 10 % mahdollisuus palovammaan |
 | FLAME TORNADO | 100 | 90 % | 5 | Erikoishyökkäys (oma liike, ei oikeaa esikuvaa). Ruutu hehkuu punaisena ja kohteen nielaisee pyörivä tulipatsas. 30 % mahdollisuus palovammaan |
@@ -136,6 +145,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 - **Vahinko** = ((2·taso/5 + 2) · voima · hyökkäys / puolustus) / 50 + 2, kerrottuna satunnaisluvulla 0,85–1,0.
   - Kriittinen osuma: todennäköisyys 1/16, vahinko ×1,5.
 - **Halvaantunut** (PAR) otus on puolet hitaampi, ja jää 25 %:n todennäköisyydellä vuorostaan.
+- **Uni** (SLP): nukkuva otus ei pysty toimimaan 1–3 vuoroon (Z-kirjaimet leijuvat), ja sitten se herää. Jos kohteella on jo jokin tila, uni ei tehoa.
 - **Palovamma** (BRN): otus menettää jokaisen vuoron lopussa 1/16 maksimi-HP:staan, ja sen fyysiset hyökkäykset tekevät puolet vähemmän vahinkoa. Pysyy, kunnes otus parannetaan HOITOLASSA.
 - **Myrkytetty** (PSN) otus menettää jokaisen vuoron lopussa 1/8 maksimi-HP:staan. Myrkky jää taistelun jälkeen voimaan, kunnes otus parannetaan HOITOLASSA. Tila näkyy merkkinä tietolaatikon vieressä.
 - Tilasta kärsivä villi otus on helpompi napata (×1,5).
@@ -163,6 +173,8 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `squishroom.png` | 32×32 | Sinun spritesi = SQUISHROOM edestä |
 | `sprites/squishroom_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | SQUISHROOM: räpytys, osuma (siristys), hyökkäys (vihainen kulma, hehkuva hattu, itiöt), takaa (peilattu, kasvot ja vatsa piilossa) |
 | `shroocid.png` | 32×32 | Sinun spritesi = SHROOCID edestä |
+| `psistiel.png`, `algish.png`, `serpenalge.png`, `moonorg.png` (+ `kiiltävä …`) | 32×32 | Sinun spritesi uusille otuksille ja niiden kiiltäville muodoille |
+| `sprites/<laji>_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | Animaatiokuvat (`<laji>` = psistiel, algish, serpenalge, moonorg). PSISTIEL, ALGISH ja SERPENALGE on peilattu selkäkuvissa (kasvot piilossa). MOONORG on AMPERITEN tapaan 3/4-kuvakulmassa, joten sitä ei peilattu: selästä näkyvät silmien takaosat, eivät kieli, suu tai vaalea vatsa |
 | `sprites/shroocid_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | SHROOCID: räpytys, osuma (> <), hyökkäys (vihaiset hehkuvat silmät, myrkkypisarat), takaa (silmät pois, raita jalassa) |
 | `duckonda.png` | 32×32 | Sinun spritesi = DUCKONDA edestä (sivuprofiili, nokka vasemmalle) |
 | `sprites/duckonda_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | DUCKONDA: räpytys, osuma (X-silmä), hyökkäys (liekit roihuavat kirkkaina, kipinöitä), takaa (peilattu niin, että katsoo vastustajaa, silmä piilossa) |

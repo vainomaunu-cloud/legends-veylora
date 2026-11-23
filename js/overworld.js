@@ -72,9 +72,10 @@ const MAPS = {
     encounters: [
       { species: 'squishroom', chance: 0.2 },
       { species: 'shroocid', chance: 0.15 },
+      { species: 'psistiel', chance: 0.10 },
     ],
     warps: { '12,0': { to: 'forest', x: 12, y: 18, dir: 'up' } },
-    sign: 'HYUJAL METSÄ\nPuut ja sienet hohtavat... Liilojen puskien seassa piileskelee SQUISHROOMeja ja myrkyllisiä SHROOCIDeja.',
+    sign: 'HYUJAL METSÄ\nPuut ja sienet hohtavat... Liilojen puskien seassa piileskelee SQUISHROOMeja, myrkyllisiä SHROOCIDeja ja salaperäisiä PSISTIELejä.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
@@ -104,11 +105,15 @@ const MAPS = {
       '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
     ],
     encounters: [],   // no creatures here yet
-    fishing: [],      // nothing bites yet
+    fishing: [        // chance per cast
+      { species: 'algish', chance: 0.40 },
+      { species: 'moonorg', chance: 0.15 },
+      { species: 'serpenalge', chance: 0.10 },
+    ],
     warps: { '0,10': { to: 'forest', x: 26, y: 10, dir: 'left' } },
     signs: {
       '4,9': 'SAARIMERI\nRantakioskista saa palloja. Kalasta menemällä veden eteen ja painamalla F. Polku vasemmalle vie PUSKAMETSÄÄN.',
-      '16,14': 'PIKKUSAARI\nVesi on tyyntä... mutta mikään ei vielä nappaa.',
+      '16,14': 'PIKKUSAARI\nVedessä uiskentelee ALGISHeja, MOONORGeja ja harvinaisia SERPENALGEja. Kalasta F:llä!',
     },
   },
 };
@@ -317,7 +322,7 @@ const overworld = {
       this.fishing.bite = true;
       yield* textBox.say('Jokin nappasi!', { auto: 20 });
       this.fishing = null;
-      startEncounter(species);
+      startEncounter(species, 'fish');
       return;
     }
     yield* textBox.say('Mikään ei näykkinyt...');

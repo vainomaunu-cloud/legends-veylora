@@ -63,6 +63,38 @@ const SPECIES = {
     feetY: 6,
     sprites: { front: 'shroocid', blink: 'shroocidBlink', hurt: 'shroocidHurt', attack: 'shroocidAttack', back: 'shroocidBack', backAttack: 'shroocidBackAttack' },
   },
+  // HYUJAL METSÄ bushes
+  psistiel: {
+    name: 'PSISTIEL',
+    base: { hp: 55, atk: 60, def: 50, spa: 85, spd: 65, spe: 75 },
+    moves: ['psistrike', 'psychic', 'ironhead'],
+    xpYield: 80, coins: 30, catchRate: 0.45, feetY: 0,
+    sprites: { front: 'psistiel', blink: 'psistielBlink', hurt: 'psistielHurt', attack: 'psistielAttack', back: 'psistielBack', backAttack: 'psistielBackAttack' },
+  },
+  // SAARIMERI fishing
+  algish: {
+    name: 'ALGISH',
+    base: { hp: 45, atk: 50, def: 45, spa: 40, spd: 45, spe: 55 },
+    moves: ['poisonjab', 'sleeppowder'],
+    xpYield: 55, coins: 25, catchRate: 0.7,
+    evolveAt: 12, evolveTo: 'serpenalge',
+    feetY: 4,
+    sprites: { front: 'algish', blink: 'algishBlink', hurt: 'algishHurt', attack: 'algishAttack', back: 'algishBack', backAttack: 'algishBackAttack' },
+  },
+  serpenalge: {
+    name: 'SERPENALGE',
+    base: { hp: 70, atk: 80, def: 60, spa: 70, spd: 60, spe: 70 },
+    moves: ['crunch', 'flamethrower', 'poisonjab', 'sleeppowder'],
+    xpYield: 130, coins: 50, catchRate: 0.35, feetY: -2,
+    sprites: { front: 'serpenalge', blink: 'serpenalgeBlink', hurt: 'serpenalgeHurt', attack: 'serpenalgeAttack', back: 'serpenalgeBack', backAttack: 'serpenalgeBackAttack' },
+  },
+  moonorg: {
+    name: 'MOONORG',
+    base: { hp: 60, atk: 70, def: 55, spa: 75, spd: 55, spe: 60 },
+    moves: ['darkpulse', 'crunch', 'poisonjab'],
+    xpYield: 90, coins: 35, catchRate: 0.45, feetY: -2,
+    sprites: { front: 'moonorg', blink: 'moonorgBlink', hurt: 'moonorgHurt', attack: 'moonorgAttack', back: 'moonorgBack', backAttack: 'moonorgBackAttack' },
+  },
   // the starter: never appears in bushes, 1 in 10 is shiny
   duckonda: {
     name: 'DUCKONDA',
@@ -93,6 +125,11 @@ const MOVES = {
   firespin: { id: 'firespin', name: 'FIRE SPIN', power: 35, acc: 85, pp: 15, special: true, trap: true, anim: 'firespin' },
   flamethrower: { id: 'flamethrower', name: 'FLAMETHROWER', power: 90, acc: 100, pp: 15, special: true, burn: 0.1, anim: 'flamethrower' },
   flametornado: { id: 'flametornado', name: 'FLAME TORNADO', power: 100, acc: 90, pp: 5, special: true, burn: 0.3, anim: 'flametornado' },
+  psistrike: { id: 'psistrike', name: 'PSI STRIKE', power: 100, acc: 100, pp: 10, special: true, anim: 'psistrike' },
+  psychic: { id: 'psychic', name: 'PSYCHIC', power: 90, acc: 100, pp: 10, special: true, anim: 'psychic' },
+  crunch: { id: 'crunch', name: 'CRUNCH', power: 80, acc: 100, pp: 15, special: false, anim: 'crunch' },
+  darkpulse: { id: 'darkpulse', name: 'DARK PULSE', power: 80, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'darkpulse' },
+  sleeppowder: { id: 'sleeppowder', name: 'SLEEP POWDER', power: 0, powerText: '-', acc: 75, pp: 15, special: true, sleep: true, anim: 'powder' },
 };
 // used automatically when every move is out of PP
 const STRUGGLE = { name: 'RIMPUILU', power: 35, acc: 100, pp: 0, left: 0, special: false, anim: 'tackle', struggle: true };
@@ -152,6 +189,7 @@ const speedOf =m => m.spe * (m.status === 'par' ? 0.5 : 1) * 2 / (2 - (m.speStag
 // battle background colours per map
 const BATTLE_BG = {
   forest: { sky: '#e4f2d0', far: '#b2dc98', near: '#95ca7c', ground: '#bfe39a', speck: '#a9d684', platDark: '#7fb85a', plat: '#98cf6c' },
+  sea: { sky: '#d6efff', far: '#a6d6f2', near: '#86c4ec', ground: '#62b2e8', speck: '#8ccaf2', platDark: '#cbaa5e', plat: '#f2db9a' },
   hyujal: { sky: '#d8c6f2', far: '#b08ee0', near: '#9470d0', ground: '#b39ae2', speck: '#9f82d6', platDark: '#7a52b8', plat: '#9a78da', glow: true },
 };
 const FOE_POS = { x: 150, y: 4 };
@@ -166,12 +204,13 @@ const battle = {
   t: 0, shake: 0, flash: 0, dark: 0,
   fx: [], bolt: null, menu: null, result: null,
 
-  start(foeSpecies, foeLevel) {
+  start(foeSpecies, foeLevel, from = 'bush') {
+    this.from = from;
     this.me = game.party.find(m => m.hp > 0);
     this.foe = makeMon(foeSpecies, foeLevel);
     this.foe.shiny = Math.random() < SHINY_CHANCE;
     for (const m of game.party) { m.speStage = 0; m.flinch = false; m.trapTurns = 0; }
-    this.tint = 0;
+    this.tint = 0; this.tintRGB = null;
     this.thrown = null; this.parts = null; this.waves = null; this.webFx = null; this.slashes = null;
     this.evo = null;
     this.meV = newVisual(ME_POS);
@@ -221,7 +260,7 @@ const battle = {
         yield* wait(6);
       }
     }
-    yield* textBox.say(`Villi ${foe.name} hyppäsi esiin pusikosta!`);
+    yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
     if (foe.shiny) yield* textBox.say(`Vau! Se on KIILTÄVÄ ${foe.name}! Sellaisen näkee vain kerran sadasta.`);
     yield* tween(18, k => { this.trainer.x = Math.round(36 - 110 * k); });
     this.trainer.show = false;
@@ -420,6 +459,15 @@ const battle = {
     const av = mine ? this.meV : this.foeV, dv = mine ? this.foeV : this.meV;
     const who = mine ? att.name : `Villi ${att.name}`;
     const target = mine ? `Villi ${def.name}` : def.name;
+    if (att.status === 'slp') {   // asleep: 1-3 turns
+      if (--att.sleepTurns > 0) {
+        yield* this.sleepFx(av);
+        yield* textBox.say(`${who} nukkuu syvässä unessa.`);
+        return;
+      }
+      att.status = null;
+      yield* textBox.say(`${who} heräsi!`);
+    }
     if (att.status === 'par' && Math.random() < 0.25) {
       yield* textBox.say(`${who} on halvaantunut! Se ei pysty liikkumaan!`);
       return;
@@ -433,6 +481,18 @@ const battle = {
     yield* textBox.say(`${who} käytti ${move.name}!`, { auto: 14, keep: true });
     if (Math.random() * 100 >= move.acc) {
       yield* textBox.say('Mutta se meni ohi!');
+      return;
+    }
+    if (move.sleep) {   // SLEEP POWDER: no damage, puts the target to sleep
+      yield* this.animPowder(av, dv);
+      if (def.status) yield* textBox.say('Mutta se ei tehonnut!');
+      else {
+        def.status = 'slp';
+        def.sleepTurns = rnd(2, 4);   // counts down when it tries to act: sleeps 1-3 turns
+        yield* this.sleepFx(dv);
+        yield* textBox.say(`${target} nukahti!`);
+      }
+      textBox.hide();
       return;
     }
     if (move.slow) {   // STICKY WEB: no damage, lowers speed
@@ -459,6 +519,10 @@ const battle = {
     else if (move.anim === 'firespin') yield* this.animFireSpin(av, dv);
     else if (move.anim === 'flamethrower') yield* this.animFlamethrower(av, dv);
     else if (move.anim === 'flametornado') yield* this.animFlameTornado(av, dv);
+    else if (move.anim === 'psistrike') yield* this.animPsiStrike(av, dv);
+    else if (move.anim === 'psychic') yield* this.animPsychic(av, dv);
+    else if (move.anim === 'crunch') yield* this.animCrunch(av, dv, mine ? 1 : -1);
+    else if (move.anim === 'darkpulse') yield* this.animDarkPulse(av, dv);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
     def.hp = Math.max(0, def.hp - dmg);
@@ -621,6 +685,127 @@ const battle = {
     av.pose = 'idle';
     yield* tween(10, k => { this.tint = 0.4 * (1 - k); });
     this.tint = 0;
+  },
+
+  // ----- psychic, dark, crunch, sleep -----
+  // rings of light that shrink onto (in = true) or grow out of a point
+  ringFrame(cx, cy, i, n, colors, grow, maxR = 30) {
+    this.parts = [];
+    for (let k = 0; k < 3; k++) {
+      let f = ((i + k * (n / 3)) % n) / n;
+      if (!grow) f = 1 - f;
+      const r = 3 + f * maxR;
+      for (let a = 0; a < Math.PI * 2; a += 0.22) this.parts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * 0.8, c: colors[k % colors.length], s: 2 });
+    }
+  },
+
+  // PSI STRIKE: the screen turns pink-violet and rings collapse onto the target, then a burst
+  *animPsiStrike(av, dv) {
+    av.pose = 'attack';
+    this.tintRGB = '170,60,190';
+    yield* tween(8, k => { this.tint = 0.35 * k; });
+    const cx = dv.x + 32, cy = dv.y + 34;
+    for (let i = 0; i < 40; i++) { this.ringFrame(cx, cy, i, 20, ['#ffd6ff', '#e9b9ef', '#ffffff'], false); if (i % 10 === 0) this.shake = 3; yield; }
+    this.parts = null;
+    this.flash = 4; this.shake = 10;
+    this.addFx('spark', cx, cy, [0, 0, 1, 1, 2, 2], 2);
+    av.pose = 'idle';
+    yield* tween(8, k => { this.tint = 0.35 * (1 - k); });
+    this.tint = 0; this.tintRGB = null;
+    yield* wait(6);
+  },
+
+  // PSYCHIC: waves pulse out of the target and it wobbles in the air
+  *animPsychic(av, dv) {
+    av.pose = 'attack';
+    const cx = dv.x + 32, cy = dv.y + 34;
+    for (let i = 0; i < 44; i++) {
+      this.ringFrame(cx, cy, i, 22, ['#c78bff', '#ffd6ff'], true, 26);
+      dv.dx = Math.round(Math.sin(i / 2) * 3);
+      dv.dy = Math.round(Math.cos(i / 3) * 2) - 2;
+      yield;
+    }
+    dv.dx = dv.dy = 0;
+    this.parts = null;
+    av.pose = 'idle';
+    this.shake = 6;
+    yield* wait(6);
+  },
+
+  // DARK PULSE: dark rings travel from the user to the target under a gloomy sky
+  *animDarkPulse(av, dv) {
+    av.pose = 'attack';
+    this.tintRGB = '30,0,50';
+    yield* tween(8, k => { this.tint = 0.45 * k; });
+    const sx = av.x + 32, sy = av.y + 30, tx = dv.x + 32, ty = dv.y + 34;
+    for (let i = 0; i < 36; i++) {
+      this.parts = [];
+      for (let n = 0; n < 3; n++) {
+        const k = (i - n * 7) / 22;
+        if (k < 0 || k > 1) continue;
+        const cx = sx + (tx - sx) * k, cy = sy + (ty - sy) * k, r = 4 + k * 10;
+        for (let a = 0; a < Math.PI * 2; a += 0.25) this.parts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r, c: n % 2 ? '#6a2a9a' : '#2a1040', s: 2 });
+      }
+      if (i % 6 === 0) this.shake = 2;
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    this.shake = 8;
+    yield* tween(8, k => { this.tint = 0.45 * (1 - k); });
+    this.tint = 0; this.tintRGB = null;
+  },
+
+  // CRUNCH: a lunge, then two rows of fangs snap shut on the target
+  *animCrunch(av, dv, dir) {
+    yield* tween(5, k => { av.dx = Math.round(10 * dir * k); av.dy = Math.round(-4 * dir * k); });
+    const cx = dv.x + 32, cy = dv.y + 34;
+    for (let i = 0; i <= 12; i++) {
+      const gap = 22 - Math.min(i, 8) * 2.5;
+      this.parts = [];
+      for (let n = -3; n <= 3; n++) {
+        const x = cx + n * 6;
+        for (const [y0, sgn] of [[cy - gap, 1], [cy + gap, -1]]) {
+          this.parts.push({ x, y: y0, c: '#283040', s: 5 });
+          this.parts.push({ x, y: y0, c: '#ffffff', s: 3 });
+          this.parts.push({ x, y: y0 + sgn * 4, c: '#ffffff', s: 2 });
+        }
+      }
+      if (i === 8) { this.shake = 10; this.flash = 2; }
+      yield;
+    }
+    this.parts = null;
+    yield* tween(6, k => { av.dx = Math.round(10 * dir * (1 - k)); av.dy = Math.round(-4 * dir * (1 - k)); });
+    av.dx = av.dy = 0;
+  },
+
+  // SLEEP POWDER: pale powder drifts down onto the target
+  *animPowder(av, dv) {
+    av.pose = 'attack';
+    const cx = dv.x + 32, top = dv.y - 6;
+    for (let i = 0; i < 46; i++) {
+      this.parts = [];
+      for (let n = 0; n < 16; n++) {
+        const k = ((i * 1.5 + n * 9) % 60) / 60;
+        this.parts.push({ x: cx - 24 + n * 3 + Math.sin(i / 6 + n) * 4, y: top + k * 56, c: n % 3 ? '#cdeedd' : '#a8c8ff', s: 2 });
+      }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+  },
+
+  // three Z's floating up from a sleeping creature
+  *sleepFx(v) {
+    for (let i = 0; i < 40; i++) {
+      this.parts = [];
+      for (let n = 0; n < 3; n++) {
+        const k = ((i + n * 13) % 40) / 40;
+        this.parts.push({ x: v.x + 40 + n * 4 + k * 8, y: v.y + 20 - k * 22, c: '#ffffff', t: 'Z' });
+      }
+      yield;
+    }
+    this.parts = null;
   },
 
   // purple bubbles rising from a poisoned creature
@@ -954,7 +1139,7 @@ const battle = {
       drawText(ctx, '►', 147, 117 + this.menu.index * 12, '#e04838');
     } else {
       drawBox(0, 112, 152, 48);
-      const n = this.me.moves.length, y0 = n > 2 ? 117 : 121, dy = n > 2 ? 12 : 16;
+      const n = this.me.moves.length, y0 = n > 3 ? 116 : n > 2 ? 117 : 121, dy = n > 3 ? 10 : n > 2 ? 12 : 16;
       this.me.moves.forEach((m, i) => drawText(ctx, m.name, 22, y0 + i * dy, m.left > 0 ? '#283040' : '#98a0b0'));
       drawText(ctx, '►', 11, y0 + this.menu.index * dy, '#e04838');
       const m = this.me.moves[this.menu.index];
@@ -969,7 +1154,7 @@ const battle = {
     if (this.shake > 0) ctx.translate(rnd(-2, 2), rnd(-1, 1));
     this.drawBackground();
     if (this.dark > 0) { ctx.fillStyle = `rgba(16,16,48,${this.dark})`; ctx.fillRect(-4, -4, W + 8, H + 8); }
-    if (this.tint > 0) { ctx.fillStyle = `rgba(150,30,0,${this.tint})`; ctx.fillRect(-4, -4, W + 8, H + 8); }
+    if (this.tint > 0) { ctx.fillStyle = `rgba(${this.tintRGB || '150,30,0'},${this.tint})`; ctx.fillRect(-4, -4, W + 8, H + 8); }
     if (this.trainer.show) ctx.drawImage(IMG.trainerBack, 0, 0, 32, 32, this.trainer.x, 48, 64, 64);
     this.drawMoi(this.foeV, true);
     this.drawMoi(this.meV, false);
@@ -1009,7 +1194,10 @@ const battle = {
       }
     }
     if (this.parts) {
-      for (const p of this.parts) { ctx.fillStyle = p.c; ctx.fillRect(Math.round(p.x - p.s / 2), Math.round(p.y - p.s / 2), p.s, p.s); }
+      for (const p of this.parts) {
+        if (p.t) { drawText(ctx, p.t, Math.round(p.x), Math.round(p.y), p.c); continue; }
+        ctx.fillStyle = p.c; ctx.fillRect(Math.round(p.x - p.s / 2), Math.round(p.y - p.s / 2), p.s, p.s);
+      }
     }
     if (this.thrown) drawFrame(this.thrown.img, this.thrown.f, 16, 16, Math.round(this.thrown.x - 8), Math.round(this.thrown.y - 8));
     for (const f of this.fx) drawFrame(f.img, f.frames[f.t], f.fw, f.fh, f.x, f.y, f.scale);
@@ -1027,7 +1215,7 @@ const battle = {
 };
 
 function drawTag(x, y, status) {
-  ctx.fillStyle = { psn: '#a040d0', brn: '#e8662a' }[status] || '#e8b830';
+  ctx.fillStyle = { psn: '#a040d0', brn: '#e8662a', slp: '#6a7a98' }[status] || '#e8b830';
   ctx.fillRect(x, y, 19, 9);
   drawText(ctx, status.toUpperCase(), x + 2, y + 1, '#ffffff');
 }

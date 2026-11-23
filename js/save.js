@@ -24,7 +24,7 @@ const saveGame = {
     const d = {
       v: 1, time: Date.now(),
       party: game.party.map(m => ({
-        species: m.species, level: m.level, xp: m.xp, hp: m.hp, status: m.status || null, shiny: !!m.shiny,
+        species: m.species, level: m.level, xp: m.xp, hp: m.hp, status: m.status || null, sleepTurns: m.sleepTurns || 0, shiny: !!m.shiny,
         moves: m.moves.map(x => ({ id: x.id, left: x.left })),
       })),
       coins: game.coins, balls: game.balls, greatBalls: game.greatBalls,
@@ -71,7 +71,8 @@ function restoreMon(s) {
   const m = makeMon(s.species, Math.max(1, s.level | 0));
   m.xp = Math.max(xpForLevel(m.level), s.xp | 0);
   m.hp = Math.max(0, Math.min(m.maxHp, s.hp | 0));
-  m.status = ['par', 'psn', 'brn'].includes(s.status) ? s.status : null;
+  m.status = ['par', 'psn', 'brn', 'slp'].includes(s.status) ? s.status : null;
+  if (m.status === 'slp') m.sleepTurns = Math.max(1, s.sleepTurns | 0) || 2;
   m.shiny = !!s.shiny;
   const moves = (s.moves || []).filter(x => MOVES[x.id]).map(x => ({ ...MOVES[x.id], left: Math.max(0, Math.min(MOVES[x.id].pp, x.left | 0)) }));
   if (moves.length) m.moves = moves;
