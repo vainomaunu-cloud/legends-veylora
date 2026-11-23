@@ -38,6 +38,15 @@ Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuk
 | F | Kalasta (seiso veden edessä ja katso veteen) |
 | M | Musiikki päälle/pois (valinta muistetaan) |
 
+### Puhelin ja tabletti
+
+Kosketusnäytöllisillä laitteilla (puhelin, iPad) ruudulle tulee nappulat, joten näppäimistöä ei tarvita:
+- **Ristiohjain** vasemmalla: liiku. Sormea voi liu'uttaa suunnasta toiseen nostamatta sitä.
+- **A** (punainen) = Z/OK, **B** (sininen) = X/takaisin, **KALA** = F, **♪** = musiikki päälle/pois.
+- Pystyasennossa peli on ylhäällä ja nappulat alhaalla. Vaakasuunnassa nappulat ovat pelin molemmin puolin.
+- Sivu ei vierity eikä zoomaudu pelatessa, ja ääni aukeaa ensimmäisestä kosketuksesta (iPhone/iPad vaatii sen).
+- Nappulat lähettävät samat painallukset kuin näppäimistö (`js/touch.js`).
+
 ### Musiikki
 
 Pelissä on kolme omaa sävellettyä chiptune-kappaletta vanhojen käsikonsolien tyyliin. Ne soitetaan suoraan selaimessa (Web Audio), joten äänitiedostoja ei tarvita:
@@ -177,6 +186,7 @@ Taistelussa 32×32-spritet piirretään 2× suurennettuna. Pikselit pysyvät ter
 | `js/core.js` | Kuvien lataus, näppäimet, tekstilaatikko, valikot, apufunktiot |
 | `js/overworld.js` | Kartat (`MAPS`), siirtymät karttojen välillä, alueen nimi, lomittaiset puut, liike, puskat, hohto, HOITOLA (parannus, kauppa, tiimi), kyltit |
 | `js/battle.js` | Lajit (`SPECIES`), liikkeet (`MOVES`), vahinkokaava, taistelu, nappaaminen, animaatiot, kehittyminen |
+| `js/touch.js` | Kosketusnäytön nappulat ja pelin koko puhelimella/tabletilla |
 | `js/music.js` | Chiptune-musiikki: nuotit (`TRACKS`), soittimet ja ajastus |
 | `js/main.js` | Näkymät, siirtymäefektit, pelisilmukka (60 fps), kolikot ja pallot (`game`) |
 

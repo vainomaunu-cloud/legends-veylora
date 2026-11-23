@@ -79,7 +79,7 @@ const title = {
     ctx.drawImage(IMG.moi, 0, 0, 32, 32, W / 2 - 32, 50 + bob, 64, 64);
     if (Math.floor(game.t / 30) % 2 === 0) {
       drawBox(W / 2 - 34, 122, 68, 17);
-      drawTextCenter(ctx, 'PAINA Z', W / 2, 127);
+      drawTextCenter(ctx, document.body.classList.contains('touch') ? 'PAINA A' : 'PAINA Z', W / 2, 127);
     }
   },
 };
