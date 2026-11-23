@@ -110,6 +110,7 @@ const MAPS = {
       { species: 'overchill', chance: 0.10 },
       { species: 'underchill', chance: 0.03 },
     ],
+    npcs: ['guardian'],   // the TEMPLE GUARDIAN blocks the way up until beaten
     warps: {
       '12,19': { to: 'forest', x: 18, y: 1, dir: 'down' },
       '12,0': { to: 'temple', x: 11, y: 21, dir: 'up' },
@@ -123,6 +124,8 @@ const MAPS = {
     tiles: 'tilesTemple', rustle: 'bushRustle', shade: '#2e1248', music: 'hyujal', walls: true, sparkle: true,
     // statues in reading order (left to right, top to bottom); each shows that creature in violet stone
     statues: ['psistiel', 'psiduocipe', 'moonorg', 'ampereem', 'duckonda', 'hummirding', 'underchill', 'serpenalge', 'golbug'],
+    // the three regis on the far pedestals (EE), left to right; walk into one to battle it (level 50)
+    regis: ['regismile', 'regiacid', 'regipsy'],
     rows: [
       'TTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTT',
@@ -215,7 +218,10 @@ for (const [id, m] of Object.entries(MAPS)) {
       const list = m.statues || ['psistiel'];
       m.statueList.push({ x, y, species: list[n++ % list.length] });
     }
-    if (ch === 'E' && m.rows[y][x - 1] !== 'E') m.statueList.push({ x, y, species: null });
+    if (ch === 'E' && m.rows[y][x - 1] !== 'E') {
+      const regis = m.regis || [];
+      m.statueList.push({ x, y, species: null, regi: regis[m.statueList.filter(s => s.regi).length] || null });
+    }
   }
 }
 
@@ -224,6 +230,16 @@ const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) 
 const WATER = '~';
 const GREAT_NAME = 'GREAT PALLO';
 const GREAT_PRICE = 75;
+const MASTER_NAME = 'MASTER PALLO';
+const MASTER_PRICE = 1000;
+// every kind of ball: where it is counted in `game`, its price, how much better it catches, its sprite
+const BALL_TYPES = [
+  { key: 'balls', name: BALL_NAME, short: 'PYYDYS', price: BALL_PRICE, mult: 1, img: 'ball' },
+  { key: 'greatBalls', name: GREAT_NAME, short: 'GREAT', price: GREAT_PRICE, mult: 2, img: 'greatBall' },
+  { key: 'masterBalls', name: MASTER_NAME, short: 'MASTER', price: MASTER_PRICE, mult: 5, img: 'masterBall' },
+];
+const ballType = key => BALL_TYPES.find(b => b.key === key);
+const totalBalls = () => BALL_TYPES.reduce((n, b) => n + game[b.key], 0);
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
 const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
@@ -319,6 +335,34 @@ function buildTreeRows(m) {
   return out;
 }
 
+// ---------- people standing on the maps (MAPS[...].npcs) ----------
+const GUARDIAN_NAME = 'TEMPPELIN VARTIJA';
+const NPCS = {
+  // stands in the snow path right below the way up to REGI TEMPPELI; steps aside once beaten
+  guardian: {
+    sprite: 'guardian',
+    pos: () => (game.guardianBeaten ? { x: 13, y: 1, dir: 'left' } : { x: 12, y: 1, dir: 'down' }),
+    *talk() {
+      if (game.guardianBeaten) {
+        yield* textBox.say(`${GUARDIAN_NAME}: Mene vain. Regit odottavat REGI TEMPPELIN perällä.`);
+        return;
+      }
+      yield* textBox.say(`${GUARDIAN_NAME}: Seis! Ylhäällä on REGI TEMPPELI.`);
+      yield* textBox.say(`${GUARDIAN_NAME}: Sisään pääsee vain se, joka voittaa minut. Taistellaan!`);
+      startEncounter(null, 'trainer', {
+        enemy: {
+          name: GUARDIAN_NAME, reward: 500,
+          team: [{ species: 'psistiel', level: 35 }, { species: 'shroocid', level: 35 }],
+          *onWin() {
+            game.guardianBeaten = true;
+            yield* textBox.say(`${GUARDIAN_NAME}: Olet vahva! REGI TEMPPELI on nyt avoinna sinulle.`);
+          },
+        },
+      });
+    },
+  },
+};
+
 const overworld = {
   map: MAPS.forest,
   player: null,
@@ -403,6 +447,10 @@ const overworld = {
     }
     if (p.turnDelay > 0) { p.turnDelay--; return; }
     const nx = p.tx + DIRS[d][0], ny = p.ty + DIRS[d][1];
+    const npc = this.npcAt(nx, ny);
+    if (npc) { this.runner.run(npc.talk()); return; }               // walked into someone: they talk
+    const regi = this.regiAt(nx, ny);
+    if (regi) { this.runner.run(this.regiTouch(regi)); return; }    // touched a regi on its pedestal
     if (!SOLID.has(this.tileAt(nx, ny))) { p.moving = true; p.offset = 0; p.steps++; }
     else if (this.birds && this.birds.has(`${nx},${ny}`)) {   // walked into a palm with a HUMMIRD on it
       this.birds.delete(`${nx},${ny}`);
@@ -426,9 +474,34 @@ const overworld = {
     return false;
   },
 
+  // the person standing on this tile on the current map, if any
+  npcAt(x, y) {
+    for (const id of this.map.npcs || []) {
+      const n = NPCS[id], at = n.pos();
+      if (at.x === x && at.y === y) return n;
+    }
+    return null;
+  },
+
+  // the regi (still on its pedestal) covering this tile, if any
+  regiAt(x, y) {
+    if (this.tileAt(x, y) !== 'E') return null;
+    const s = (this.map.statueList || []).find(q => q.regi && q.y === y && (q.x === x || q.x + 1 === x));
+    return s && !game.regisCaught.includes(s.regi) ? s.regi : null;
+  },
+
+  *regiTouch(regi) {
+    yield* textBox.say(`${SPECIES[regi].name} tuijottaa sinua kivijalustaltaan...`);
+    startEncounter(regi, 'regi', { level: 50, regi: true });
+  },
+
   interact() {
     const p = this.player;
     const fx = p.tx + DIRS[p.dir][0], fy = p.ty + DIRS[p.dir][1];
+    const npc = this.npcAt(fx, fy);
+    if (npc) { this.runner.run(npc.talk()); return; }
+    const regi = this.regiAt(fx, fy);
+    if (regi) { this.runner.run(this.regiTouch(regi)); return; }
     const tile = this.tileAt(fx, fy);
     if (tile === 'S') this.say((this.map.signs && this.map.signs[`${fx},${fy}`]) || this.map.sign);
     if (tile === 'D') this.runner.run(this.centerVisit());
@@ -459,28 +532,33 @@ const overworld = {
     this.fishing = null;
   },
 
+  // one round of a ball shop: pick a ball, confirm, pay. Returns true when the player leaves (POISTU / X).
+  *buyBall(keys, question) {
+    const types = keys.map(ballType);
+    textBox.show(question);
+    const c = yield* menuBox.choose([...types.map(b => `${b.name} ${b.price}`), 'POISTU'], 122, 30, 114);
+    const b = types[c];
+    if (!b) return true;
+    if (game.coins < b.price) {
+      yield* textBox.say(`${b.name} maksaa ${b.price} kolikkoa. Sinulla on vain ${game.coins}.`);
+      return false;
+    }
+    const better = { 2: ' Se nappaa kaksi kertaa paremmin!', 5: ' Se nappaa viisi kertaa paremmin!' }[b.mult] || '';
+    textBox.show(`Ostatko ${b.name}N ${b.price} kolikolla?${better}`);
+    const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
+    if (yes === 0) {
+      game.coins -= b.price;
+      game[b.key]++;
+      yield* textBox.say(`Ostit ${b.name}N!`);
+    }
+    return false;
+  },
+
   // ----- beach kiosk shop -----
   *kioskVisit() {
     this.showWallet = true;
     yield* textBox.say('Tervetuloa RANTAKIOSKILLE!');
-    while (true) {
-      textBox.show('Mitä saisi olla?');
-      const c = yield* menuBox.choose([`${BALL_NAME} ${BALL_PRICE}`, `${GREAT_NAME} ${GREAT_PRICE}`, 'POISTU'], 122, 54, 114);
-      if (c !== 0 && c !== 1) break;
-      const great = c === 1;
-      const name = great ? GREAT_NAME : BALL_NAME, price = great ? GREAT_PRICE : BALL_PRICE;
-      if (game.coins < price) {
-        yield* textBox.say(`${name} maksaa ${price} kolikkoa. Sinulla on vain ${game.coins}.`);
-        continue;
-      }
-      textBox.show(`Ostatko ${name}N ${price} kolikolla?` + (great ? ' Se nappaa kaksi kertaa paremmin!' : ''));
-      const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
-      if (yes === 0) {
-        game.coins -= price;
-        if (great) game.greatBalls++; else game.balls++;
-        yield* textBox.say(`Ostit ${name}N!`);
-      }
-    }
+    while (!(yield* this.buyBall(['balls', 'greatBalls', 'masterBalls'], 'Mitä saisi olla?')));
     textBox.hide();
     yield* textBox.say('Kiitos ja hyviä kalastushetkiä!');
     this.showWallet = false;
@@ -499,17 +577,7 @@ const overworld = {
         healParty();
         yield* textBox.say('Otuksesi ovat taas täysissä voimissa!');
       } else if (c === 1) {
-        if (game.coins < BALL_PRICE) {
-          yield* textBox.say(`${BALL_NAME} maksaa ${BALL_PRICE} kolikkoa. Sinulla on vain ${game.coins}.`);
-          continue;
-        }
-        textBox.show(`Ostatko ${BALL_NAME}N ${BALL_PRICE} kolikolla?`);
-        const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
-        if (yes === 0) {
-          game.coins -= BALL_PRICE;
-          game.balls++;
-          yield* textBox.say(`Ostit ${BALL_NAME}N! Sillä voi napata villejä otuksia.`);
-        }
+        while (!(yield* this.buyBall(['balls', 'masterBalls'], 'Minkä pallon haluat?')));
       } else if (c === 2) {
         textBox.show('Kuka johtaa tiimiä?');
         const opts = game.party.map(m => `${m.name}${m.shiny ? '★' : ''} LV${m.level} ${m.hp}/${m.maxHp}`);
@@ -606,6 +674,10 @@ const overworld = {
       if (m.center && ty === m.center.y + 2) ctx.drawImage(IMG.center, m.center.x * TILE - camX, m.center.y * TILE - camY);
       if (m.kiosk && ty === m.kiosk.y + 1) ctx.drawImage(IMG.kiosk, m.kiosk.x * TILE - camX, m.kiosk.y * TILE - camY);
       for (const s of m.statueList) if (s.y === ty) this.drawStatue(s, s.x * TILE - camX, ty * TILE - camY);
+      for (const id of m.npcs || []) {
+        const n = NPCS[id], at = n.pos();
+        if (at.y === ty) drawFrame(IMG[n.sprite], DIR_ROW[at.dir] * 3, 16, 16, at.x * TILE - camX, ty * TILE - camY - 4);
+      }
       if (ty === playerRow) this.drawPlayer(px - camX, py - camY, camX, camY);
     }
     if (this.fishing) this.drawFishing(px - camX, py - camY, camX, camY);
@@ -618,10 +690,11 @@ const overworld = {
 
     if (this.banner) this.drawBanner();
     if (this.showWallet) {
-      drawBox(4, 4, 92, 42);
+      drawBox(4, 4, 92, 54);
       drawText(ctx, 'KOLIKOT', 10, 9); drawTextRight(ctx, String(game.coins), 90, 9);
       drawText(ctx, 'PALLOT', 10, 21); drawTextRight(ctx, String(game.balls), 90, 21);
       drawText(ctx, 'GREAT', 10, 33, '#2f7acb'); drawTextRight(ctx, String(game.greatBalls), 90, 33);
+      drawText(ctx, 'MASTER', 10, 45, '#8a3aae'); drawTextRight(ctx, String(game.masterBalls), 90, 45);
     }
     textBox.draw();
     menuBox.draw();
@@ -781,6 +854,17 @@ const overworld = {
     ctx.fillStyle = '#6a3a94'; ctx.fillRect(px + 1, py + 4, 26, 5);
     ctx.fillStyle = '#ff9cf2'; ctx.fillRect(px + 1, py + 5, 26, 1);
     ctx.fillStyle = 'rgba(42,18,64,0.35)'; ctx.fillRect(px + 1, py + 10, 26, 2);   // shadow on the floor
+    if (s.regi && !game.regisCaught.includes(s.regi)) {   // a regi waits on the pedestal, floating gently in a pink aura
+      const rs = SPECIES[s.regi];
+      const bob = Math.round(Math.sin(this.t / 30 + s.x) * 1.5);
+      const pulse = 0.25 + 0.15 * Math.sin(this.t / 20 + s.x);
+      ctx.fillStyle = `rgba(255,156,242,${pulse})`;
+      ctx.fillRect(px + 3, py - 30, 22, 30); ctx.fillRect(px + 6, py - 33, 16, 36);
+      const feet = 30 - Math.round((rs.feetY || 0) / 2);
+      const blink = (this.t + s.x * 37) % 220 < 8;
+      drawFrame(IMG[blink ? rs.sprites.blink : rs.sprites.front], 0, 32, 32, sx, py + 1 - feet + bob - 2);
+      return;
+    }
     if (!sp) {   // empty pedestal: a faint pink glow where a statue will stand some day
       ctx.globalAlpha = 0.45 + 0.35 * Math.sin(this.t / 25 + s.x);
       ctx.fillStyle = '#ff9cf2'; ctx.fillRect(px + 8, py + 2, 12, 1);

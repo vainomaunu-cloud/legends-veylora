@@ -23,6 +23,9 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | UNDERCHILL | 3. vaihe (kehittyy tasolla 16) | `underchill.png` + `sprites/underchill_*.png` | IRON HEAD, ICE FANG, ICE CREAM THROW, BLIZZARD | 3 % (SNOW MOUNTAIN) | 55 kolikkoa | hyvin vaikea (0,25) |
 | HUMMIRD | 1. vaihe | `hummird.png` + `sprites/hummird_*.png` | AIR SLASH, TACKLE | SAARIMEREN palmujen päällä (kävele palmua päin) | 20 kolikkoa | keskitaso (0,6) |
 | HUMMIRDING | 2. vaihe (kehittyy tasolla 14) | `hummirding.png` + `sprites/hummirding_*.png` | TWISTER, AIR SLASH, TACKLE | vain kehittämällä | 45 kolikkoa | – |
+| REGIACID | regi, ei kehity | `regiacid.png` + `sprites/regiacid_*.png` | REGI POWER, ACID PULSE, POISON JAB, FIRE PUNCH | REGI TEMPPELIN keskimmäinen jalusta, LV50 | – | erittäin vaikea (0,12) |
+| REGIPSY | regi, ei kehity | `regipsy.png` + `sprites/regipsy_*.png` | REGI POWER, PSYCHO CUT, PSYCHIC, MIND HEAL | REGI TEMPPELIN oikea jalusta, LV50 | – | erittäin vaikea (0,12) |
+| REGISMILE | regi, ei kehity | `regismile.png` + `sprites/regismile_*.png` | REGI POWER, HAPPINESS PULSE, BABYDOLL EYES, CHARM | REGI TEMPPELIN vasen jalusta, LV50 | – | erittäin vaikea (0,12) |
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
@@ -31,7 +34,7 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 ### Kiiltävät muodot
 
 - Jokainen kohdattu villi otus on **1/100** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
-- **SHINY CHARM:** kun olet napannut jokaista otusta vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA ja vain kehittämällä saatava HUMMIRDING), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/75** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
+- **SHINY CHARM:** kun olet napannut jokaista otusta vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatava HUMMIRDING ja regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/75** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
 - **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (tuntemattomat näkyvät viivoina), montako on napattu ja onko SHINY CHARM jo saatu. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi. Se ilmestyy kipinöiden kanssa, ja teksti kertoo, että se on KIILTÄVÄ.
@@ -55,7 +58,7 @@ Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuk
 Peli tallentuu automaattisesti selaimeen, joten sivun voi päivittää tai sulkea:
 - Tallennus tapahtuu taistelun jälkeen, alueelta toiselle siirtyessä, HOITOLASTA ja rantakioskista lähtiessä, 10 sekunnin välein kävellessä sekä silloin, kun sivu suljetaan tai laitetaan taustalle.
 - Pelin alla on lisäksi **💾 Tallenna**-nappi, jolla voi tallentaa itse milloin tahansa kävellessä. Napin vieressä näkyy, milloin peli tallentui viimeksi. Puhelimella vaakasuunnassa nappi on oikeassa yläkulmassa.
-- Napin vieressä on **🎒 Reppu**-nappi: se näyttää pallojen ja kolikoiden määrän sekä oman tiimin (HP, XP, tila, liikkeet ja PP). PC:ssä olevat otukset eivät näy repussa. Reppu suljetaan Sulje-napista, taustaa klikkaamalla tai Esc/X-näppäimellä.
+- Napin vieressä on **🎒 Reppu**-nappi: se näyttää kaikkien pallojen (PYYDYS, GREAT, MASTER) ja kolikoiden määrän sekä oman tiimin (HP, XP, tila, liikkeet ja PP). PC:ssä olevat otukset eivät näy repussa. Reppu suljetaan Sulje-napista, taustaa klikkaamalla tai Esc/X-näppäimellä.
 - Mukaan tallentuvat tiimi ja PC:n otukset (tasot, XP, HP, PP, tilat, kiiltävyys), kolikot, pallot ja paikka kartalla.
 - Kesken taistelua ei tallenneta. Jos sivu suljetaan taistelussa, peli jatkuu viimeisestä tallennuksesta ennen taistelua.
 - **Useita pelejä:** aloitusruudussa on **JATKA** ja **UUSI PELI**. Uusi peli ei poista vanhoja, vaan jokainen peli tallentuu omaksi pelikseen.
@@ -94,7 +97,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **Puskat:** joka askeleella puskassa voi tulla vastaan AMPERITE (15 %), ZUBUG (15 %), GOLBUG (8 %) tai AMPEREEM (5 %). Puska heiluu, ja pelaajan jalat jäävät lehtien taakse.
    - **HOITOLA** (keskellä metsää, ovi alareunassa):
      - PARANNA: koko tiimin HP, PP ja halvaantuminen.
-     - OSTA PALLO: PYYDYSPALLO maksaa 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`).
+     - OSTA PALLO: PYYDYSPALLO maksaa 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`) ja **MASTER PALLO 1000 kolikkoa** (`MASTER_PRICE`). Kauppa pysyy auki, kunnes valitset POISTU.
      - TIIMI: valitse, kuka johtaa (lähtee ensimmäisenä taisteluun).
      - KOKOELMA: napatut lajit sivuittain (8 per sivu, EDELLISET / SEURAAVAT).
      - PC: oma ruutu otuksille, joita ei halua pitää tiimissä. Vasemmalla on tiimi (6 paikkaa), oikealla PC:n laatikko (30 paikkaa; jos otuksia on enemmän, laatikoita vaihdetaan ◀ ▶ -napeilla).
@@ -102,6 +105,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
        - Tyhjään tiimipaikkaan raahattu otus liittyy tiimiin, tyhjään laatikkopaikkaan raahattu menee PC:hen (tiimiin jää aina vähintään yksi).
        - Raahaamisen sijaan voi myös napauttaa ensin otusta ja sitten paikkaa. Näppäimistöllä: nuolet liikuttavat, Z/Enter valitsee ja laskee, X peruu, Esc sulkee.
        - PC:hen menevät otukset parannetaan.
+       - **Vapauttaminen:** napauta otusta (tiimissä tai laatikossa), niin sen tietojen viereen tulee punainen **Vapauta**-nappi (näppäimistöllä V tai Delete). Peli kysyy: *Haluatko vapauttaa tämän otuksen?* ja näyttää otuksen kuvan ja tason. EI on valmiiksi valittuna; vain KYLLÄ vapauttaa. Vapautettua otusta ei saa takaisin (napattu regi ei myöskään palaa temppeliin), ja tiimiin jää aina vähintään yksi otus.
      - Jos tiimi on täynnä (6), napattu otus lähetetään automaattisesti HOITOLAN PC:hen.
      - Kolikot ja pallot näkyvät vasemmassa yläkulmassa.
    - **Kyltti:** ohjeteksti.
@@ -118,12 +122,19 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Luminen metsä PUSKAMETSÄN pohjoispuolella: lumiset kuuset, lumihuippuiset puskat, kimaltelevaa lunta ja tallattu lumipolku keskellä. Lunta sataa koko ajan.
    - Lumisista puskista voi tulla **BINCHULCIN** (30 %), **OVERCHILL** (10 %) tai **UNDERCHILL** (3 %). Kyltti on polun varrella.
    - Täällä taistellaan lumisella taustalla.
-   - Polku jatkuu pohjoisreunan läpi **REGI TEMPPELIIN**.
+   - Polku jatkuu pohjoisreunan läpi **REGI TEMPPELIIN**, mutta polun yläpäässä seisoo **TEMPPELIN VARTIJA** (violetti huppu, `sprites/guardian.png`). Kävele häntä päin tai paina Z, niin hän haastaa kouluttajataisteluun: **PSISTIEL LV35** ja **SHROOCID LV35**.
+     - Kouluttajan otuksia ei voi napata, eikä taistelusta voi paeta. Kun ensimmäinen uupuu, vartija lähettää seuraavan. Voitosta saa XP:tä ja **500 kolikkoa**.
+     - Kun voitat, vartija astuu sivuun ja REGI TEMPPELI aukeaa (tallentuu). Jos häviät, heräät HOITOLASTA ja voit yrittää uudelleen.
 4b. **REGI TEMPPELI** (24 × 23 ruutua, SNOW MOUNTAINin yläpuolella)
    - Violetti-pinkki temppeli: kivilaattalattia, violetti matto keskellä, hehkuvat riimut lattiassa, pinkillä liekillä palavat kivimaljat, tiiliseinät ja vaaleanpunaisia kipinöitä ilmassa. Soi HYUJAL METSÄN musiikki.
    - **Ei puskia eikä villejä otuksia.**
    - **Violetit patsaat:** yhdeksän patsasta jalustoillaan (mattoa pitkin perällä PSIDUOCIPE, sivuilla PSISTIEL, MOONORG, AMPEREEM, DUCKONDA, HUMMIRDING, UNDERCHILL, SERPENALGE ja GOLBUG). Patsaat tehdään peliä ajettaessa sinun otuskuvistasi: kuvan valot ja varjot säilyvät, mutta väri muuttuu violetiksi kiveksi. Kartassa patsas on `AA` (2 ruutua leveä, ei pääse läpi); lajit ovat kartan `statues`-listassa lukujärjestyksessä.
-   - **Kolme tyhjää patsaan paikkaa** temppelin perällä: tyhjät jalustat, joiden päällä hehkuu himmeä pinkki valo. Kartassa tyhjä jalusta on `EE`; jos sen vaihtaa `AA`:ksi ja lisää lajin `statues`-listaan oikeaan kohtaan, siihen tulee patsas.
+   - **Regit:** temppelin perällä on kolme jalustaa (`EE`), joilla leijuvat pinkissä hehkussa **REGISMILE** (vasen), **REGIACID** (keskellä) ja **REGIPSY** (oikea) (kartan `regis`-lista).
+     - Kävele regiä päin (tai paina Z), niin taistelu alkaa. Regit ovat aina **tasolla 50**, ja ne taistelevat temppelin violetilla taustalla.
+     - **Regiä ei voi voittaa pois:** jos se uupuu, se palaa jalustalleen ja taistelu loppuu (ei XP:tä). Taistelu alkaa alusta täysin voimin, kunnes nappaat sen. Paeta saa.
+     - Nappaaminen on vaikeaa (0,12): heikennä regiä, anna sille tila (halvaus, myrkky, palovamma tai uni) ja käytä GREAT PALLOA tai MASTER PALLOA. Täydellä tiimillä napattu regi menee PC:hen.
+     - **Napattu regi ei palaa:** sen jalusta jää tyhjäksi ja hehkuu himmeästi.
+     - **Regit eivät ole koskaan kiiltäviä** temppelissä.
    - Etelän ovesta pääsee takaisin SNOW MOUNTAINille. Kyltti on oven lähellä.
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
@@ -131,6 +142,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **RANTAKIOSKI:** mene tiskin eteen ja paina Z. Kioskista saa:
      - PYYDYSPALLO, 50 kolikkoa.
      - GREAT PALLO, 75 kolikkoa (`GREAT_PRICE`). Nappaa **kaksi kertaa** paremmin.
+     - MASTER PALLO, 1000 kolikkoa. Nappaa **viisi kertaa** paremmin.
    - Puskia ei ole. Rannan ja saarten **palmujen päällä istuu HUMMIRDeja** (jokaisella palmulla 50 % mahdollisuus, arvotaan joka käynnillä, vähintään yksi). Kun kävelet palmua päin, jonka päällä HUMMIRD istuu, se syöksyy alas taisteluun ja lähtee palmulta.
    - Rannan vasempaan reunaan kulkeva hiekkapolku vie takaisin PUSKAMETSÄÄN.
    - Jokaisen alueen uloskäynnillä on pieni vilkkuva nuoli, joka osoittaa poistumissuuntaan.
@@ -144,8 +156,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 
 ## Nappaaminen
 
-- Valitse taistelussa PALLO. Jos sinulla on sekä PYYDYSPALLOJA että GREAT PALLOJA, peli kysyy, kumpaa heität. Pallo lentää villin otuksen luo, otus imeytyy palloon, ja pallo heiluu.
-- GREAT PALLO kertoo nappausmahdollisuuden kahdella.
+- Valitse taistelussa PALLO. Jos sinulla on useampaa palloa (PYYDYS, GREAT, MASTER), peli kysyy, mitä heität. Pallo lentää villin otuksen luo, otus imeytyy palloon, ja pallo heiluu.
+- GREAT PALLO kertoo nappausmahdollisuuden kahdella ja **MASTER PALLO viidellä** (pallot ja kertoimet: `BALL_TYPES` tiedostossa `js/overworld.js`).
 - Kolme heilahdusta = napattu, ja otus liittyy tiimiin (enintään 6; täydellä tiimillä se menee HOITOLAN PC:hen).
 - Todennäköisyys = lajin nappausvaikeus · (1 − ⅔ · HP / max HP), ja halvaantuneella ×1,5. Heikennä otus ensin!
 - Jos otus karkaa, vihollinen saa vuoron.
@@ -177,6 +189,13 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 | ICE FANG | 65 | 95 % | 15 | Fyysinen hyökkäys, jäiset hampaat ja jääsirpaleet. 10 %: kohde säpsähtää |
 | TWISTER | 70 | 100 % | 15 | Erikoishyökkäys. Pyörteinen tuulipatsas nostaa kohdetta. 20 %: kohde säpsähtää |
 | PSYCHO CUT | 70 | 100 % | 20 | Fyysinen hyökkäys. Violetti taivas ja kaksi hehkuvaa vaaleanpunaista terää viiltää kohteen. Kriittisen osuman mahdollisuus 1/8 (tavallisesti 1/16) |
+| REGI POWER | 120 | 90 % | 5 | Regien erikoishyökkäys. Taivas muuttuu tumman violetiksi, kulta-pinkki-turkoosit renkaat romahtavat kohteeseen ja valtava säteiden räjähdys |
+| ACID PULSE | 85 | 100 % | 10 | Erikoishyökkäys. Vihreä-violetit happopisarat lentävät kohteeseen ja happorenkaat aaltoilevat. 30 %: myrkyttää |
+| FIRE PUNCH | 75 | 100 % | 15 | Fyysinen hyökkäys. Nyrkki syttyy palamaan, syöksy ja tulipurkaus. 10 %: palovamma |
+| MIND HEAL | – | 100 % | 10 | Ei vahinkoa. Käyttäjä saa takaisin puolet maksimi-HP:staan (pinkki valo nousee sen ympäriltä) |
+| HAPPINESS PULSE | 80 | 100 % | 15 | Erikoishyökkäys. Keltaisia ja pinkkejä ilon aaltoja vierii kohteeseen |
+| BABYDOLL EYES | – | 100 % | 30 | Ei vahinkoa. Sydämiä leijuu kohteeseen, ja sen fyysinen hyökkäys laskee yhden portaan (enintään −3) |
+| CHARM | – | 100 % | 20 | Ei vahinkoa. Enemmän sydämiä: kohteen fyysinen hyökkäys laskee kaksi porrasta (enintään −3) |
 | FIRE SPIN | 35 | 85 % | 15 | Erikoishyökkäys. Tulirengas pyörii kohteen ympärillä, ja kohde jää tulipyörteen vangiksi 4–5 vuoroksi: menettää vuoron lopussa 1/8 maksimi-HP:sta |
 | FLAMETHROWER | 90 | 100 % | 15 | Erikoishyökkäys, paksu tulisuihku. 10 % mahdollisuus palovammaan |
 | FLAME TORNADO | 100 | 90 % | 5 | Erikoishyökkäys (oma liike, ei oikeaa esikuvaa). Ruutu hehkuu punaisena ja kohteen nielaisee pyörivä tulipatsas. 30 % mahdollisuus palovammaan |
@@ -228,6 +247,7 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/electroball.png` | 32×16 | ELECTROBALL-pallo, 2 kuvaa 16×16 |
 | `sprites/ball.png` | 48×16 | PYYDYSPALLO: pysty, kallistus vasemmalle, kallistus oikealle (16×16) |
 | `sprites/great_ball.png` | 48×16 | GREAT PALLO: vaaleansininen, kultainen raita, samat 3 asentoa |
+| `sprites/master_ball.png` | 48×16 | MASTER PALLO: violetti, pinkki raita, samat 3 asentoa |
 | `sprites/tiles_sea.png` | 272×16 | SAARIMEREN ruudut: 0–1 saaren ruoho, 2 hiekka, 3–4 simpukat ja meritähti (animaatio), 9 kyltti, 11–12 palmut (läpinäkyvät), 13–14 vesi (animaatio), 15 silta vasen–oikea, 16 silta ylös–alas |
 | `sprites/kiosk.png` | 48×32 | RANTAKIOSKI (3×2 ruutua): raidallinen markiisi, hyllyillä palloja |
 | `sprites/center.png` | 48×48 | HOITOLA-rakennus (3×3 ruutua) |

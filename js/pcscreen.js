@@ -62,10 +62,27 @@ const pcScreen = {
     }
   },
 
+  // release a creature for good (asked first with "Haluatko vapauttaa tämän otuksen?")
+  release(s) {
+    const m = this.monAt(s);
+    this.confirm = null; this.sel = null;
+    if (!m) return;
+    if (s.area === 'team' && game.party.length <= 1) { this.msg = 'Tiimiin pitää jäädä vähintään yksi otus.'; return; }
+    (s.area === 'team' ? game.party : game.pc).splice(s.i, 1);
+    this.msg = `${m.name} vapautettiin. Hei hei, ${m.name}!`;
+  },
+
+  askRelease() {
+    if (!this.sel || !this.monAt(this.sel)) return;
+    this.confirm = this.sel;
+    this.confirmYes = false;   // EI is chosen first, so a stray key press never releases anything
+    this.render();
+  },
+
   // tap (or Z) on a slot
   tap(s) {
     if (!this.sel) {
-      if (this.monAt(s)) { this.sel = s; this.msg = `${this.monAt(s).name} valittu. Valitse paikka, johon se siirretään.`; }
+      if (this.monAt(s)) { this.sel = s; this.msg = `${this.monAt(s).name} valittu. Valitse paikka, johon se siirretään, tai paina Vapauta (V).`; }
     } else {
       if (this.sel.area === s.area && this.sel.i === s.i) this.msg = 'Valinta peruttu.';
       else this.move(this.sel, s);
@@ -100,8 +117,19 @@ const pcScreen = {
     const team = Array.from({ length: 6 }, (_, i) => this.slotHtml('team', i)).join('');
     const base = this.page * PC_PER_BOX;
     const box = Array.from({ length: PC_PER_BOX }, (_, i) => this.slotHtml('pc', base + i)).join('');
-    const c = this.monAt(this.cur);
+    const c = this.monAt(this.sel || this.cur);
     const info = c ? `${c.name}${c.shiny ? ' ★' : ''} · LV ${c.level} · HP ${c.hp}/${c.maxHp}` : '';
+    const releaseBtn = this.sel && c ? ' <button type="button" class="pcRelease" data-release>Vapauta</button>' : '';
+    const r = this.confirm && this.monAt(this.confirm);
+    const confirmBox = r ? `
+        <div class="pcConfirm"><div class="pcAsk">
+          <div class="pcAskTitle">Haluatko vapauttaa tämän otuksen?</div>
+          <div class="pcAskMon"><img src="${IMG[spriteKey(r, SPECIES[r.species].sprites.front)].src}" alt="">
+            <b>${r.name}${r.shiny ? ' ★' : ''}</b> LV ${r.level}</div>
+          <div class="pcAskNote">Vapautettua otusta ei saa takaisin.${SPECIES[r.species].legendary ? ' Se ei palaa REGI TEMPPELIIN.' : ''}</div>
+          <div class="pcAskBtns"><button type="button" data-yes class="${this.confirmYes ? 'on' : ''}">KYLLÄ</button>
+            <button type="button" data-no class="${this.confirmYes ? '' : 'on'}">EI</button></div>
+        </div></div>` : '';
     const many = this.pages() > 1;
     this.el.innerHTML = `
       <div class="pcWin" role="dialog" aria-label="PC">
@@ -117,8 +145,9 @@ const pcScreen = {
             <div class="pcGrid">${box}</div>
           </div>
         </div>
-        <div class="pcInfo">${info || '&nbsp;'}</div>
+        <div class="pcInfo">${info || '&nbsp;'}${releaseBtn}</div>
         <div class="pcMsg">${this.msg}</div>
+        ${confirmBox}
       </div>`;
   },
 
@@ -144,6 +173,9 @@ const pcScreen = {
 
     el.addEventListener('click', e => {
       if (e.target.closest('[data-close]')) { this.close(); return; }
+      if (e.target.closest('[data-release]')) { this.askRelease(); return; }
+      if (e.target.closest('[data-yes]')) { this.release(this.confirm); this.render(); return; }
+      if (e.target.closest('[data-no]')) { this.confirm = null; this.sel = null; this.msg = 'Otusta ei vapautettu.'; this.render(); return; }
       const p = e.target.closest('[data-page]');
       if (p) {
         this.page = (this.page + +p.dataset.page + this.pages()) % this.pages();
@@ -155,7 +187,7 @@ const pcScreen = {
     el.addEventListener('pointerdown', e => {
       e.stopPropagation();
       const slotEl = e.target.closest('.pcSlot');
-      if (!slotEl) return;
+      if (!slotEl || this.confirm) return;
       e.preventDefault();
       const s = { area: slotEl.dataset.area, i: +slotEl.dataset.i };
       this.drag = { from: s, x: e.clientX, y: e.clientY, moved: false, ghost: null, id: e.pointerId };
@@ -204,9 +236,18 @@ const pcScreen = {
       if (!this.isOpen) return;
       e.preventDefault();
       if (e.repeat && (e.code === 'KeyZ' || e.code === 'Enter' || e.code === 'Space')) return;
+      if (this.confirm) {   // "Haluatko vapauttaa tämän otuksen?": arrows pick KYLLÄ / EI, Z confirms, X / Esc = EI
+        if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(e.code)) { this.confirmYes = !this.confirmYes; this.render(); }
+        else if (e.code === 'KeyZ' || e.code === 'Enter' || e.code === 'Space') {
+          if (this.confirmYes) this.release(this.confirm); else { this.confirm = null; this.sel = null; this.msg = 'Otusta ei vapautettu.'; }
+          this.render();
+        } else if (e.code === 'KeyX' || e.code === 'Escape' || e.code === 'Backspace') { this.confirm = null; this.sel = null; this.msg = 'Otusta ei vapautettu.'; this.render(); }
+        return;
+      }
       const c = this.cur;
       const base = this.page * PC_PER_BOX;
       if (e.code === 'Escape') { this.close(); return; }
+      if (e.code === 'KeyV' || e.code === 'Delete') { this.askRelease(); return; }
       if (e.code === 'KeyX' || e.code === 'Backspace') {
         if (this.sel) { this.sel = null; this.msg = 'Valinta peruttu.'; this.render(); } else this.close();
         return;
@@ -238,7 +279,7 @@ const pcScreen = {
     style.textContent = `
       #pcScreen { position: fixed; inset: 0; z-index: 950; background: #10121c; align-items: center; justify-content: center;
                   --s: clamp(34px, min(9.5vh, 8.5vw), 62px); user-select: none; -webkit-user-select: none; }
-      #pcScreen .pcWin { box-sizing: border-box; padding: 10px 14px; background: #1d2030; color: #e6e9f2;
+      #pcScreen .pcWin { position: relative; box-sizing: border-box; padding: 10px 14px; background: #1d2030; color: #e6e9f2;
                   border: 2px solid #48a0c8; border-radius: 10px; font: 14px system-ui, sans-serif;
                   box-shadow: 0 10px 40px rgba(0,0,0,.6); max-width: 98vw; max-height: 98vh; overflow: auto; }
       #pcScreen .pcHead { display: flex; justify-content: space-between; align-items: center; font-weight: 700; font-size: 17px; margin-bottom: 8px; gap: 16px; }
@@ -270,7 +311,18 @@ const pcScreen = {
       #pcScreen .pcBar div { height: 100%; }
       #pcScreen .pcStar { color: #e8b830; margin-left: 3px; }
       #pcScreen .pcCellStar { position: absolute; top: 0; right: 2px; font-size: 11px; }
-      #pcScreen .pcInfo { margin-top: 8px; font-weight: 700; min-height: 18px; }
+      #pcScreen .pcInfo { margin-top: 8px; font-weight: 700; min-height: 26px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+      #pcScreen .pcRelease { background: #8a2a3a; border-color: #d06070; padding: 3px 10px; }
+      #pcScreen .pcConfirm { position: absolute; inset: 0; background: rgba(10,10,20,.72); display: flex; align-items: center; justify-content: center; border-radius: 8px; }
+      #pcScreen .pcAsk { background: #262a3c; border: 2px solid #d06070; border-radius: 10px; padding: 14px 18px; text-align: center; max-width: 90%; }
+      #pcScreen .pcAskTitle { font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+      #pcScreen .pcAskMon { display: flex; align-items: center; justify-content: center; gap: 8px; }
+      #pcScreen .pcAskMon img { width: 48px; height: 48px; image-rendering: pixelated; }
+      #pcScreen .pcAskNote { font-size: 12px; color: #9aa3b5; margin: 6px 0 10px; }
+      #pcScreen .pcAskBtns { display: flex; gap: 10px; justify-content: center; }
+      #pcScreen .pcAskBtns button { min-width: 80px; padding: 7px 12px; font-size: 14px; }
+      #pcScreen .pcAskBtns button.on { outline: 2px solid #f4df1a; }
+      #pcScreen .pcAskBtns [data-yes] { background: #8a2a3a; border-color: #d06070; }
       #pcScreen .pcMsg { color: #9aa3b5; font-size: 12px; min-height: 16px; margin-top: 2px; }
       .pcGhost { position: fixed; z-index: 960; width: 56px; height: 56px; image-rendering: pixelated; pointer-events: none;
                  transform: translate(-50%, -50%) scale(1.15); filter: drop-shadow(0 4px 6px rgba(0,0,0,.6)); }`;

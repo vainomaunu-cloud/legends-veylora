@@ -90,8 +90,9 @@ const saveGame = {
       v: 1, time: Date.now(),
       party: game.party.map(pack),
       pc: game.pc.map(pack),
-      coins: game.coins, balls: game.balls, greatBalls: game.greatBalls,
+      coins: game.coins, balls: game.balls, greatBalls: game.greatBalls, masterBalls: game.masterBalls,
       caught: game.caught, shinyCharm: game.shinyCharm,
+      guardianBeaten: game.guardianBeaten, regisCaught: game.regisCaught,
       map: overworld.map.id, x: p.tx, y: p.ty, dir: p.dir,
     };
     try { localStorage.setItem(slotKey(this.slotId), JSON.stringify(d)); } catch (e) { return false; }
@@ -114,10 +115,13 @@ const saveGame = {
     game.coins = Math.max(0, d.coins | 0);
     game.balls = Math.max(0, d.balls | 0);
     game.greatBalls = Math.max(0, d.greatBalls | 0);
+    game.masterBalls = Math.max(0, d.masterBalls | 0);
     // older saves have no collection yet: start it from the team (the starter does not count)
     game.caught = (Array.isArray(d.caught) ? d.caught : party.map(m => m.species)).filter(id => SPECIES[id] && id !== 'duckonda');
     game.caught = [...new Set(game.caught)];
     game.shinyCharm = !!d.shinyCharm;
+    game.guardianBeaten = !!d.guardianBeaten;
+    game.regisCaught = (Array.isArray(d.regisCaught) ? d.regisCaught : []).filter(id => SPECIES[id]);
     const map = MAPS[d.map] ? d.map : 'forest';
     const m = MAPS[map];
     let x = d.x | 0, y = d.y | 0;

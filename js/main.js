@@ -6,9 +6,12 @@ const game = {
   coins: 0,
   balls: 0,
   greatBalls: 0,
+  masterBalls: 0,
   caught: [],           // species caught at least once (KOKOELMA)
   pc: [],               // creatures stored in the HOITOLA PC
   shinyCharm: false,
+  guardianBeaten: false, // the TEMPLE GUARDIAN on SNOW MOUNTAIN has been beaten (REGI TEMPPELI is open)
+  regisCaught: [],      // regis caught from their pedestals (they don't come back)
   runner: new Runner(), // transitions
   fade: 0, wipe: 0, white: 0, t: 0,
 };
@@ -30,13 +33,14 @@ function wildLevel() {
   return rnd(lo, hi);
 }
 
-function startEncounter(species = 'amperite', from = 'bush') {
+// opts: { level, regi, enemy, shiny } (see battle.start)
+function startEncounter(species = 'amperite', from = 'bush', opts = {}) {
   game.locked = true;
   game.runner.run((function* () {
     music.play('battle');
     yield* flashScreen(3);
     yield* tween(24, k => { game.wipe = k; });
-    battle.start(species, wildLevel(), from);
+    battle.start(species, opts.level || wildLevel(), from, opts);
     game.view = 'battle';
     game.locked = false;
     yield* tween(16, k => { game.wipe = 1 - k; });
@@ -69,8 +73,9 @@ function newGame(name = saveGame.defaultName()) {
   const starter = makeMon('duckonda', 5);
   starter.shiny = Math.random() < SPECIES.duckonda.shinyChance;
   game.party = [starter];
-  game.coins = 0; game.balls = 0; game.greatBalls = 0;
+  game.coins = 0; game.balls = 0; game.greatBalls = 0; game.masterBalls = 0;
   game.caught = []; game.shinyCharm = false; game.pc = [];
+  game.guardianBeaten = false; game.regisCaught = [];
   overworld.init();
   startGame();
 }

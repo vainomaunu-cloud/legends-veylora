@@ -1,11 +1,13 @@
 // ---------- Hidden admin panel ----------
-// Open/close by holding the keys 1, 8 and 7 down at the same time (number row or numpad).
-// Not mentioned anywhere on the page.
+// Opens with the code: type it anywhere on a keyboard, or (phones) tap the text next to the save
+// button 5 times quickly and type it in the box that appears. Not mentioned anywhere on the page.
+// Only a hash of the code is stored here, so the code itself is not in the source.
 window.adminOpen = false;
+const ADMIN_HASH = 'ce1019cc';
+const codeHash = s => { let h = 0x811c9dc5; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16); };
 
 const admin = {
   el: null,
-  held: new Set(),
 
   toggle() {
     window.adminOpen = !window.adminOpen;
@@ -54,6 +56,8 @@ const admin = {
         <button data-act="balls" data-n="1">+1</button><button data-act="balls" data-n="10">+10</button><button data-act="balls" data-n="99">+99</button></div>
       <div class="admRow">GREAT PALLOT <b>${game.greatBalls}</b>
         <button data-act="great" data-n="1">+1</button><button data-act="great" data-n="10">+10</button><button data-act="great" data-n="99">+99</button></div>
+      <div class="admRow">MASTER PALLOT <b>${game.masterBalls}</b>
+        <button data-act="master" data-n="1">+1</button><button data-act="master" data-n="10">+10</button><button data-act="master" data-n="99">+99</button></div>
 
       <h4>Tiimi (${p.length}/6)</h4>
       ${team}
@@ -75,9 +79,16 @@ const admin = {
         <button data-act="charm">${game.shinyCharm ? 'Poista' : 'Anna'} SHINY CHARM</button>
         <button data-act="resetdex">Tyhjennä kokoelma</button></div>
 
+      <h4>REGI TEMPPELI</h4>
+      <div class="admRow">TEMPPELIN VARTIJA <b>${game.guardianBeaten ? 'voitettu' : 'ei voitettu'}</b>
+        <button data-act="guardian">${game.guardianBeaten ? 'Palauta vartija' : 'Merkitse voitetuksi'}</button></div>
+      <div class="admRow">Napatut regit <b>${game.regisCaught.map(id => SPECIES[id].name).join(', ') || '-'}</b>
+        <button data-act="regis"${game.regisCaught.length ? '' : ' disabled'}>Palauta regit jalustoille</button></div>
+
       <h4>Muuta</h4>
       <div class="admRow"><button data-act="save">Tallenna nyt</button>
-        <button data-act="battle">Aloita taistelu</button> <select id="admFoe">${speciesOpts}</select></div>
+        <button data-act="battle">Aloita taistelu</button> <select id="admFoe">${speciesOpts}</select>
+        <label><input type="checkbox" id="admFoeShiny"> kiiltävä</label></div>
     `;
   },
 
@@ -90,6 +101,7 @@ const admin = {
       case 'setcoins': game.coins = Math.max(0, parseInt(this.el.querySelector('#admCoins').value, 10) || 0); return this.changed('Kolikot asetettu');
       case 'balls': game.balls += n; return this.changed(`+${n} ${BALL_NAME}A`);
       case 'great': game.greatBalls += n; return this.changed(`+${n} ${GREAT_NAME}A`);
+      case 'master': game.masterBalls += n; return this.changed(`+${n} ${MASTER_NAME}A`);
       case 'heal': healParty(); return this.changed('Tiimi parannettu');
       case 'setlv': {
         const m = game.party[i]; if (!m) return;
@@ -123,10 +135,15 @@ const admin = {
       case 'battle': {
         if (!ow) return this.msg('Taistelun voi aloittaa vain kävellessä.');
         if (!game.party.some(m => m.hp > 0)) healParty();
+        const foe = this.el.querySelector('#admFoe').value, shiny = this.el.querySelector('#admFoeShiny').checked;
         this.toggle();
-        startEncounter(this.el.querySelector('#admFoe').value);
+        // regis fight like on their pedestals (level 50); the only way to meet a shiny regi
+        startEncounter(foe, SPECIES[foe].legendary ? 'regi' : 'bush',
+          { ...(SPECIES[foe].legendary ? { regi: true, level: 50 } : {}), ...(shiny ? { shiny: true } : {}) });
         return;
       }
+      case 'guardian': game.guardianBeaten = !game.guardianBeaten; return this.changed(`TEMPPELIN VARTIJA: ${game.guardianBeaten ? 'voitettu' : 'palautettu'}`);
+      case 'regis': game.regisCaught = []; return this.changed('Regit palautettu jalustoille');
     }
   },
 
@@ -156,21 +173,67 @@ const admin = {
       #admin .admMsg { min-height: 18px; color: #7ee08a; font-size: 13px; margin-top: 4px; }`;
     document.head.appendChild(style);
 
-    // secret: 1 + 8 + 7 held at the same time
-    const digit = code => ({ Digit1: '1', Numpad1: '1', Digit8: '8', Numpad8: '8', Digit7: '7', Numpad7: '7' })[code];
+    // keyboard: typing the code anywhere (outside text fields) opens / closes the panel
+    let typed = '';
     addEventListener('keydown', e => {
-      const d = digit(e.code);
-      if (!d || e.repeat) { if (e.code === 'Escape' && window.adminOpen) this.toggle(); return; }
-      this.held.add(d);
-      if (this.held.has('1') && this.held.has('8') && this.held.has('7')) {
-        this.held.clear();
-        e.preventDefault();
-        this.toggle();
+      if (e.code === 'Escape' && window.adminOpen) { this.toggle(); return; }
+      if (e.repeat || e.key.length !== 1 || e.target.closest && e.target.closest('input, textarea, select')) return;
+      typed = (typed + e.key.toLowerCase()).slice(-24);
+      for (let i = 0; i < typed.length; i++) {
+        if (codeHash(typed.slice(i)) === ADMIN_HASH) { typed = ''; e.preventDefault(); this.toggle(); return; }
       }
     });
-    addEventListener('keyup', e => { const d = digit(e.code); if (d) this.held.delete(d); });
-    addEventListener('blur', () => this.held.clear());
+
+    // phones: 5 quick taps on the text next to the save button show a small code box
+    const tapZone = document.getElementById('saveMsg');
+    let taps = [];
+    if (tapZone) tapZone.addEventListener('pointerdown', e => e.stopPropagation());   // not a game control
+    if (tapZone) tapZone.addEventListener('click', () => {
+      const now = Date.now();
+      taps = taps.filter(t => now - t < 2500).concat(now);
+      if (taps.length >= 5) { taps = []; this.askCode(); }
+    });
+  },
+
+  askCode() {
+    if (window.adminOpen || document.getElementById('codeBox')) return;
+    const box = document.createElement('div');
+    box.id = 'codeBox';
+    box.innerHTML = `
+      <form class="codeForm">
+        <input type="password" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="go" aria-label="Koodi" placeholder="Koodi">
+        <button type="submit">OK</button><button type="button" data-x>✕</button>
+        <div class="codeMsg"></div>
+      </form>`;
+    document.body.appendChild(box);
+    const input = box.querySelector('input'), msg = box.querySelector('.codeMsg');
+    const close = () => box.remove();
+    box.querySelector('form').addEventListener('submit', e => {
+      e.preventDefault();
+      if (codeHash(input.value.trim().toLowerCase()) === ADMIN_HASH) { close(); this.toggle(); }
+      else { msg.textContent = 'Väärä koodi'; input.select(); }
+    });
+    box.querySelector('[data-x]').addEventListener('click', close);
+    box.addEventListener('click', e => { if (e.target === box) close(); });
+    box.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Escape') close(); });   // keys go to the box, not the game
+    box.addEventListener('pointerdown', e => e.stopPropagation());
+    setTimeout(() => input.focus(), 30);
   },
 };
+
+(function codeBoxStyle() {
+  const style = document.createElement('style');
+  style.textContent = `
+    #codeBox { position: fixed; inset: 0; z-index: 1001; background: rgba(8,8,14,.5); display: flex; align-items: center; justify-content: center; }
+    #codeBox .codeForm { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; padding: 12px; background: #1d2030;
+      border: 2px solid #5a6488; border-radius: 10px; width: min(300px, 90vw); box-sizing: border-box; }
+    #codeBox input { flex: 1; min-width: 0; font: 16px system-ui, sans-serif; padding: 7px 9px; border-radius: 6px;
+      border: 1px solid #4a5170; background: #12141e; color: #e6e9f2; }
+    #codeBox button { font: 600 14px system-ui, sans-serif; color: #fff; background: #3a4260; border: 1px solid #6a74a0;
+      border-radius: 6px; padding: 7px 11px; cursor: pointer; }
+    #codeBox .codeMsg { width: 100%; min-height: 16px; color: #e08a8a; font: 13px system-ui, sans-serif; }
+    #saveMsg { min-width: 60px; min-height: 22px; display: inline-block; }`;
+  document.head.appendChild(style);
+})();
 
 admin.setup();

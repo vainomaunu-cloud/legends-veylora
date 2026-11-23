@@ -149,6 +149,29 @@ const SPECIES = {
     evolveOnly: true,   // not needed for the SHINY CHARM (it can't be caught in the wild)
     sprites: { front: 'hummirding', blink: 'hummirdingBlink', hurt: 'hummirdingHurt', attack: 'hummirdingAttack', back: 'hummirdingBack', backAttack: 'hummirdingBackAttack' },
   },
+  // the three regis of the REGI TEMPPELI: level 50, on the pedestals, never shiny in the wild (only from the admin panel).
+  // Beating one only sends it back to its pedestal; it has to be caught. Once caught it does not come back.
+  regiacid: {
+    name: 'REGIACID', legendary: true,
+    base: { hp: 80, atk: 105, def: 90, spa: 105, spd: 85, spe: 70 },
+    moves: ['regipower', 'acidpulse', 'poisonjab', 'firepunch'],
+    xpYield: 250, coins: 0, catchRate: 0.12, feetY: -2,
+    sprites: { front: 'regiacid', blink: 'regiacidBlink', hurt: 'regiacidHurt', attack: 'regiacidAttack', back: 'regiacidBack', backAttack: 'regiacidBackAttack' },
+  },
+  regipsy: {
+    name: 'REGIPSY', legendary: true,
+    base: { hp: 80, atk: 90, def: 80, spa: 120, spd: 100, spe: 85 },
+    moves: ['regipower', 'psychocut', 'psychic', 'mindheal'],
+    xpYield: 250, coins: 0, catchRate: 0.12, feetY: 4,
+    sprites: { front: 'regipsy', blink: 'regipsyBlink', hurt: 'regipsyHurt', attack: 'regipsyAttack', back: 'regipsyBack', backAttack: 'regipsyBackAttack' },
+  },
+  regismile: {
+    name: 'REGISMILE', legendary: true,
+    base: { hp: 100, atk: 70, def: 95, spa: 105, spd: 110, spe: 75 },
+    moves: ['regipower', 'happinesspulse', 'babydolleyes', 'charm'],
+    xpYield: 250, coins: 0, catchRate: 0.12, feetY: 0,
+    sprites: { front: 'regismile', blink: 'regismileBlink', hurt: 'regismileHurt', attack: 'regismileAttack', back: 'regismileBack', backAttack: 'regismileBackAttack' },
+  },
   // the starter: never appears in bushes, 1 in 10 is shiny
   duckonda: {
     name: 'DUCKONDA',
@@ -188,6 +211,14 @@ const MOVES = {
   twister: { id: 'twister', name: 'TWISTER', power: 70, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'twister' },
   blizzard: { id: 'blizzard', name: 'BLIZZARD', power: 110, acc: 70, pp: 5, special: true, anim: 'blizzard' },
   icefang: { id: 'icefang', name: 'ICE FANG', power: 65, acc: 95, pp: 15, special: false, flinch: 0.1, anim: 'icefang' },
+  // regi moves
+  regipower: { id: 'regipower', name: 'REGI POWER', power: 120, acc: 90, pp: 5, special: true, anim: 'regipower' },
+  acidpulse: { id: 'acidpulse', name: 'ACID PULSE', power: 85, acc: 100, pp: 10, special: true, poison: 0.3, anim: 'acidpulse' },
+  firepunch: { id: 'firepunch', name: 'FIRE PUNCH', power: 75, acc: 100, pp: 15, special: false, burn: 0.1, anim: 'firepunch' },
+  mindheal: { id: 'mindheal', name: 'MIND HEAL', power: 0, powerText: '-', acc: 100, pp: 10, special: true, heal: 0.5, anim: 'mindheal' },
+  happinesspulse: { id: 'happinesspulse', name: 'HAPPINESS PULSE', power: 80, acc: 100, pp: 15, special: true, anim: 'happiness' },
+  babydolleyes: { id: 'babydolleyes', name: 'BABYDOLL EYES', power: 0, powerText: '-', acc: 100, pp: 30, special: true, lowerAtk: 1, anim: 'hearts' },
+  charm: { id: 'charm', name: 'CHARM', power: 0, powerText: '-', acc: 100, pp: 20, special: true, lowerAtk: 2, anim: 'hearts' },
   sleeppowder: { id: 'sleeppowder', name: 'SLEEP POWDER', power: 0, powerText: '-', acc: 75, pp: 15, special: true, sleep: true, anim: 'powder' },
 };
 // used automatically when every move is out of PP
@@ -229,7 +260,8 @@ function healParty() {
 }
 
 function calcDamage(att, def, move) {
-  const A = move.special ? att.spa : att.atk * (att.status === 'brn' ? 0.5 : 1);   // burn halves physical attacks
+  // burn halves physical attacks; BABYDOLL EYES / CHARM lower them (atkStage -1..-3)
+  const A = move.special ? att.spa : att.atk * (att.status === 'brn' ? 0.5 : 1) * 2 / (2 - (att.atkStage || 0));
   const D = move.special ? def.spd : def.def;
   let dmg = Math.floor(Math.floor(Math.floor(2 * att.level / 5 + 2) * movePower(move, att, def) * A / D) / 50) + 2;
   const crit = Math.random() < (move.highCrit ? 1 / 8 : 1 / 16);   // PSYCHO CUT crits twice as often
@@ -244,6 +276,8 @@ const SHINY_CHANCE_CHARM = 1 / 75;   // with the SHINY CHARM
 const shinyChance = () => (game.shinyCharm ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
 // every species that can be caught (the starter can only be chosen, not caught)
 const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckonda' && !SPECIES[id].evolveOnly);
+// the SHINY CHARM needs every catchable species except the regis (they can never be shiny anyway)
+const charmSpecies = () => catchableSpecies().filter(id => !SPECIES[id].legendary);
 const FIRE = ['#fff06a', '#ffb43d', '#ff7a2a', '#dd3d3d'];
 // shiny creatures use the 'shiny_' version of every sprite
 const spriteKey = (mon, key) => (mon.shiny ? 'shiny_' + key : key);
@@ -254,6 +288,7 @@ const speedOf =m => m.spe * (m.status === 'par' ? 0.5 : 1) * 2 / (2 - (m.speStag
 // battle background colours per map
 const BATTLE_BG = {
   forest: { sky: '#e4f2d0', far: '#b2dc98', near: '#95ca7c', ground: '#bfe39a', speck: '#a9d684', platDark: '#7fb85a', plat: '#98cf6c' },
+  temple: { sky: '#d8b0e4', far: '#a878c0', near: '#8752b4', ground: '#c89ad8', speck: '#b48ad4', platDark: '#6a3a94', plat: '#a47cc0', glow: true },
   snow: { sky: '#e8f0fa', far: '#c8d8ea', near: '#a8c0d8', ground: '#f4f8fc', speck: '#d4e0ee', platDark: '#b8c8dc', plat: '#dfeaf5' },
   sea: { sky: '#d6efff', far: '#a6d6f2', near: '#86c4ec', ground: '#62b2e8', speck: '#8ccaf2', platDark: '#cbaa5e', plat: '#f2db9a' },
   hyujal: { sky: '#d8c6f2', far: '#b08ee0', near: '#9470d0', ground: '#b39ae2', speck: '#9f82d6', platDark: '#7a52b8', plat: '#9a78da', glow: true },
@@ -270,12 +305,25 @@ const battle = {
   t: 0, shake: 0, flash: 0, dark: 0,
   fx: [], bolt: null, menu: null, result: null,
 
-  start(foeSpecies, foeLevel, from = 'bush') {
+  // opts.enemy: a trainer { name, team: [{ species, level }], reward, onWin } (no catching, no running)
+  // opts.regi: a regi on its pedestal (beating it only sends it back; it must be caught)
+  // opts.shiny: force shiny (admin panel); regis and trainer creatures are otherwise never shiny
+  start(foeSpecies, foeLevel, from = 'bush', opts = {}) {
     this.from = from;
+    this.enemy = opts.enemy || null;
+    this.kind = this.enemy ? 'trainer' : opts.regi ? 'regi' : 'wild';
     this.me = game.party.find(m => m.hp > 0);
-    this.foe = makeMon(foeSpecies, foeLevel);
-    this.foe.shiny = Math.random() < shinyChance();
-    for (const m of game.party) { m.speStage = 0; m.flinch = false; m.trapTurns = 0; }
+    if (this.enemy) {
+      const team = this.enemy.team.map(t => makeMon(t.species, t.level));
+      this.foe = team.shift();
+      this.foeQueue = team;
+    } else {
+      this.foe = makeMon(foeSpecies, foeLevel);
+      this.foeQueue = [];
+    }
+    this.foe.shiny = opts.shiny !== undefined ? !!opts.shiny
+      : this.kind === 'wild' && !SPECIES[this.foe.species].legendary && Math.random() < shinyChance();
+    for (const m of game.party) { m.speStage = 0; m.atkStage = 0; m.flinch = false; m.trapTurns = 0; }
     this.tint = 0; this.tintRGB = null;
     this.thrown = null; this.parts = null; this.waves = null; this.webFx = null; this.slashes = null;
     this.evo = null;
@@ -326,31 +374,44 @@ const battle = {
         yield* wait(6);
       }
     }
-    yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
-    if (foe.shiny) yield* textBox.say(`Vau! Se on KIILTÄVÄ ${foe.name}! Sellaisen näkee vain kerran sadasta.`);
+    if (this.kind === 'trainer') {
+      yield* textBox.say(`${this.enemy.name} haastaa sinut taisteluun!`);
+      yield* textBox.say(`${this.enemy.name} lähetti ${foe.name}n!`);
+    } else if (this.kind === 'regi') {
+      yield* textBox.say(`${foe.name} heräsi kivijalustaltaan!`);
+    } else {
+      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
+    }
+    if (foe.shiny) yield* textBox.say(`Vau! Se on KIILTÄVÄ ${foe.name}!`);
     yield* tween(18, k => { this.trainer.x = Math.round(36 - 110 * k); });
     this.trainer.show = false;
     yield* this.sendOut();
 
     while (true) {
       let me = this.me;
+      const foe = this.foe;
       const choice = yield* this.chooseMain();
       let myMove = null;
+      if ((choice === 1 || choice === 3) && this.kind === 'trainer') {
+        yield* textBox.say(choice === 1 ? 'Toisen kouluttajan otusta ei voi napata!' : 'Kouluttajataistelusta ei voi paeta!');
+        continue;
+      }
       if (choice === 2) {
         // switch to another team member; the switch uses up this turn and the foe attacks the newcomer
         if (!(yield* this.switchMon())) continue;
         me = this.me;
       } else if (choice === 1) {
-        if (game.balls + game.greatBalls <= 0) { yield* textBox.say(`Sinulla ei ole yhtään palloa! Osta niitä ${CENTER_NAME}sta tai rantakioskista.`); continue; }
-        let great = game.balls <= 0;
-        if (game.balls > 0 && game.greatBalls > 0) {   // both kinds: let the player pick
+        if (totalBalls() <= 0) { yield* textBox.say(`Sinulla ei ole yhtään palloa! Osta niitä ${CENTER_NAME}sta tai rantakioskista.`); continue; }
+        const have = BALL_TYPES.filter(b => game[b.key] > 0);
+        let type = have[0];
+        if (have.length > 1) {   // several kinds: let the player pick
           textBox.show('Mikä pallo?', 0, 136);
-          const pick = yield* menuBox.choose([`PYYDYS X${game.balls}`, `GREAT X${game.greatBalls}`], 136, 112, 104);
+          const pick = yield* menuBox.choose(have.map(b => `${b.short} X${game[b.key]}`), 136, 160 - 10 - have.length * 12, 104);
           textBox.hide();
           if (pick < 0) continue;
-          great = pick === 1;
+          type = have[pick];
         }
-        if (yield* this.throwBall(great)) { this.result = 'catch'; return; }
+        if (yield* this.throwBall(type)) { this.result = 'catch'; return; }
       } else if (choice === 3) {
         this.runAttempts++;
         if (Math.random() < 0.5 + 0.25 * this.runAttempts) {
@@ -377,25 +438,35 @@ const battle = {
         turns.push([foe, me, foeMove]);
       }
       me.flinch = foe.flinch = false;
+      let newFoe = false;
       for (const [a, d, m] of turns) {
         yield* this.useMove(a, d, m);
-        if (foe.hp <= 0) { yield* this.win(); return; }
+        if (foe.hp <= 0) {
+          if (!(yield* this.win())) return;   // battle over
+          newFoe = true; break;                // the trainer sent the next one
+        }
         if (me.hp <= 0) {
           if (!(yield* this.myFainted())) { this.result = 'lose'; return; }
           break;   // a fresh team member came out; the fainted one's turn is lost
         }
       }
+      if (newFoe) continue;
       const end = yield* this.endOfTurn();
-      if (end === 'win') { yield* this.win(); return; }
+      if (end === 'win' && !(yield* this.win())) return;
       if (end === 'lose') { this.result = 'lose'; return; }
     }
+  },
+
+  // "Villi ZUBUG" / "Vastustajan PSISTIEL" / just "REGIACID"
+  foeName(m) {
+    return this.kind === 'trainer' ? `Vastustajan ${m.name}` : this.kind === 'regi' ? m.name : `Villi ${m.name}`;
   },
 
   // poison, burn and FIRE SPIN damage at the end of every turn
   *endOfTurn() {
     for (const mine of [true, false]) {
       const m = mine ? this.me : this.foe, v = mine ? this.meV : this.foeV;
-      const name = mine ? m.name : 'Villi ' + m.name;
+      const name = mine ? m.name : this.foeName(m);
       const effects = [];
       if (m.status === 'psn') effects.push(['psn', m.maxHp / 8, `${name} kärsii myrkystä!`]);
       if (m.status === 'brn') effects.push(['brn', m.maxHp / 16, `${name} kärsii palovammasta!`]);
@@ -432,7 +503,7 @@ const battle = {
       if (m.hp <= 0) { yield* textBox.say(`${m.name} on uupunut eikä jaksa taistella.`); continue; }
       // call the current one back
       const old = this.me, mv = this.meV;
-      old.speStage = 0; old.trapTurns = 0; old.flinch = false;
+      old.speStage = 0; old.atkStage = 0; old.trapTurns = 0; old.flinch = false;
       yield* textBox.say(`Tule takaisin, ${old.name}!`, { auto: 6, keep: true });
       this.addFx('spark', mv.x + 32, mv.y + 36, [0, 0, 1, 1, 2, 2]);
       yield* tween(12, k => { mv.scale = 1 - 0.9 * k; });
@@ -441,7 +512,7 @@ const battle = {
       textBox.hide();
       yield* wait(8);
       this.me = m;
-      m.speStage = 0; m.trapTurns = 0; m.flinch = false;
+      m.speStage = 0; m.atkStage = 0; m.trapTurns = 0; m.flinch = false;
       yield* this.sendOut();
       return true;
     }
@@ -463,13 +534,13 @@ const battle = {
   },
 
   // ----- catching -----
-  // GREAT PALLO doubles the catch chance
-  *throwBall(great) {
-    if (great) game.greatBalls--; else game.balls--;
+  // GREAT PALLO doubles the catch chance, MASTER PALLO makes it five times better (BALL_TYPES)
+  *throwBall(type) {
+    game[type.key]--;
     const foe = this.foe, fv = this.foeV;
-    yield* textBox.say(`Heitit ${great ? GREAT_NAME : BALL_NAME}N!`, { auto: 4, keep: true });
+    yield* textBox.say(`Heitit ${type.name}N!`, { auto: 4, keep: true });
     const sx = 40, sy = 100, tx = fv.x + 32, ty = fv.y + 30;
-    this.thrown = { x: sx, y: sy, f: 0, img: great ? IMG.greatBall : IMG.ball };
+    this.thrown = { x: sx, y: sy, f: 0, img: IMG[type.img] };
     yield* tween(22, k => {
       this.thrown.x = sx + (tx - sx) * k;
       this.thrown.y = sy + (ty - sy) * k - Math.sin(k * Math.PI) * 40;
@@ -484,7 +555,7 @@ const battle = {
     yield* wait(16);
 
     const sp = SPECIES[foe.species];
-    let p = sp.catchRate * (1 - (2 / 3) * foe.hp / foe.maxHp) * (foe.status ? 1.5 : 1) * (great ? 2 : 1);
+    let p = sp.catchRate * (1 - (2 / 3) * foe.hp / foe.maxHp) * (foe.status ? 1.5 : 1) * type.mult;
     const caught = Math.random() < Math.min(1, p);
     const wobbles = caught ? 3 : rnd(0, 2);
     for (let i = 0; i < wobbles; i++) {
@@ -496,7 +567,8 @@ const battle = {
       for (let i = 0; i < 3; i++) this.addFx('spark', this.thrown.x + rnd(-10, 10), this.thrown.y + rnd(-10, 4), [0, 1, 2, 2]);
       yield* wait(12);
       this.showFoeInfo = false;
-      yield* textBox.say(`Napattu! Villi ${foe.name} jäi kiinni!`);
+      yield* textBox.say(`Napattu! ${this.foeName(foe)} jäi kiinni!`);
+      if (this.kind === 'regi' && !game.regisCaught.includes(foe.species)) game.regisCaught.push(foe.species);   // gone from its pedestal for good
       const caughtMon = { ...foe, moves: foe.moves.map(m => ({ ...m })) };
       this.thrown = null;
       if (game.party.length < 6) {
@@ -530,7 +602,7 @@ const battle = {
       const all = catchableSpecies();
       yield* textBox.say(`${SPECIES[species].name} lisättiin KOKOELMAAN! (${game.caught.filter(id => all.includes(id)).length}/${all.length})`);
     }
-    if (!game.shinyCharm && catchableSpecies().every(id => game.caught.includes(id))) {
+    if (!game.shinyCharm && charmSpecies().every(id => game.caught.includes(id))) {
       game.shinyCharm = true;
       this.flash = 8;
       for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
@@ -582,8 +654,8 @@ const battle = {
   *useMove(att, def, move) {
     const mine = att === this.me;
     const av = mine ? this.meV : this.foeV, dv = mine ? this.foeV : this.meV;
-    const who = mine ? att.name : `Villi ${att.name}`;
-    const target = mine ? `Villi ${def.name}` : def.name;
+    const who = mine ? att.name : this.foeName(att);
+    const target = mine ? this.foeName(def) : def.name;
     if (att.status === 'slp') {   // asleep: 1-3 turns
       if (--att.sleepTurns > 0) {
         yield* this.sleepFx(av);
@@ -620,6 +692,27 @@ const battle = {
       textBox.hide();
       return;
     }
+    if (move.heal) {   // MIND HEAL: the user gets back half of its max HP
+      yield* this.animMindHeal(av);
+      if (att.hp >= att.maxHp) yield* textBox.say(`${who}n HP on jo täynnä!`);
+      else {
+        att.hp = Math.min(att.maxHp, att.hp + Math.ceil(att.maxHp * move.heal));
+        yield* this.drainHp(av, att);
+        yield* textBox.say(`${who} parani!`);
+      }
+      textBox.hide();
+      return;
+    }
+    if (move.lowerAtk) {   // BABYDOLL EYES / CHARM: no damage, lowers the target's physical attack
+      yield* this.animHearts(av, dv, move.lowerAtk);
+      if ((def.atkStage || 0) <= -3) yield* textBox.say(`${target}n hyökkäys ei voi laskea enempää!`);
+      else {
+        def.atkStage = Math.max(-3, (def.atkStage || 0) - move.lowerAtk);
+        yield* textBox.say(`${target}n hyökkäys laski${move.lowerAtk > 1 ? ' paljon' : ''}!`);
+      }
+      textBox.hide();
+      return;
+    }
     if (move.slow) {   // STICKY WEB: no damage, lowers speed
       yield* this.animWeb(av, dv);
       if ((def.speStage || 0) <= -3) { yield* textBox.say('Kohteen nopeus ei voi laskea enempää!'); }
@@ -647,6 +740,10 @@ const battle = {
     else if (move.anim === 'psistrike') yield* this.animPsiStrike(av, dv);
     else if (move.anim === 'psychic') yield* this.animPsychic(av, dv);
     else if (move.anim === 'psychocut') yield* this.animPsychoCut(av, dv);
+    else if (move.anim === 'regipower') yield* this.animRegiPower(av, dv);
+    else if (move.anim === 'acidpulse') yield* this.animAcidPulse(av, dv);
+    else if (move.anim === 'firepunch') yield* this.animFirePunch(av, dv, mine ? 1 : -1);
+    else if (move.anim === 'happiness') yield* this.animHappiness(av, dv);
     else if (move.anim === 'crunch') yield* this.animCrunch(av, dv, mine ? 1 : -1);
     else if (move.anim === 'darkpulse') yield* this.animDarkPulse(av, dv);
     else if (move.anim === 'icecream') yield* this.animIceCream(av, dv);
@@ -899,6 +996,119 @@ const battle = {
     yield* tween(6, k => { this.tint = 0.25 * (1 - k); });
     this.tint = 0; this.tintRGB = null;
     yield* wait(6);
+  },
+
+  // ----- regi moves -----
+  // REGI POWER: the sky goes deep violet, gold-pink-cyan rings collapse onto the target, then a huge burst
+  *animRegiPower(av, dv) {
+    av.pose = 'attack';
+    this.tintRGB = '70,20,120';
+    yield* tween(10, k => { this.tint = 0.45 * k; });
+    const cx = dv.x + 32, cy = dv.y + 34;
+    for (let i = 0; i < 48; i++) {
+      this.ringFrame(cx, cy, i, 16, ['#ffe14a', '#ff9cf2', '#9fe3ff'], false, 40);
+      if (i % 8 === 0) this.shake = 3;
+      yield;
+    }
+    this.flash = 6; this.shake = 14;
+    for (let i = 0; i < 18; i++) {   // burst of rays
+      this.parts = [];
+      for (let n = 0; n < 16; n++) {
+        const a = n * Math.PI / 8, r = 4 + i * 2.4;
+        this.parts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * 0.8, c: ['#ffe14a', '#ff9cf2', '#9fe3ff', '#ffffff'][n % 4], s: 4 - Math.floor(i / 6) });
+      }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    yield* tween(10, k => { this.tint = 0.45 * (1 - k); });
+    this.tint = 0; this.tintRGB = null;
+    yield* wait(6);
+  },
+
+  // ACID PULSE: green-violet acid globs fly over, then acid rings ripple out of the target
+  *animAcidPulse(av, dv) {
+    av.pose = 'attack';
+    yield* this.animParticles(av, dv, { count: 8, gap: 3, dur: 18, arc: 14, swirl: 3, colors: ['#9be15d', '#c070e0', '#d6ff9e'], size: 4 });
+    av.pose = 'idle';
+    const cx = dv.x + 32, cy = dv.y + 36;
+    for (let i = 0; i < 30; i++) { this.ringFrame(cx, cy, i, 15, ['#9be15d', '#c070e0'], true, 28); if (i % 10 === 0) this.shake = 4; yield; }
+    this.parts = null;
+    yield* wait(4);
+  },
+
+  // FIRE PUNCH: a flaming fist rush, then a burst of fire on the target
+  *animFirePunch(av, dv, dir) {
+    av.pose = 'attack';
+    for (let i = 0; i < 10; i++) {   // the fist catches fire
+      this.parts = [];
+      for (let n = 0; n < 6; n++) this.parts.push({ x: av.x + 32 + dir * 14 + rnd(-5, 5), y: av.y + 30 - ((i + n * 2) % 10), c: FIRE[n % 4], s: 3 });
+      yield;
+    }
+    this.parts = null;
+    yield* this.animTackle(av, dv, dir);
+    for (let i = 0; i < 14; i++) {
+      this.parts = [];
+      for (let n = 0; n < 12; n++) {
+        const a = n * Math.PI / 6, r = 3 + i * 1.6;
+        this.parts.push({ x: dv.x + 32 + Math.cos(a) * r, y: dv.y + 34 + Math.sin(a) * r * 0.8, c: FIRE[n % FIRE.length], s: 4 });
+      }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+  },
+
+  // MIND HEAL: pink light rises around the user
+  *animMindHeal(av) {
+    av.pose = 'attack';
+    const cx = av.x + 32, base = av.y + 58;
+    for (let i = 0; i < 40; i++) {
+      this.parts = [];
+      for (let n = 0; n < 10; n++) {
+        const k = ((i * 2 + n * 9) % 40) / 40;
+        const x = cx + Math.sin(n * 1.7) * 22, y = base - k * 52;
+        this.parts.push({ x, y, c: n % 2 ? '#ffd6ff' : '#ff9cf2', s: 2 });
+        if (n % 3 === 0) { this.parts.push({ x: x - 2, y, c: '#ffffff', s: 1 }, { x: x + 2, y, c: '#ffffff', s: 1 }, { x, y: y - 2, c: '#ffffff', s: 1 }, { x, y: y + 2, c: '#ffffff', s: 1 }); }
+      }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+  },
+
+  // HAPPINESS PULSE: warm yellow-pink waves of joy roll out of the user onto the target
+  *animHappiness(av, dv) {
+    av.pose = 'attack';
+    yield* this.animParticles(av, dv, { count: 14, gap: 2, dur: 22, swirl: 8, colors: ['#fff06a', '#ffb3ff', '#ffffff'], size: 3 });
+    av.pose = 'idle';
+    const cx = dv.x + 32, cy = dv.y + 34;
+    for (let i = 0; i < 26; i++) { this.ringFrame(cx, cy, i, 13, ['#fff06a', '#ffb3ff', '#ffffff'], true, 30); yield; }
+    this.parts = null;
+    this.shake = 5;
+    yield* wait(4);
+  },
+
+  // BABYDOLL EYES / CHARM: pink hearts float from the user to the target (more hearts for CHARM)
+  *animHearts(av, dv, power) {
+    av.pose = 'attack';
+    const sx = av.x + 32, sy = av.y + 24, tx = dv.x + 32, ty = dv.y + 30;
+    const count = power > 1 ? 7 : 4, dur = 30;
+    for (let i = 0; i <= dur + count * 5; i++) {
+      this.parts = [];
+      for (let n = 0; n < count; n++) {
+        const k = (i - n * 5) / dur;
+        if (k < 0 || k > 1) continue;
+        const x = sx + (tx - sx) * k + Math.sin(k * 9 + n) * 6, y = sy + (ty - sy) * k - Math.sin(k * Math.PI) * 18;
+        // a little heart: two bumps on top, a point below
+        const c = n % 2 ? '#ff7ac8' : '#ff9cf2';
+        this.parts.push({ x: x - 2, y: y - 1, c, s: 3 }, { x: x + 2, y: y - 1, c, s: 3 }, { x, y: y + 1, c, s: 3 }, { x, y: y + 3, c, s: 1 }, { x: x - 2, y: y - 2, c: '#ffffff', s: 1 });
+      }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    for (let i = 0; i < 3; i++) { dv.dy = -2; yield* wait(4); dv.dy = 0; yield* wait(4); }   // the target melts a little
   },
 
   // DARK PULSE: dark rings travel from the user to the target under a gloomy sky
@@ -1260,10 +1470,17 @@ const battle = {
     v.show = false; v.sink = 0;
   },
 
+  // the foe fainted. Returns true when the battle goes on (a trainer sends the next one), false when it is over.
   *win() {
     yield* this.faint(this.foeV);
     this.showFoeInfo = false;
-    yield* textBox.say(`Villi ${this.foe.name} uupui!`);
+    yield* textBox.say(`${this.foeName(this.foe)} uupui!`);
+    if (this.kind === 'regi') {   // a regi can't be beaten for good: it goes back to its pedestal
+      yield* textBox.say(`${this.foe.name} palasi kivijalustalleen! Taistelu loppui.`);
+      yield* textBox.say(`Regin voi saada vain nappaamalla. Kosketa sitä uudelleen, niin taistelu alkaa alusta.`);
+      this.result = 'run';
+      return false;
+    }
     const me = this.me;
     let remaining = Math.floor(SPECIES[this.foe.species].xpYield * this.foe.level / 7);
     yield* textBox.say(`${me.name} sai ${remaining} kokemuspistettä!`, { auto: 6, keep: true });
@@ -1285,12 +1502,33 @@ const battle = {
     }
     yield* wait(10);
     textBox.hide();
-    const coins = SPECIES[this.foe.species].coins;
-    game.coins += coins;
-    yield* textBox.say(`Sait ${coins} kolikkoa! Kolikoita yhteensä: ${game.coins}.`);
+    if (this.kind === 'trainer' && this.foeQueue.length) {   // the trainer sends the next creature
+      this.foe = this.foeQueue.shift();
+      const fv = this.foeV;
+      yield* textBox.say(`${this.enemy.name} lähetti ${this.foe.name}n!`, { auto: 6, keep: true });
+      Object.assign(fv, newVisual(FOE_POS), { show: true, scale: 0.1, hpShown: this.foe.hp });
+      this.addFx('spark', fv.x + 32, fv.y + 32, [0, 0, 1, 1, 2, 2, 2], 2);
+      yield* tween(14, k => { fv.scale = 0.1 + 0.9 * k; });
+      fv.scale = 1;
+      this.showFoeInfo = true;
+      yield* wait(10);
+      textBox.hide();
+      return true;
+    }
+    if (this.kind === 'trainer') {
+      game.coins += this.enemy.reward;
+      yield* textBox.say(`Voitit: ${this.enemy.name}!`);
+      yield* textBox.say(`Sait ${this.enemy.reward} kolikkoa! Kolikoita yhteensä: ${game.coins}.`);
+      if (this.enemy.onWin) yield* this.enemy.onWin();
+    } else {
+      const coins = SPECIES[this.foe.species].coins;
+      game.coins += coins;
+      yield* textBox.say(`Sait ${coins} kolikkoa! Kolikoita yhteensä: ${game.coins}.`);
+    }
     const sp = SPECIES[me.species];
     if (sp.evolveTo && me.level >= sp.evolveAt) yield* this.evolve(me);
     this.result = 'win';
+    return false;
   },
 
   // ----- per-frame -----
@@ -1380,7 +1618,7 @@ const battle = {
     if (this.menu.type === 'main') {
       drawBox(136, 112, 104, 48);
       drawText(ctx, 'TAISTELE', 158, 115);
-      drawText(ctx, 'PALLO', 158, 125); drawTextRight(ctx, 'X' + (game.balls + game.greatBalls), 230, 125, '#586070');
+      drawText(ctx, 'PALLO', 158, 125); drawTextRight(ctx, 'X' + totalBalls(), 230, 125, '#586070');
       drawText(ctx, 'VAIHDA', 158, 135);
       drawText(ctx, 'PAKENE', 158, 145);
       drawText(ctx, '►', 147, 115 + this.menu.index * 10, '#e04838');
