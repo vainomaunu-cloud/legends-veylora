@@ -112,20 +112,23 @@ const MAPS = {
     ],
     warps: {
       '12,19': { to: 'forest', x: 18, y: 1, dir: 'down' },
-      '12,0': { to: 'temple', x: 11, y: 18, dir: 'up' },
+      '12,0': { to: 'temple', x: 11, y: 21, dir: 'up' },
     },
-    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa piileskelee BINCHULCINeja, OVERCHILLejä ja harvinaisia UNDERCHILLejä. Polku ylös vie TEMPPELIIN.',
+    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa piileskelee BINCHULCINeja, OVERCHILLejä ja harvinaisia UNDERCHILLejä. Polku ylös vie REGI TEMPPELIIN.',
   },
   // purple-pink temple on top of SNOW MOUNTAIN: no bushes, no creatures, just statues
-  // T wall (drawn as bricks, not trees)  A statue (2 tiles wide, AA)  M brazier with a pink flame  * glowing rune
+  // T wall (drawn as bricks, not trees)  A statue (2 tiles wide, AA)  E empty pedestal (EE)  M brazier with a pink flame  * glowing rune
   temple: {
-    name: 'TEMPPELI',
+    name: 'REGI TEMPPELI',
     tiles: 'tilesTemple', rustle: 'bushRustle', shade: '#2e1248', music: 'hyujal', walls: true, sparkle: true,
     // statues in reading order (left to right, top to bottom); each shows that creature in violet stone
     statues: ['psistiel', 'psiduocipe', 'moonorg', 'ampereem', 'duckonda', 'hummirding', 'underchill', 'serpenalge', 'golbug'],
     rows: [
       'TTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'TT....................TT',
+      'TT...EE....EE....EE...TT',   // three empty pedestals at the far end
+      'TT....................TT',
       'TT....................TT',
       'TT.M.AA....AA....AA.M.TT',
       'TT.........==.........TT',
@@ -146,8 +149,8 @@ const MAPS = {
       'TTTTTTTTTTTXTTTTTTTTTTTT',
     ],
     encounters: [],
-    warps: { '11,19': { to: 'snow', x: 12, y: 1, dir: 'down' } },
-    sign: 'TEMPPELI\nVanha violetti temppeli vuoren huipulla. Patsaat esittävät metsien, vuorten ja meren otuksia. Täällä on hiljaista: ei puskia eikä villejä otuksia.',
+    warps: { '11,22': { to: 'snow', x: 12, y: 1, dir: 'down' } },
+    sign: 'REGI TEMPPELI\nVanha violetti temppeli vuoren huipulla. Patsaat esittävät metsien, vuorten ja meren otuksia. Perällä kolme jalustaa odottaa yhä patsaitaan... Täällä on hiljaista: ei puskia eikä villejä otuksia.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
@@ -203,23 +206,26 @@ for (const [id, m] of Object.entries(MAPS)) {
     if (ch === 'H') m.center = { x, y };   // ends at the top-left H
     if (ch === 'Q') m.kiosk = { x, y };    // ends at the top-left Q
   }
-  // statues: each "AA" pair is one statue; species from m.statues in reading order
+  // statues: each "AA" pair is one statue (species from m.statues in reading order), "EE" an empty pedestal
   m.statueList = [];
+  let n = 0;
   for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
-    if (m.rows[y][x] === 'A' && m.rows[y][x - 1] !== 'A') {
+    const ch = m.rows[y][x];
+    if (ch === 'A' && m.rows[y][x - 1] !== 'A') {
       const list = m.statues || ['psistiel'];
-      m.statueList.push({ x, y, species: list[m.statueList.length % list.length] });
+      m.statueList.push({ x, y, species: list[n++ % list.length] });
     }
+    if (ch === 'E' && m.rows[y][x - 1] !== 'E') m.statueList.push({ x, y, species: null });
   }
 }
 
-const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0 };
-const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (TEMPPELI) draw T as bricks
+const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0 };
+const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) draw T as bricks
 const WATER = '~';
 const GREAT_NAME = 'GREAT PALLO';
 const GREAT_PRICE = 75;
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
-const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A']);
+const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
 const WALK_SPEED = 1.5;        // pixels per frame (16 px tile = about 11 frames)
 const TREE_LIFT = 6;           // trees are drawn this many px up so the rows overlap
@@ -237,7 +243,7 @@ const MINI_COLORS_MAP = {
   hyujal: { '.': '#6b4f9e', ',': '#6b4f9e', '*': '#8e6cc4', '=': '#5a5f8c', 'X': '#5a5f8c', 'T': '#4a2580', 'B': '#9a62e0' },
   sea: { '=': '#f2db9a', '*': '#f2db9a', '.': '#8ed45a', ',': '#8ed45a', 'T': '#3fa34a' },
   snow: { '.': '#eef4fb', ',': '#eef4fb', '*': '#ffffff', '=': '#b4c4d8', 'X': '#b4c4d8', 'T': '#2f5a3a', 'B': '#5f8a6a' },
-  temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'M': '#ff7ad8', 'S': '#5a3a78' },
+  temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78' },
 };
 
 function buildMinimap(m) {
@@ -745,7 +751,7 @@ const overworld = {
     ctx.globalAlpha = 1;
   },
 
-  // ----- TEMPPELI statues: your creature sprite turned to violet stone, on a pedestal (2 tiles wide) -----
+  // ----- REGI TEMPPELI statues: your creature sprite turned to violet stone, on a pedestal (2 tiles wide) -----
   // Made with blend modes only (no pixel reading), so it also works when the game is opened as a file.
   statueImg(species) {
     this.statueCache = this.statueCache || {};
@@ -766,8 +772,8 @@ const overworld = {
   },
 
   drawStatue(s, sx, sy) {
-    const sp = SPECIES[s.species];
-    if (!sp) return;
+    const sp = s.species ? SPECIES[s.species] : null;
+    if (s.species && !sp) return;
     // pedestal: 28x10 block in the lower part of the two tiles
     const px = sx + 2, py = sy + 5;
     ctx.fillStyle = '#2a1240'; ctx.fillRect(px, py, 28, 10);
@@ -775,6 +781,13 @@ const overworld = {
     ctx.fillStyle = '#6a3a94'; ctx.fillRect(px + 1, py + 4, 26, 5);
     ctx.fillStyle = '#ff9cf2'; ctx.fillRect(px + 1, py + 5, 26, 1);
     ctx.fillStyle = 'rgba(42,18,64,0.35)'; ctx.fillRect(px + 1, py + 10, 26, 2);   // shadow on the floor
+    if (!sp) {   // empty pedestal: a faint pink glow where a statue will stand some day
+      ctx.globalAlpha = 0.45 + 0.35 * Math.sin(this.t / 25 + s.x);
+      ctx.fillStyle = '#ff9cf2'; ctx.fillRect(px + 8, py + 2, 12, 1);
+      ctx.fillStyle = '#ffe0fa'; ctx.fillRect(px + 12, py + 2, 4, 1);
+      ctx.globalAlpha = 1;
+      return;
+    }
     // the creature stands on top (AMPEREEM's feet are on row 30; feetY = how much higher, in 2x pixels)
     const feet = 30 - Math.round((sp.feetY || 0) / 2);
     ctx.drawImage(this.statueImg(s.species), sx, py + 1 - feet);
