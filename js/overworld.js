@@ -214,6 +214,24 @@ function scanCircle(g, cx, cy, r, color) {
   }
 }
 
+// A list menu that shows 8 rows at a time, with EDELLISET / SEURAAVAT to turn pages.
+// Returns the index in `rows`, or -1 when cancelled with X.
+function* pagedChoose(rows, x, y, w, perPage = 8) {
+  let page = 0;
+  const pages = Math.max(1, Math.ceil(rows.length / perPage));
+  while (true) {
+    const start = page * perPage;
+    const shown = rows.slice(start, start + perPage);
+    const opts = [...shown];
+    if (page > 0) opts.push('EDELLISET');
+    if (page < pages - 1) opts.push('SEURAAVAT');
+    const i = yield* menuBox.choose(opts, x, y, w);
+    if (i < 0) return -1;
+    if (i < shown.length) return start + i;
+    if (opts[i] === 'EDELLISET') page--; else page++;
+  }
+}
+
 function rollEncounter(list) {
   let r = Math.random();
   for (const e of list) { if (r < e.chance) return e.species; r -= e.chance; }
@@ -420,7 +438,7 @@ const overworld = {
     yield* textBox.say(`Tervetuloa ${CENTER_NAME}an!`);
     while (true) {
       textBox.show('Miten voin auttaa?');
-      const c = yield* menuBox.choose(['PARANNA', 'OSTA PALLO', 'TIIMI', 'KOKOELMA', 'POISTU'], 146, 42, 90);
+      const c = yield* menuBox.choose(['PARANNA', 'OSTA PALLO', 'TIIMI', 'KOKOELMA', 'PC', 'POISTU'], 146, 30, 90);
       if (c === 0) {
         textBox.hide();
         yield* flashScreen(2);
@@ -454,9 +472,13 @@ const overworld = {
         textBox.show(`NAPATTU ${got}/${all.length}\nSHINY CHARM: ${game.shinyCharm ? 'ON' : 'EI'}`, 128, 112);
         this.showWallet = false;
         const rows = all.map(id => game.caught.includes(id) ? SPECIES[id].name : '-----');
-        yield* menuBox.choose(rows, 4, 4, 120);
+        yield* pagedChoose(rows, 4, 4, 120);
         this.showWallet = true;
         if (!game.shinyCharm) yield* textBox.say('Nappaa jokaista otusta vähintään yksi, niin saat SHINY CHARMin. Sen kanssa kiiltäviä näkee useammin!');
+      } else if (c === 4) {
+        this.showWallet = false;
+        yield* this.pcMenu();
+        this.showWallet = true;
       } else {
         break;
       }
@@ -465,6 +487,15 @@ const overworld = {
     yield* textBox.say('Tervetuloa uudelleen!');
     this.showWallet = false;
     saveGame.save(true);
+  },
+
+  // ----- PC: store creatures you don't want in the team -----
+  // the PC is its own screen (js/pcscreen.js); wait here until it is closed
+  *pcMenu() {
+    textBox.hide();
+    pcScreen.open();
+    while (pcScreen.isOpen) yield;
+    for (const k in held) held[k] = false;   // the key that closed it must not also press the menu
   },
 
   draw() {

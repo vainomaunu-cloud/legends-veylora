@@ -54,7 +54,8 @@ Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuk
 Peli tallentuu automaattisesti selaimeen, joten sivun voi päivittää tai sulkea:
 - Tallennus tapahtuu taistelun jälkeen, alueelta toiselle siirtyessä, HOITOLASTA ja rantakioskista lähtiessä, 10 sekunnin välein kävellessä sekä silloin, kun sivu suljetaan tai laitetaan taustalle.
 - Pelin alla on lisäksi **💾 Tallenna**-nappi, jolla voi tallentaa itse milloin tahansa kävellessä. Napin vieressä näkyy, milloin peli tallentui viimeksi. Puhelimella vaakasuunnassa nappi on oikeassa yläkulmassa.
-- Mukaan tallentuvat tiimi (tasot, XP, HP, PP, tilat, kiiltävyys), kolikot, pallot ja paikka kartalla.
+- Napin vieressä on **🎒 Reppu**-nappi: se näyttää pallojen ja kolikoiden määrän sekä oman tiimin (HP, XP, tila, liikkeet ja PP). PC:ssä olevat otukset eivät näy repussa. Reppu suljetaan Sulje-napista, taustaa klikkaamalla tai Esc/X-näppäimellä.
+- Mukaan tallentuvat tiimi ja PC:n otukset (tasot, XP, HP, PP, tilat, kiiltävyys), kolikot, pallot ja paikka kartalla.
 - Kesken taistelua ei tallenneta. Jos sivu suljetaan taistelussa, peli jatkuu viimeisestä tallennuksesta ennen taistelua.
 - Aloitusruudussa on **JATKA** (näyttää johtajan ja tiimin koon) ja **UUSI PELI**. Uusi peli kysyy varmistuksen, koska vanha tallennus poistuu.
 - Tallennus on selain- ja laitekohtainen: puhelimella ja tietokoneella on omat tallennuksensa. Yksityinen selaustila tai selaimen tietojen tyhjentäminen poistaa sen.
@@ -89,6 +90,13 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
      - PARANNA: koko tiimin HP, PP ja halvaantuminen.
      - OSTA PALLO: PYYDYSPALLO maksaa 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`).
      - TIIMI: valitse, kuka johtaa (lähtee ensimmäisenä taisteluun).
+     - KOKOELMA: napatut lajit sivuittain (8 per sivu, EDELLISET / SEURAAVAT).
+     - PC: oma ruutu otuksille, joita ei halua pitää tiimissä. Vasemmalla on tiimi (6 paikkaa), oikealla PC:n laatikko (30 paikkaa; jos otuksia on enemmän, laatikoita vaihdetaan ◀ ▶ -napeilla).
+       - Raahaa otus toisen päälle, niin ne vaihtavat paikkaa (PC ↔ tiimi, tai järjestys tiimin/laatikon sisällä; tiimin ensimmäinen lähtee taisteluun ensin).
+       - Tyhjään tiimipaikkaan raahattu otus liittyy tiimiin, tyhjään laatikkopaikkaan raahattu menee PC:hen (tiimiin jää aina vähintään yksi).
+       - Raahaamisen sijaan voi myös napauttaa ensin otusta ja sitten paikkaa. Näppäimistöllä: nuolet liikuttavat, Z/Enter valitsee ja laskee, X peruu, Esc sulkee.
+       - PC:hen menevät otukset parannetaan.
+     - Jos tiimi on täynnä (6), napattu otus lähetetään automaattisesti HOITOLAN PC:hen.
      - Kolikot ja pallot näkyvät vasemmassa yläkulmassa.
    - **Kyltti:** ohjeteksti.
    - Metsän alareunasta polku vie etelään **HYUJAL METSÄÄN**.
@@ -124,7 +132,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 
 - Valitse taistelussa PALLO. Jos sinulla on sekä PYYDYSPALLOJA että GREAT PALLOJA, peli kysyy, kumpaa heität. Pallo lentää villin otuksen luo, otus imeytyy palloon, ja pallo heiluu.
 - GREAT PALLO kertoo nappausmahdollisuuden kahdella.
-- Kolme heilahdusta = napattu, ja otus liittyy tiimiin (enintään 6).
+- Kolme heilahdusta = napattu, ja otus liittyy tiimiin (enintään 6; täydellä tiimillä se menee HOITOLAN PC:hen).
 - Todennäköisyys = lajin nappausvaikeus · (1 − ⅔ · HP / max HP), ja halvaantuneella ×1,5. Heikennä otus ensin!
 - Jos otus karkaa, vihollinen saa vuoron.
 - Nappaaminen ei anna kokemuspisteitä. Kolikoita siitä saa vain lajeista, joilla on `catchCoins` (SQUISHROOM 30, SHROOCID 20).
@@ -232,6 +240,8 @@ Taistelussa 32×32-spritet piirretään 2× suurennettuna. Pikselit pysyvät ter
 | `js/battle.js` | Lajit (`SPECIES`), liikkeet (`MOVES`), vahinkokaava, taistelu, nappaaminen, animaatiot, kehittyminen |
 | `js/save.js` | Tallennus ja lataus selaimen muistiin (localStorage) |
 | `js/touch.js` | Kosketusnäytön nappulat ja pelin koko puhelimella/tabletilla |
+| `js/inventory.js` | 🎒 Reppu: pallot, kolikot ja tiimi |
+| `js/pcscreen.js` | HOITOLAN PC -ruutu: tiimi, laatikko ja raahaamalla vaihtaminen |
 | `js/music.js` | Chiptune-musiikki: nuotit (`TRACKS`), soittimet ja ajastus |
 | `js/main.js` | Näkymät, siirtymäefektit, pelisilmukka (60 fps), kolikot ja pallot (`game`) |
 

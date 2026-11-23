@@ -208,12 +208,14 @@ function movePower(move, att, def) {
   return r >= 4 ? 150 : r >= 3 ? 120 : r >= 2 ? 80 : r >= 1 ? 60 : 40;
 }
 
+function healMon(m) {
+  m.hp = m.maxHp;
+  m.status = null;
+  m.moves.forEach(mv => { mv.left = mv.pp; });
+}
+
 function healParty() {
-  for (const m of game.party) {
-    m.hp = m.maxHp;
-    m.status = null;
-    m.moves.forEach(mv => { mv.left = mv.pp; });
-  }
+  for (const m of game.party) healMon(m);
 }
 
 function calcDamage(att, def, move) {
@@ -326,7 +328,6 @@ const battle = {
       let myMove = null;
       if (choice === 1) {
         if (game.balls + game.greatBalls <= 0) { yield* textBox.say(`Sinulla ei ole yhtään palloa! Osta niitä ${CENTER_NAME}sta tai rantakioskista.`); continue; }
-        if (game.party.length >= 6) { yield* textBox.say('Tiimisi on täynnä (6 otusta)!'); continue; }
         let great = game.balls <= 0;
         if (game.balls > 0 && game.greatBalls > 0) {   // both kinds: let the player pick
           textBox.show('Mikä pallo?', 0, 136);
@@ -450,9 +451,15 @@ const battle = {
       this.showFoeInfo = false;
       yield* textBox.say(`Napattu! Villi ${foe.name} jäi kiinni!`);
       const caughtMon = { ...foe, moves: foe.moves.map(m => ({ ...m })) };
-      game.party.push(caughtMon);
       this.thrown = null;
-      yield* textBox.say(`${foe.name} liittyi tiimiisi! (${game.party.length}/6)`);
+      if (game.party.length < 6) {
+        game.party.push(caughtMon);
+        yield* textBox.say(`${foe.name} liittyi tiimiisi! (${game.party.length}/6)`);
+      } else {   // team is full: straight to the PC in the HOITOLA
+        caughtMon.hp = caughtMon.maxHp; caughtMon.status = null;
+        game.pc.push(caughtMon);
+        yield* textBox.say(`Tiimisi on täynnä, joten ${foe.name} lähetettiin ${CENTER_NAME}N PC:hen.`);
+      }
       yield* this.registerCatch(foe.species);
       if (sp.catchCoins) {
         game.coins += sp.catchCoins;

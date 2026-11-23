@@ -21,12 +21,14 @@ const saveGame = {
   save(show = false) {
     if (!this.canSave()) return false;
     const p = overworld.player;
+    const pack = m => ({
+      species: m.species, level: m.level, xp: m.xp, hp: m.hp, status: m.status || null, sleepTurns: m.sleepTurns || 0, shiny: !!m.shiny,
+      moves: m.moves.map(x => ({ id: x.id, left: x.left })),
+    });
     const d = {
       v: 1, time: Date.now(),
-      party: game.party.map(m => ({
-        species: m.species, level: m.level, xp: m.xp, hp: m.hp, status: m.status || null, sleepTurns: m.sleepTurns || 0, shiny: !!m.shiny,
-        moves: m.moves.map(x => ({ id: x.id, left: x.left })),
-      })),
+      party: game.party.map(pack),
+      pc: game.pc.map(pack),
       coins: game.coins, balls: game.balls, greatBalls: game.greatBalls,
       caught: game.caught, shinyCharm: game.shinyCharm,
       map: overworld.map.id, x: p.tx, y: p.ty, dir: p.dir,
@@ -42,6 +44,7 @@ const saveGame = {
   // put a save back into the game; skips anything that no longer exists in the code
   apply(d) {
     const party = d.party.map(restoreMon).filter(Boolean);
+    game.pc = (Array.isArray(d.pc) ? d.pc : []).map(restoreMon).filter(Boolean);
     if (!party.length) return false;
     game.party = party;
     game.coins = Math.max(0, d.coins | 0);

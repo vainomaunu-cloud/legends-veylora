@@ -20,7 +20,11 @@
   #saveBar { margin-top: 12px; display: flex; align-items: center; gap: 10px; font-size: 13px; min-height: 34px; }
   #saveBtn { font: 600 14px system-ui, sans-serif; color: #fff; background: #2f8a3a; border: 2px solid #5cc46a;
              border-radius: 8px; padding: 6px 14px; cursor: pointer; touch-action: manipulation; }
-  #saveBtn:hover { filter: brightness(1.15); }
+  #saveBtn:hover, #invBtn:hover { filter: brightness(1.15); }
+  #invBtn { font: 600 14px system-ui, sans-serif; color: #fff; background: #8a5a2c; border: 2px solid #c68a4a;
+            border-radius: 8px; padding: 6px 14px; cursor: pointer; touch-action: manipulation; }
+  #invBtn:active { transform: scale(0.96); }
+  body.touch:not(.portrait) #saveBar button { width: 130px; }
   #saveBtn:active { transform: scale(0.96); }
   #saveMsg.bad { color: #ff9a8a; }
   body.touch.portrait #saveBar { margin-top: 14px; }
@@ -63,7 +67,7 @@
 </head>
 <body>
 <canvas id="game" width="240" height="160"></canvas>
-<div id="saveBar"><button id="saveBtn" type="button">💾 Tallenna</button><span id="saveMsg"></span></div>
+<div id="saveBar"><button id="saveBtn" type="button">💾 Tallenna</button><button id="invBtn" type="button">🎒 Reppu</button><span id="saveMsg"></span></div>
 <div id="help"><kbd>Nuolet</kbd> / <kbd>WASD</kbd> liiku · <kbd>Z</kbd> / <kbd>Enter</kbd> OK · <kbd>X</kbd> / <kbd>Esc</kbd> takaisin · <kbd>F</kbd> kalasta · <kbd>M</kbd> musiikki päälle/pois</div>
 <div id="error"></div>
 <div id="touch">
@@ -86,5 +90,7 @@
 <script src="js/save.js"></script>
 <script src="js/main.js"></script>
 <script src="js/admin.js"></script>
+<script src="js/inventory.js"></script>
+<script src="js/pcscreen.js"></script>
 </body>
 </html>
