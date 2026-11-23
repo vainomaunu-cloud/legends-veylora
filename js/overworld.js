@@ -117,6 +117,7 @@ const MAPS = {
   sea: {
     name: 'SAARIMERI',
     tiles: 'tilesSea', rustle: 'bushRustle', shade: '#2f7cc4', music: 'overworld', treeGround: 2, exitTile: 17, miniBg: '#3e9be0',
+    palmBirds: { species: 'hummird', chance: 0.5 },   // each palm has a HUMMIRD on top with this chance (new roll every visit)
     rows: [
       '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
       '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
@@ -274,6 +275,23 @@ const overworld = {
     this.fishing = null;
     Object.assign(this.player, { tx: x, ty: y, dir, moving: false, offset: 0, justWalked: false });
     this.banner = { text: this.map.name, t: 0 };
+    this.rollPalmBirds();
+  },
+
+  // which palms have a HUMMIRD sitting on top (rolled again every time you come to the map)
+  rollPalmBirds() {
+    const m = this.map;
+    this.birds = null;
+    if (!m.palmBirds) return;
+    this.birds = new Set();
+    for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
+      if (m.rows[y][x] === 'T' && Math.random() < m.palmBirds.chance) this.birds.add(`${x},${y}`);
+    }
+    if (!this.birds.size) {   // always at least one bird on the beach
+      const palms = [];
+      for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) if (m.rows[y][x] === 'T') palms.push(`${x},${y}`);
+      if (palms.length) this.birds.add(palms[rnd(0, palms.length - 1)]);
+    }
   },
 
   // after losing a battle: wake up at the center door
@@ -314,6 +332,10 @@ const overworld = {
     if (p.turnDelay > 0) { p.turnDelay--; return; }
     const nx = p.tx + DIRS[d][0], ny = p.ty + DIRS[d][1];
     if (!SOLID.has(this.tileAt(nx, ny))) { p.moving = true; p.offset = 0; p.steps++; }
+    else if (this.birds && this.birds.has(`${nx},${ny}`)) {   // walked into a palm with a HUMMIRD on it
+      this.birds.delete(`${nx},${ny}`);
+      startEncounter(this.map.palmBirds.species, 'palm');
+    }
   },
 
   onStep() {
@@ -487,6 +509,10 @@ const overworld = {
         if (x - camX < -16 || x - camX > W) continue;
         const v = ((x >> 3) * 7 + ty * 3) % 3 === 0 ? TREE_B : TREE_A;
         drawFrame(tiles, v, 16, 16, x - camX, ty * TILE - TREE_LIFT - camY);
+        if (this.birds && x % TILE === 0 && this.birds.has(`${x / TILE},${ty}`)) {   // HUMMIRD perched on the palm
+          const bob = Math.floor((this.t + x) / 24) % 2;
+          drawFrame(IMG.hummirdSmall, bob, 16, 16, x - camX + 1, ty * TILE - TREE_LIFT - camY - 9 - bob);
+        }
       }
       if (m.center && ty === m.center.y + 2) ctx.drawImage(IMG.center, m.center.x * TILE - camX, m.center.y * TILE - camY);
       if (m.kiosk && ty === m.kiosk.y + 1) ctx.drawImage(IMG.kiosk, m.kiosk.x * TILE - camX, m.kiosk.y * TILE - camY);

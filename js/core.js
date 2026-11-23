@@ -56,6 +56,7 @@ const SPRITES = {
   tilesSea: 'sprites/tiles_sea.png',      // SAARIMERI tiles (13-14 water, 15-16 bridges, 11-12 palms)
   kiosk: 'sprites/kiosk.png',             // 48x32 beach kiosk
   greatBall: 'sprites/great_ball.png',    // 3 frames 16x16 GREAT PALLO
+  hummirdSmall: 'sprites/hummird_small.png', // 2 frames 16x16: HUMMIRD sitting on a palm
   center: 'sprites/center.png',          // 48x48 healing center building (HOITOLA)
   ball: 'sprites/ball.png',               // 3 frames 16x16 catch ball (upright, tilt L, tilt R)
   moi: 'moi.png',                         // 32x32 AMPEREEM front (your original)
@@ -77,7 +78,7 @@ const SPRITES = {
   hit: 'sprites/hit.png',                 // 2 frames 32x32
 };
 // Creatures whose files follow the plain pattern: <name>.png + sprites/<name>_blink.png ... _back_attack.png
-for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg', 'binchulin', 'overchill', 'underchill']) {
+for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg', 'binchulin', 'overchill', 'underchill', 'hummird', 'hummirding']) {
   SPRITES[k] = k + '.png';
   for (const [suffix, name] of [['Blink', 'blink'], ['Hurt', 'hurt'], ['Attack', 'attack'], ['Back', 'back'], ['BackAttack', 'back_attack']]) {
     SPRITES[k + suffix] = `sprites/${k}_${name}.png`;
@@ -88,6 +89,7 @@ for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg', 'binchulin', 'ov
 const SHINY_FILES = {
   psistiel: 'kiiltävä psistiel.png', algish: 'kiiltävä algish.png', serpenalge: 'kiiltävä serpenalge.png', moonorg: 'kiiltävä moonorg.png',
   binchulin: 'kiiltävä binchulin.png', overchill: 'kiiltävä overchill.png', underchill: 'kiiltävä undechill.png',
+  hummird: 'kiiltävä hummird.png', hummirding: 'kiiltävä hummirding.png',
   moi: 'kiiltävä ampereem.png', amperite: 'kiiltävä amperite.png', zubug: 'kiiltävä zubug.png',
   golbug: 'kiiltävä golbug.png', squishroom: 'kiiltävä squishroom.png', shroocid: 'kiiltävä shroocid.png',
   duckonda: 'duckonda kiiltävä.png',

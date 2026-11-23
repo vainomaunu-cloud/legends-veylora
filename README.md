@@ -20,6 +20,8 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | BINCHULCIN | 1. vaihe | `binchulin.png` + `sprites/binchulin_*.png` | ICE CREAM THROW, BLIZZARD | 30 % (SNOW MOUNTAIN) | 15 kolikkoa | helppo (0,7) |
 | OVERCHILL | 2. vaihe (kehittyy tasolla 9) | `overchill.png` + `sprites/overchill_*.png` | ICE FANG, ICE CREAM THROW, BLIZZARD | 10 % (SNOW MOUNTAIN) | 35 kolikkoa | keskitaso (0,45) |
 | UNDERCHILL | 3. vaihe (kehittyy tasolla 16) | `underchill.png` + `sprites/underchill_*.png` | IRON HEAD, ICE FANG, ICE CREAM THROW, BLIZZARD | 3 % (SNOW MOUNTAIN) | 55 kolikkoa | hyvin vaikea (0,25) |
+| HUMMIRD | 1. vaihe | `hummird.png` + `sprites/hummird_*.png` | AIR SLASH, TACKLE | SAARIMEREN palmujen päällä (kävele palmua päin) | 20 kolikkoa | keskitaso (0,6) |
+| HUMMIRDING | 2. vaihe (kehittyy tasolla 14) | `hummirding.png` + `sprites/hummirding_*.png` | TWISTER, AIR SLASH, TACKLE | vain kehittämällä | 45 kolikkoa | – |
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
@@ -28,7 +30,7 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 ### Kiiltävät muodot
 
 - Jokainen kohdattu villi otus on **1/100** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
-- **SHINY CHARM:** kun olet napannut jokaista otusta vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/75** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
+- **SHINY CHARM:** kun olet napannut jokaista otusta vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA ja vain kehittämällä saatava HUMMIRDING), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/75** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
 - **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (tuntemattomat näkyvät viivoina), montako on napattu ja onko SHINY CHARM jo saatu. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi. Se ilmestyy kipinöiden kanssa, ja teksti kertoo, että se on KIILTÄVÄ.
@@ -108,7 +110,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **RANTAKIOSKI:** mene tiskin eteen ja paina Z. Kioskista saa:
      - PYYDYSPALLO, 50 kolikkoa.
      - GREAT PALLO, 75 kolikkoa (`GREAT_PRICE`). Nappaa **kaksi kertaa** paremmin.
-   - Puskia ei ole, eikä otuksia tule vastaan.
+   - Puskia ei ole. Rannan ja saarten **palmujen päällä istuu HUMMIRDeja** (jokaisella palmulla 50 % mahdollisuus, arvotaan joka käynnillä, vähintään yksi). Kun kävelet palmua päin, jonka päällä HUMMIRD istuu, se syöksyy alas taisteluun ja lähtee palmulta.
    - Rannan vasempaan reunaan kulkeva hiekkapolku vie takaisin PUSKAMETSÄÄN.
    - Jokaisen alueen uloskäynnillä on pieni vilkkuva nuoli, joka osoittaa poistumissuuntaan.
 6. **Taistelu** (vuoropohjainen)
@@ -151,6 +153,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 | ICE CREAM THROW | 65 | 95 % | 15 | Erikoishyökkäys (oma liike). Kolmen pallon jäätelötötterö lentää kaaressa ja läsähtää. 30 %: kohteen nopeus laskee |
 | BLIZZARD | 110 | 70 % | 5 | Erikoishyökkäys. Ruutu muuttuu jäänsiniseksi ja lumimyrsky pyyhkii yli |
 | ICE FANG | 65 | 95 % | 15 | Fyysinen hyökkäys, jäiset hampaat ja jääsirpaleet. 10 %: kohde säpsähtää |
+| TWISTER | 70 | 100 % | 15 | Erikoishyökkäys. Pyörteinen tuulipatsas nostaa kohdetta. 20 %: kohde säpsähtää |
 | FIRE SPIN | 35 | 85 % | 15 | Erikoishyökkäys. Tulirengas pyörii kohteen ympärillä, ja kohde jää tulipyörteen vangiksi 4–5 vuoroksi: menettää vuoron lopussa 1/8 maksimi-HP:sta |
 | FLAMETHROWER | 90 | 100 % | 15 | Erikoishyökkäys, paksu tulisuihku. 10 % mahdollisuus palovammaan |
 | FLAME TORNADO | 100 | 90 % | 5 | Erikoishyökkäys (oma liike, ei oikeaa esikuvaa). Ruutu hehkuu punaisena ja kohteen nielaisee pyörivä tulipatsas. 30 % mahdollisuus palovammaan |
@@ -187,6 +190,8 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/squishroom_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | SQUISHROOM: räpytys, osuma (siristys), hyökkäys (vihainen kulma, hehkuva hattu, itiöt), takaa (peilattu, kasvot ja vatsa piilossa) |
 | `shroocid.png` | 32×32 | Sinun spritesi = SHROOCID edestä |
 | `psistiel.png`, `algish.png`, `serpenalge.png`, `moonorg.png` (+ `kiiltävä …`) | 32×32 | Sinun spritesi uusille otuksille ja niiden kiiltäville muodoille |
+| `hummird.png`, `hummirding.png` (+ `kiiltävä …`) | 32×32 | Sinun lintusi. Animaatiokuvat `sprites/hummird_*`, `hummirding_*` (selkäkuvat peilattu, silmä piilossa) |
+| `sprites/hummird_small.png` | 32×16 | Pieni HUMMIRD palmun päällä, 2 kuvaa (heiluu hieman) |
 | `binchulin.png` (BINCHULCIN), `overchill.png`, `underchill.png` (+ `kiiltävä binchulin.png`, `kiiltävä overchill.png`, `kiiltävä undechill.png`) | 32×32 | Sinun jääotuksesi. Animaatiokuvat: `sprites/binchulin_*`, `overchill_*`, `underchill_*` (selkäkuvat peilattu, kasvot piilossa) |
 | `sprites/<laji>_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | Animaatiokuvat (`<laji>` = psistiel, algish, serpenalge, moonorg). PSISTIEL, ALGISH ja SERPENALGE on peilattu selkäkuvissa (kasvot piilossa). MOONORG on AMPERITEN tapaan 3/4-kuvakulmassa, joten sitä ei peilattu: selästä näkyvät silmien takaosat, eivät kieli, suu tai vaalea vatsa |
 | `sprites/shroocid_blink.png`, `_hurt`, `_attack`, `_back`, `_back_attack` | 32×32 | SHROOCID: räpytys, osuma (> <), hyökkäys (vihaiset hehkuvat silmät, myrkkypisarat), takaa (silmät pois, raita jalassa) |

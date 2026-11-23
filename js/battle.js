@@ -121,6 +121,25 @@ const SPECIES = {
     xpYield: 170, coins: 55, catchRate: 0.25, feetY: 2,
     sprites: { front: 'underchill', blink: 'underchillBlink', hurt: 'underchillHurt', attack: 'underchillAttack', back: 'underchillBack', backAttack: 'underchillBackAttack' },
   },
+  // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
+  hummird: {
+    name: 'HUMMIRD',
+    base: { hp: 45, atk: 55, def: 40, spa: 50, spd: 40, spe: 80 },
+    moves: ['airslash', 'tackle'],
+    xpYield: 60, coins: 20, catchRate: 0.6,
+    evolveAt: 14, evolveTo: 'hummirding',
+    feetY: 2,
+    sprites: { front: 'hummird', blink: 'hummirdBlink', hurt: 'hummirdHurt', attack: 'hummirdAttack', back: 'hummirdBack', backAttack: 'hummirdBackAttack' },
+  },
+  // only by evolving HUMMIRD (never sits on the palms)
+  hummirding: {
+    name: 'HUMMIRDING',
+    base: { hp: 65, atk: 80, def: 60, spa: 75, spd: 60, spe: 105 },
+    moves: ['twister', 'airslash', 'tackle'],
+    xpYield: 130, coins: 45, catchRate: 0.3, feetY: 16,
+    evolveOnly: true,   // not needed for the SHINY CHARM (it can't be caught in the wild)
+    sprites: { front: 'hummirding', blink: 'hummirdingBlink', hurt: 'hummirdingHurt', attack: 'hummirdingAttack', back: 'hummirdingBack', backAttack: 'hummirdingBackAttack' },
+  },
   // the starter: never appears in bushes, 1 in 10 is shiny
   duckonda: {
     name: 'DUCKONDA',
@@ -156,6 +175,7 @@ const MOVES = {
   crunch: { id: 'crunch', name: 'CRUNCH', power: 80, acc: 100, pp: 15, special: false, anim: 'crunch' },
   darkpulse: { id: 'darkpulse', name: 'DARK PULSE', power: 80, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'darkpulse' },
   icecreamthrow: { id: 'icecreamthrow', name: 'ICE CREAM THROW', power: 65, acc: 95, pp: 15, special: true, slowChance: 0.3, anim: 'icecream' },
+  twister: { id: 'twister', name: 'TWISTER', power: 70, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'twister' },
   blizzard: { id: 'blizzard', name: 'BLIZZARD', power: 110, acc: 70, pp: 5, special: true, anim: 'blizzard' },
   icefang: { id: 'icefang', name: 'ICE FANG', power: 65, acc: 95, pp: 15, special: false, flinch: 0.1, anim: 'icefang' },
   sleeppowder: { id: 'sleeppowder', name: 'SLEEP POWDER', power: 0, powerText: '-', acc: 75, pp: 15, special: true, sleep: true, anim: 'powder' },
@@ -211,7 +231,7 @@ const SHINY_CHANCE = 1 / 100;
 const SHINY_CHANCE_CHARM = 1 / 75;   // with the SHINY CHARM
 const shinyChance = () => (game.shinyCharm ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
 // every species that can be caught (the starter can only be chosen, not caught)
-const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckonda');
+const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckonda' && !SPECIES[id].evolveOnly);
 const FIRE = ['#fff06a', '#ffb43d', '#ff7a2a', '#dd3d3d'];
 // shiny creatures use the 'shiny_' version of every sprite
 const spriteKey = (mon, key) => (mon.shiny ? 'shiny_' + key : key);
@@ -294,7 +314,7 @@ const battle = {
         yield* wait(6);
       }
     }
-    yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
+    yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
     if (foe.shiny) yield* textBox.say(`Vau! Se on KIILTÄVÄ ${foe.name}! Sellaisen näkee vain kerran sadasta.`);
     yield* tween(18, k => { this.trainer.x = Math.round(36 - 110 * k); });
     this.trainer.show = false;
@@ -576,6 +596,7 @@ const battle = {
     else if (move.anim === 'darkpulse') yield* this.animDarkPulse(av, dv);
     else if (move.anim === 'icecream') yield* this.animIceCream(av, dv);
     else if (move.anim === 'blizzard') yield* this.animBlizzard(av, dv);
+    else if (move.anim === 'twister') yield* this.animTwister(av, dv);
     else if (move.anim === 'icefang') yield* this.animCrunch(av, dv, mine ? 1 : -1, true);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
@@ -890,6 +911,28 @@ const battle = {
     av.pose = 'idle';
     yield* tween(8, k => { this.tint = 0.45 * (1 - k); });
     this.tint = 0; this.tintRGB = null;
+  },
+
+  // TWISTER: a spinning whirlwind of air and leaves lifts the target
+  *animTwister(av, dv) {
+    av.pose = 'attack';
+    const cx = dv.x + 32, baseY = dv.y + 62;
+    for (let i = 0; i < 48; i++) {
+      this.parts = [];
+      const grow = Math.min(1, i / 14);
+      for (let n = 0; n < 28; n++) {
+        const h = ((n * 9 + i * 4) % 64) / 64;
+        const r = (3 + h * 18) * grow, a = n * 1.1 + i * 0.5;
+        this.parts.push({ x: cx + Math.cos(a) * r, y: baseY - h * 70 * grow + Math.sin(a) * r * 0.25, c: n % 3 === 0 ? '#7ad86a' : n % 2 ? '#ffffff' : '#bff0e8', s: 2 });
+      }
+      dv.dy = -Math.round(Math.sin(Math.min(1, i / 30) * Math.PI) * 6);
+      if (i % 8 === 0) this.shake = 3;
+      yield;
+    }
+    dv.dy = 0;
+    this.parts = null;
+    av.pose = 'idle';
+    this.shake = 6;
   },
 
   // SLEEP POWDER: pale powder drifts down onto the target
