@@ -193,6 +193,7 @@ const speedOf =m => m.spe * (m.status === 'par' ? 0.5 : 1) * 2 / (2 - (m.speStag
 // battle background colours per map
 const BATTLE_BG = {
   forest: { sky: '#e4f2d0', far: '#b2dc98', near: '#95ca7c', ground: '#bfe39a', speck: '#a9d684', platDark: '#7fb85a', plat: '#98cf6c' },
+  snow: { sky: '#e8f0fa', far: '#c8d8ea', near: '#a8c0d8', ground: '#f4f8fc', speck: '#d4e0ee', platDark: '#b8c8dc', plat: '#dfeaf5' },
   sea: { sky: '#d6efff', far: '#a6d6f2', near: '#86c4ec', ground: '#62b2e8', speck: '#8ccaf2', platDark: '#cbaa5e', plat: '#f2db9a' },
   hyujal: { sky: '#d8c6f2', far: '#b08ee0', near: '#9470d0', ground: '#b39ae2', speck: '#9f82d6', platDark: '#7a52b8', plat: '#9a78da', glow: true },
 };

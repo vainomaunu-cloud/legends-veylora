@@ -11,14 +11,14 @@ const MAPS = {
     name: 'PUSKAMETSÄ',
     tiles: 'tiles', rustle: 'bushRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
-      'TTTTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'TTTTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'TT..,....TT.......,..*...TTT',
-      'TT.BBBBB..T..BBBB....BBBB.TT',
-      'TT.BBBBBB...BBBBBB..BBBBBBTT',
-      'TT..BBBBB...BBBBBB...BBBBBTT',
-      'TT...BBB.....BBBB....BBB..TT',
-      'TT..*.....========........TT',
+      'TTTTTTTTTTTTTTTTTTXTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTT=TTTTTTTTT',
+      'TT..,....TT.......=..*...TTT',
+      'TT.BBBBB..T..BBBB.=..BBBB.TT',
+      'TT.BBBBBB...BBBBBB=.BBBBBBTT',
+      'TT..BBBBB...BBBBBB=..BBBBBTT',
+      'TT...BBB.....BBBB.=..BBB..TT',
+      'TT..*.....=========.......TT',
       'TT........=.HHH..=..*.....TT',
       'TT....S====.HHH..=........TT',
       'TT...,....=.HDH..==========X',
@@ -43,8 +43,9 @@ const MAPS = {
     warps: {
       '12,20': { to: 'hyujal', x: 12, y: 2, dir: 'down' },
       '27,10': { to: 'sea', x: 1, y: 10, dir: 'right' },
+      '18,0': { to: 'snow', x: 12, y: 18, dir: 'up' },
     },
-    sign: 'PUSKAMETSÄ\nPuskissa piileskelee AMPERITEja, ZUBUGeja, GOLBUGeja ja harvinaisia AMPEREEMeja. ' + CENTER_NAME + ' parantaa ja myy palloja. Etelään: HYUJAL METSÄ.',
+    sign: 'PUSKAMETSÄ\nPuskissa piileskelee AMPERITEja, ZUBUGeja, GOLBUGeja ja harvinaisia AMPEREEMeja. ' + CENTER_NAME + ' parantaa ja myy palloja. Etelään: HYUJAL METSÄ. Pohjoiseen: SNOW MOUNTAIN.',
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
@@ -76,6 +77,36 @@ const MAPS = {
     ],
     warps: { '12,0': { to: 'forest', x: 12, y: 18, dir: 'up' } },
     sign: 'HYUJAL METSÄ\nPuut ja sienet hohtavat... Liilojen puskien seassa piileskelee SQUISHROOMeja, myrkyllisiä SHROOCIDeja ja salaperäisiä PSISTIELejä.',
+  },
+  // snowy forest north of PUSKAMETSÄ (no creatures yet)
+  snow: {
+    name: 'SNOW MOUNTAIN',
+    tiles: 'tilesSnow', rustle: 'bushRustleSnow', shade: '#2f5a3a', music: 'overworld', snowfall: true,
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTT....,....TT....,....TTT',
+      'TT..T.......TT........T.TT',
+      'TT....BBBB......BBBB....TT',
+      'TT...BBBBBB....BBBBBB...TT',
+      'TT...BBBBBB.**.BBBBBB...TT',
+      'TT....BBBB..==..BBBB....TT',
+      'TT..........==....S.....TT',
+      'TTT.....T...==...T.....TTT',
+      'TT....,.....==.....,....TT',
+      'TT..BBB.....==.....BBB..TT',
+      'TT.BBBBB....==....BBBBB.TT',
+      'TT..BBB..T..==..T..BBB..TT',
+      'TT..........==..........TT',
+      'TT...*....T.==.T....*...TT',
+      'TTTT........==........TTTT',
+      'TTTTTT......==......TTTTTT',
+      'TTTTTTTTTTT.==.TTTTTTTTTTT',
+      'TTTTTTTTTTTTXTTTTTTTTTTTTT',
+    ],
+    encounters: [],   // no creatures here yet
+    warps: { '12,19': { to: 'forest', x: 18, y: 1, dir: 'down' } },
+    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa ei vielä näy otuksia.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
@@ -154,6 +185,7 @@ const MINI_COLORS = {
 const MINI_COLORS_MAP = {
   hyujal: { '.': '#6b4f9e', ',': '#6b4f9e', '*': '#8e6cc4', '=': '#5a5f8c', 'X': '#5a5f8c', 'T': '#4a2580', 'B': '#9a62e0' },
   sea: { '=': '#f2db9a', '*': '#f2db9a', '.': '#8ed45a', ',': '#8ed45a', 'T': '#3fa34a' },
+  snow: { '.': '#eef4fb', ',': '#eef4fb', '*': '#ffffff', '=': '#b4c4d8', 'X': '#b4c4d8', 'T': '#2f5a3a', 'B': '#5f8a6a' },
 };
 
 function buildMinimap(m) {
@@ -460,6 +492,7 @@ const overworld = {
     this.drawExitArrows(camX, camY);
 
     if (m.glow) this.drawGlow();
+    if (m.snowfall) this.drawSnowfall();
     if (!menuBox.active) this.drawMinimap(px, py);
 
     if (this.banner) this.drawBanner();
@@ -565,6 +598,21 @@ const overworld = {
     if (f.t % 60 < 30) { ctx.fillStyle = 'rgba(216,244,255,0.8)'; ctx.fillRect(bx - 4, by + 3, 9, 1); }
     ctx.fillStyle = '#e04838'; ctx.fillRect(bx - 1, by - 2, 3, 2);
     ctx.fillStyle = '#ffffff'; ctx.fillRect(bx - 1, by, 3, 2);
+  },
+
+  // gently falling snow (SNOW MOUNTAIN)
+  drawSnowfall() {
+    const t = this.t;
+    ctx.fillStyle = 'rgba(200,220,255,0.10)';
+    ctx.fillRect(0, 0, W, H);
+    for (let i = 0; i < 46; i++) {
+      const speed = 0.35 + (i % 4) * 0.12;
+      const x = ((i * 61 + t * 0.18 * (1 + i % 3) + Math.sin(t / 45 + i) * 6) % (W + 10) + W + 10) % (W + 10) - 5;
+      const y = ((i * 37 + t * speed) % (H + 10)) - 5;
+      ctx.fillStyle = i % 3 ? 'rgba(255,255,255,0.95)' : 'rgba(160,182,215,0.85)';   // some greyish flakes so they show on the snow
+      const s = i % 6 === 0 ? 2 : 1;
+      ctx.fillRect(Math.round(x), Math.round(y), s, s);
+    }
   },
 
   // floating glowing specks (HYUJAL METSÄ)

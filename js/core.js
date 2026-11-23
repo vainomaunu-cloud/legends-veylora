@@ -70,6 +70,8 @@ const SPRITES = {
   bushRustle: 'sprites/bush_rustle.png',  // 3 frames 16x16
   tilesHyujal: 'sprites/tiles_hyujal.png',        // HYUJAL METSÄ tiles (same order as tiles.png)
   bushRustleHyujal: 'sprites/bush_rustle_hyujal.png',
+  tilesSnow: 'sprites/tiles_snow.png',            // SNOW MOUNTAIN tiles (same order as tiles.png)
+  bushRustleSnow: 'sprites/bush_rustle_snow.png',
   thunderbolt: 'sprites/thunderbolt.png', // 3 frames 16x32
   spark: 'sprites/spark.png',             // 3 frames 32x32
   hit: 'sprites/hit.png',                 // 2 frames 32x32

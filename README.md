@@ -88,13 +88,18 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **Kyltti:** ohjeteksti.
    - Metsän alareunasta polku vie etelään **HYUJAL METSÄÄN**.
    - HOITOLAN ohi itään kulkeva polku jatkuu metsän oikean reunan läpi **SAARIMERELLE**.
+   - HOITOLAN yläpuolelta polku nousee puskien välistä pohjoiseen **SNOW MOUNTAINILLE**.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
    - Hohtava metsä: liilat puut, ruoho ja puskat, hohtavat siniset ja liilat sienet (pienet sienet ja isot, kiinteät sienet sykkivät) sekä leijuvat valopisteet.
    - Liiloista puskista voi tulla **SQUISHROOM** (20 %), **SHROOCID** (15 %) tai **PSISTIEL** (10 %) askelta kohden.
    - Täällä taistellessa taustakin on liila, ja taivaalla tuikkii sinisiä ja liiloja valoja.
    - Kun menet alueelle, sen nimi liukuu hetkeksi ruudun yläreunaan. Sama tapahtuu palatessa PUSKAMETSÄÄN.
    - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
-4. **SAARIMERI** (30 × 20 ruutua)
+4. **SNOW MOUNTAIN** (26 × 20 ruutua)
+   - Luminen metsä PUSKAMETSÄN pohjoispuolella: lumiset kuuset, lumihuippuiset puskat, kimaltelevaa lunta ja tallattu lumipolku keskellä. Lunta sataa koko ajan.
+   - Puskista ei vielä tule otuksia (kartan `encounters`-lista on tyhjä). Kyltti on polun varrella.
+   - Taistelutausta on valmiiksi luminen, kun alueelle lisätään otuksia.
+5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
    - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Sitten joko jokin nappaa ja otus **nousee vedestä** taisteluun (ALGISH, MOONORG tai SERPENALGE), tai "Mikään ei näykkinyt". Merellä taistellaan meren taustalla (vesi ja hiekkasärkät). Lista on kartan `fishing`-kohdassa.
    - **RANTAKIOSKI:** mene tiskin eteen ja paina Z. Kioskista saa:
@@ -103,7 +108,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Puskia ei ole, eikä otuksia tule vastaan.
    - Rannan vasempaan reunaan kulkeva hiekkapolku vie takaisin PUSKAMETSÄÄN.
    - Jokaisen alueen uloskäynnillä on pieni vilkkuva nuoli, joka osoittaa poistumissuuntaan.
-5. **Taistelu** (vuoropohjainen)
+6. **Taistelu** (vuoropohjainen)
    - Valikko: TAISTELE / PALLO / PAKENE.
    - Nopeampi otus hyökkää ensin. Tasatilanteessa järjestys arvotaan.
    - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10.
@@ -196,6 +201,8 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/bush_rustle.png` | 48×16 | Puskan heilunta, 3 kuvaa |
 | `sprites/tiles_hyujal.png` | 208×16 | HYUJAL METSÄN ruudut samassa järjestyksessä kuin `tiles.png`, paitsi: 3–4 pienet hohtavat sienet (animaatio), 7–8 iso hohtava sieni (animaatio, ei pääse läpi) |
 | `sprites/bush_rustle_hyujal.png` | 48×16 | Liilan puskan heilunta, 3 kuvaa |
+| `sprites/tiles_snow.png` | 208×16 | SNOW MOUNTAINin ruudut samassa järjestyksessä kuin `tiles.png`: lumi, lumi 2, lumipolku, kimalteleva lumi (3–4), lumiset kuuset (5, 11–12), lumihuippuinen puska (6, 10), kyltti (9) |
+| `sprites/bush_rustle_snow.png` | 48×16 | Lumisen puskan heilunta (lunta tippuu), 3 kuvaa |
 | `sprites/thunderbolt.png` | 48×32 | Salaman palat, 3 kuvaa 16×32 (pinotaan pystyyn) |
 | `sprites/spark.png` | 96×32 | Sähköpurkaus, 3 kuvaa 32×32 |
 | `sprites/hit.png` | 64×32 | TACKLE-osuman tähti, 2 kuvaa 32×32 |
