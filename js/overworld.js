@@ -80,7 +80,7 @@ const MAPS = {
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
   sea: {
     name: 'SAARIMERI',
-    tiles: 'tilesSea', rustle: 'bushRustle', shade: '#2f7cc4', music: 'overworld', treeGround: 2, exitTile: 17,
+    tiles: 'tilesSea', rustle: 'bushRustle', shade: '#2f7cc4', music: 'overworld', treeGround: 2, exitTile: 17, miniBg: '#3e9be0',
     rows: [
       '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
       '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
@@ -136,6 +136,41 @@ const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
 const WALK_SPEED = 1.5;        // pixels per frame (16 px tile = about 11 frames)
 const TREE_LIFT = 6;           // trees are drawn this many px up so the rows overlap
+
+// ---------- minimap ----------
+const MINI_R = 25;       // radius in screen pixels
+const MINI_SCALE = 2;    // screen pixels per map tile (smaller = shows more of the map)
+// colour of each map character on the minimap; per-map overrides in MINI_COLORS_MAP
+const MINI_COLORS = {
+  '.': '#7cc453', ',': '#7cc453', '*': '#8ccf62', 'P': '#e2c489', '=': '#e2c489', ':': '#e2c489', 'X': '#e2c489',
+  'T': '#2a6a30', 'B': '#3f9a44', 'S': '#8a5a2c', 'H': '#2f8f9d', 'D': '#2f8f9d', 'M': '#3fb8ff',
+  '~': '#3e9be0', '#': '#c68a4a', '|': '#c68a4a', 'Q': '#2fb5b5', 'R': '#2fb5b5',
+};
+const MINI_COLORS_MAP = {
+  hyujal: { '.': '#6b4f9e', ',': '#6b4f9e', '*': '#8e6cc4', '=': '#5a5f8c', 'X': '#5a5f8c', 'T': '#4a2580', 'B': '#9a62e0' },
+  sea: { '=': '#f2db9a', '*': '#f2db9a', '.': '#8ed45a', ',': '#8ed45a', 'T': '#3fa34a' },
+};
+
+function buildMinimap(m) {
+  const c = document.createElement('canvas');
+  c.width = m.w; c.height = m.h;
+  const g = c.getContext('2d');
+  const colors = { ...MINI_COLORS, ...(MINI_COLORS_MAP[m.id] || {}) };
+  for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
+    g.fillStyle = colors[m.rows[y][x]] || '#555';
+    g.fillRect(x, y, 1, 1);
+  }
+  return c;
+}
+
+// filled circle drawn row by row, so the edge stays pixel-sharp
+function scanCircle(g, cx, cy, r, color) {
+  if (color) g.fillStyle = color;
+  for (let dy = -r; dy <= r; dy++) {
+    const hw = Math.floor(Math.sqrt(r * r - dy * dy) + 0.5);
+    g.fillRect(cx - hw, cy + dy, hw * 2 + 1, 1);
+  }
+}
 
 function rollEncounter(list) {
   let r = Math.random();
@@ -410,6 +445,7 @@ const overworld = {
     this.drawExitArrows(camX, camY);
 
     if (m.glow) this.drawGlow();
+    if (!menuBox.active) this.drawMinimap(px, py);
 
     if (this.banner) this.drawBanner();
     if (this.showWallet) {
@@ -420,6 +456,48 @@ const overworld = {
     }
     textBox.draw();
     menuBox.draw();
+  },
+
+  // ----- round minimap in the top-right corner -----
+  // one pixel per tile, drawn 2x around the player and cut to a circle
+  drawMinimap(px, py) {
+    const m = this.map, R = MINI_R, S = MINI_SCALE, size = R * 2 + 1;
+    if (!m.mini) m.mini = buildMinimap(m);
+    if (!this.miniCanvas) {
+      this.miniCanvas = document.createElement('canvas');
+      this.miniCanvas.width = this.miniCanvas.height = size;
+    }
+    const g = this.miniCanvas.getContext('2d');
+    g.imageSmoothingEnabled = false;
+    g.globalCompositeOperation = 'source-over';
+    g.fillStyle = m.miniBg || (MINI_COLORS_MAP[m.id] || {}).T || MINI_COLORS.T;   // outside the map: forest / sea
+    g.fillRect(0, 0, size, size);
+    const ptx = (px + 8) / TILE, pty = (py + 8) / TILE;
+    g.drawImage(m.mini, Math.round(R - ptx * S), Math.round(R - pty * S), m.w * S, m.h * S);
+    // exits blink yellow, the player is a red dot in the middle
+    if (Math.floor(this.t / 20) % 2 === 0) {
+      g.fillStyle = '#f4df1a';
+      for (const key of Object.keys(m.warps)) {
+        const [x, y] = key.split(',').map(Number);
+        g.fillRect(Math.round(R + (x + 0.5 - ptx) * S) - 1, Math.round(R + (y + 0.5 - pty) * S) - 1, 3, 3);
+      }
+    }
+    g.fillStyle = '#ffffff'; g.fillRect(R - 2, R - 2, 5, 5);
+    g.fillStyle = '#e04838'; g.fillRect(R - 1, R - 1, 3, 3);
+    // cut to a circle (crisp pixel edge); the mask must be drawn in one go for destination-in
+    if (!this.miniMask) {
+      this.miniMask = document.createElement('canvas');
+      this.miniMask.width = this.miniMask.height = size;
+      scanCircle(this.miniMask.getContext('2d'), R, R, R, '#000');
+    }
+    g.globalCompositeOperation = 'destination-in';
+    g.drawImage(this.miniMask, 0, 0);
+    g.globalCompositeOperation = 'source-over';
+    // frame
+    const cx = W - R - 5, cy = R + 5;
+    scanCircle(ctx, cx, cy, R + 2, '#283040');
+    scanCircle(ctx, cx, cy, R + 1, '#c8d0e0');
+    ctx.drawImage(this.miniCanvas, cx - R, cy - R);
   },
 
   // small bouncing arrows on every exit, pointing out of the map, so the way onward is easy to see

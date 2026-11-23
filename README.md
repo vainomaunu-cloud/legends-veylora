@@ -70,6 +70,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 
 1. **Aloitusruutu** → paina Z.
 2. **Metsä** (28 × 21 ruutua, ruutu 16 × 16 px)
+   - **Minikartta** oikeassa yläkulmassa: pyöreä kartta, jonka keskellä on pelaaja (punainen piste). Siinä näkyvät polut, puskat, puut, vesi, sillat, HOITOLA, kioski ja vilkkuvina keltaisina pisteinä uloskäynnit. Kartta seuraa pelaajaa ja on piilossa valikoiden ajan (värit: `MINI_COLORS`, koko: `MINI_R` ja tarkkuus: `MINI_SCALE` tiedostossa `js/overworld.js`; pienempi `MINI_SCALE` näyttää isomman alueen).
    - Ruudukkoliike niin kuin vanhoissa peleissä. Lyhyt napautus vain kääntää hahmoa. Yksi ruutu kestää noin 11 kuvaa (`WALK_SPEED` tiedostossa `js/overworld.js`).
    - Metsän puut ovat lomittain: joka toinen puurivi on siirretty puoli ruutua sivulle, ja rivit menevät hieman päällekkäin.
    - **Puskat:** joka askeleella puskassa voi tulla vastaan AMPERITE (15 %), ZUBUG (15 %), GOLBUG (8 %) tai AMPEREEM (5 %). Puska heiluu, ja pelaajan jalat jäävät lehtien taakse.
