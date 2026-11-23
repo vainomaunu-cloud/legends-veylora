@@ -60,6 +60,7 @@ const SPRITES = {
   center: 'sprites/center.png',          // 48x48 healing center building (HOITOLA)
   ball: 'sprites/ball.png',               // 3 frames 16x16 catch ball (upright, tilt L, tilt R)
   moi: 'moi.png',                         // 32x32 AMPEREEM front (your original)
+  titleArt: 'uusi aloitus ruutu.png',     // 96x48 title screen picture (your original)
   moiBlink: 'sprites/moi_blink.png',      // 32x32 front, eyes closed
   moiHurt: 'sprites/moi_hurt.png',        // 32x32 front, > < face
   moiAttack: 'sprites/moi_attack.png',    // 32x32 front, charging

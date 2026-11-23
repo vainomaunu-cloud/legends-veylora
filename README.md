@@ -194,6 +194,7 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/amperite_blink.png`, `_hurt`, `_attack` | 32×32 | AMPERITE: räpytys, osuma, lataus |
 | `sprites/amperite_back.png`, `_back_attack` | 32×32 | AMPERITE takaa (oma otus taistelussa). Musta puoli silmineen ja keltaisine hampaineen on kasvot, valkoinen levy on selkä ja johto on häntä. Takaa katsottuna valkoinen selkä (salamamerkki) on pelaajaa kohti, musta runko näkyy vain kaukaisista reunoista vastustajan suuntaan, hampaat ja silmät eivät näy. Häntä (johto) lähtee valkoisesta selästä ja nousee kaarena rungon yli, ja pistoke on ylhäällä |
 | `moi.png` | 32×32 | Sinun spritesi = AMPEREEM edestä |
+| `uusi aloitus ruutu.png` | 96×48 | Aloitusruudun kuva (piirretään 3× isona, keskitettynä; yläreunan taivas jatkuu värillä `#aeecec`) |
 | `sprites/moi_blink.png`, `_hurt`, `_attack` | 32×32 | AMPEREEM: räpytys, osuma, lataus |
 | `sprites/moi_back.png`, `_back_attack` | 32×32 | AMPEREEM takaa |
 | `zubug.png` | 32×32 | Sinun spritesi = ZUBUG edestä |

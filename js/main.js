@@ -177,17 +177,14 @@ const title = {
     }
   },
   draw() {
-    for (let y = 0; y < H; y += TILE) for (let x = 0; x < W; x += TILE) {
-      const edge = y === 0 || y >= H - TILE;
-      drawFrame(IMG.tiles, edge ? 5 : ((x * 7 + y * 3) % 5 === 0 ? 1 : 0), 16, 16, x, y);
-    }
-    drawTextCenter(ctx, 'LEGENDS', W / 2 + 1, 21, '#1e4a22', 1);
-    drawTextCenter(ctx, 'LEGENDS', W / 2, 20, '#ffffff', 1);
-    drawTextCenter(ctx, 'VEYLORA', W / 2 + 2, 32, '#1e4a22', 3);
-    drawTextCenter(ctx, 'VEYLORA', W / 2, 30, '#f4df1a', 3);
-    fillEllipse(W / 2, 108, 30, 6, 'rgba(30,74,34,0.35)');
-    const bob = Math.floor(game.t / 30) % 2;
-    ctx.drawImage(IMG.moi, 0, 0, 32, 32, W / 2 - 32, 50 + bob, 64, 64);
+    // the title picture (96x48) at 3x: sky above it, centred so both side creatures show
+    ctx.fillStyle = '#aeecec';
+    ctx.fillRect(0, 0, W, H);
+    ctx.drawImage(IMG.titleArt, 0, 0, 96, 48, (W - 288) / 2, H - 144, 288, 144);
+    drawTextCenter(ctx, 'LEGENDS', W / 2 + 1, 5, '#2a1e4a', 1);
+    drawTextCenter(ctx, 'LEGENDS', W / 2, 4, '#ffffff', 1);
+    drawTextCenter(ctx, 'VEYLORA', W / 2 + 2, 14, '#2a1e4a', 3);
+    drawTextCenter(ctx, 'VEYLORA', W / 2, 12, '#f4df1a', 3);
     if (['list', 'slot', 'delete'].includes(this.mode) || (this.mode === 'naming' && this.namingFrom === 'slot')) {
       this.drawList();
       return;
