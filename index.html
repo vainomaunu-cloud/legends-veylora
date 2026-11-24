@@ -31,6 +31,16 @@
   body.touch:not(.portrait) #saveBar { position: fixed; top: max(10px, env(safe-area-inset-top)); right: max(16px, env(safe-area-inset-right));
                                       margin: 0; flex-direction: column; align-items: flex-end; gap: 4px; max-width: 170px; }
   body.touch:not(.portrait) #saveMsg { text-align: right; font-size: 12px; }
+  #codeForm { margin: 0 0 0 auto; }
+  #codeInput { width: 110px; font: 14px system-ui, sans-serif; padding: 5px 8px; border-radius: 6px; border: 1px solid #3a4060;
+               background: #161822; color: #dde; -webkit-user-select: text; user-select: text; touch-action: manipulation; }
+  #codeInput.bad { border-color: #e06060; }
+  body.touch:not(.portrait) #codeForm { margin: 0; }
+  body.touch.portrait #saveBar { flex-wrap: wrap; row-gap: 8px; }
+  body.touch.portrait #saveMsg { flex: 1; min-width: 120px; }
+  body.touch.portrait #codeForm { flex-basis: 100%; margin: 0; }
+  body.touch.portrait #codeInput { width: 140px; }
+  body.touch:not(.portrait) #codeInput { width: 130px; box-sizing: border-box; }
 
   /* ---------- on-screen controls (phones and tablets) ---------- */
   #touch { display: none; }
@@ -67,7 +77,7 @@
 </head>
 <body>
 <canvas id="game" width="240" height="160"></canvas>
-<div id="saveBar"><button id="saveBtn" type="button">💾 Tallenna</button><button id="invBtn" type="button">🎒 Reppu</button><span id="saveMsg"></span></div>
+<div id="saveBar"><button id="saveBtn" type="button">💾 Tallenna</button><button id="invBtn" type="button">🎒 Reppu</button><span id="saveMsg"></span><form id="codeForm" autocomplete="off"><input id="codeInput" type="password" placeholder="Koodi" aria-label="Koodi" autocapitalize="off" spellcheck="false" enterkeyhint="go"></form></div>
 <div id="help"><kbd>Nuolet</kbd> / <kbd>WASD</kbd> liiku · <kbd>Z</kbd> / <kbd>Enter</kbd> OK · <kbd>X</kbd> / <kbd>Esc</kbd> takaisin · <kbd>F</kbd> kalasta · <kbd>M</kbd> musiikki päälle/pois</div>
 <div id="error"></div>
 <div id="touch">

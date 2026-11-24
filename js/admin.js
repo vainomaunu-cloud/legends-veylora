@@ -1,9 +1,9 @@
 // ---------- Hidden admin panel ----------
-// Opens with the code: type it anywhere on a keyboard, or (phones) tap the text next to the save
-// button 5 times quickly and type it in the box that appears. Not mentioned anywhere on the page.
+// Opens with the code: write it in the "Koodi" field next to the save button and press Enter,
+// or type it anywhere on a keyboard (or tap the save text 5 times for a code box).
 // Only a hash of the code is stored here, so the code itself is not in the source.
 window.adminOpen = false;
-const ADMIN_HASH = 'ce1019cc';
+const ADMIN_HASH = '5f58e7b4';
 const codeHash = s => { let h = 0x811c9dc5; for (const ch of s) { h ^= ch.codePointAt(0); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16); };
 
 const admin = {
@@ -183,6 +183,21 @@ const admin = {
         if (codeHash(typed.slice(i)) === ADMIN_HASH) { typed = ''; e.preventDefault(); this.toggle(); return; }
       }
     });
+
+    // the "Koodi" field on the page (next to the save button): write the code and press Enter / OK
+    const form = document.getElementById('codeForm'), field = document.getElementById('codeInput');
+    if (form && field) {
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        const ok = codeHash(field.value.trim().toLowerCase()) === ADMIN_HASH;
+        field.value = '';
+        field.blur();   // the arrow keys / Z control the game again
+        if (ok) { if (!window.adminOpen) this.toggle(); }
+        else { field.classList.add('bad'); setTimeout(() => field.classList.remove('bad'), 900); }
+      });
+      field.addEventListener('keydown', e => e.stopPropagation());       // typing here never moves the player
+      field.addEventListener('pointerdown', e => e.stopPropagation());   // not a game control
+    }
 
     // phones: 5 quick taps on the text next to the save button show a small code box
     const tapZone = document.getElementById('saveMsg');
