@@ -116,7 +116,7 @@ function loadAssets() {
     const im = new Image();
     im.onload = () => { IMG[key] = im; resolve(); };
     im.onerror = () => reject(new Error('Kuvaa ei löytynyt: ' + src));
-    im.src = src;
+    im.src = src + (window.GAME_VERSION ? '?v=' + window.GAME_VERSION : '');   // new pictures load right after an update
   })));
 }
 
