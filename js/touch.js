@@ -81,6 +81,11 @@ function fitCanvasTouch() {
   const dpr = window.devicePixelRatio || 1;
   let availW = innerWidth, availH = innerHeight - 120;   // room for the save button and help line
   if (document.body.classList.contains('touch')) {
+    // while typing (code field, game name) the phone keyboard makes the page short: that is not a turn
+    // to landscape, so keep the layout as it is, or the field would jump away and the keyboard close
+    const typing = document.activeElement && /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+    if (typing && fitCanvasTouch.done) return;
+    fitCanvasTouch.done = true;
     const portrait = innerHeight >= innerWidth;
     document.body.classList.toggle('portrait', portrait);
     if (portrait) { availW = innerWidth - 16; availH = innerHeight - 250; }   // save button + controls below the game
@@ -100,4 +105,6 @@ function fitCanvasTouch() {
 removeEventListener('resize', fitCanvas);
 addEventListener('resize', fitCanvasTouch);
 addEventListener('orientationchange', () => setTimeout(fitCanvasTouch, 200));
+// when typing ends the keyboard closes: fit the game again (resizes were skipped while typing)
+document.addEventListener('focusout', () => setTimeout(fitCanvasTouch, 300));
 fitCanvasTouch();

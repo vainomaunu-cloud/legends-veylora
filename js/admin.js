@@ -190,13 +190,16 @@ const admin = {
       form.addEventListener('submit', e => {
         e.preventDefault();
         const ok = codeHash(field.value.trim().toLowerCase()) === ADMIN_HASH;
-        field.value = '';
-        field.blur();   // the arrow keys / Z control the game again
-        if (ok) { if (!window.adminOpen) this.toggle(); }
-        else { field.classList.add('bad'); setTimeout(() => field.classList.remove('bad'), 900); }
+        if (ok) {
+          field.value = '';
+          field.blur();   // the arrow keys / Z control the game again
+          if (!window.adminOpen) this.toggle();
+        } else {          // wrong: keep the text so it can be fixed, and flash the border red
+          field.classList.add('bad'); setTimeout(() => field.classList.remove('bad'), 900);
+        }
       });
       field.addEventListener('keydown', e => e.stopPropagation());       // typing here never moves the player
-      field.addEventListener('pointerdown', e => e.stopPropagation());   // not a game control
+      form.addEventListener('pointerdown', e => e.stopPropagation());    // the field and OK are not game controls
     }
 
     // phones: 5 quick taps on the text next to the save button show a small code box
