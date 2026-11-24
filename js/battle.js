@@ -80,6 +80,14 @@ const SPECIES = {
     xpYield: 165, coins: 55, catchRate: 0.25, feetY: 0,
     sprites: { front: 'psiduocipe', blink: 'psiduocipeBlink', hurt: 'psiduocipeHurt', attack: 'psiduocipeAttack', back: 'psiduocipeBack', backAttack: 'psiduocipeBackAttack' },
   },
+  // HYUJAL METSÄ bushes: a creepy one-eyed shadow
+  eyevil: {
+    name: 'EYEVIL',
+    base: { hp: 50, atk: 65, def: 50, spa: 70, spd: 55, spe: 65 },
+    moves: ['babydolleyes', 'darkpulse', 'poisonjab'],
+    xpYield: 65, coins: 30, catchRate: 0.5, feetY: 0,
+    sprites: { front: 'eyevil', blink: 'eyevilBlink', hurt: 'eyevilHurt', attack: 'eyevilAttack', back: 'eyevilBack', backAttack: 'eyevilBackAttack' },
+  },
   // SAARIMERI fishing
   algish: {
     name: 'ALGISH',

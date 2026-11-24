@@ -13,6 +13,7 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | GOLBUG | 2. vaihe (kehittyy tasolla 10) | `golbug.png` + `sprites/golbug_*.png` | AIR SLASH, BUG BUZZ, STICKY WEB | 8 % | 50 kolikkoa | vaikea (0,35) |
 | SQUISHROOM | ei kehity | `squishroom.png` + `sprites/squishroom_*.png` | MUD SHOT, FAIRY WIND, GIGA DRAIN | 20 % (vain HYUJAL METSÄ) | 30 kolikkoa, nappaamisesta myös 30 | keskitaso (0,5) |
 | SHROOCID | ei kehity | `shroocid.png` + `sprites/shroocid_*.png` | POISON JAB, IRON HEAD, SLUDGE WAVE | 15 % (vain HYUJAL METSÄ) | 20 kolikkoa, nappaamisesta myös 20 | keskitaso (0,5) |
+| EYEVIL | ei kehity | `eyevil.png` + `sprites/eyevil_*.png` | BABYDOLL EYES, DARK PULSE, POISON JAB | 30 % (vain HYUJAL METSÄ) | 30 kolikkoa | keskitaso (0,5) |
 | PSISTIEL | 1. vaihe | `psistiel.png` + `sprites/psistiel_*.png` | PSI STRIKE, PSYCHIC, IRON HEAD | 10 % (vain HYUJAL METSÄ) | 30 kolikkoa | keskitaso (0,45) |
 | PSIDUOCIPE | 2. vaihe (kehittyy tasolla 20, oppii PSYCHO CUTin) | `psiduocipe.png` + `sprites/psiduocipe_*.png` | PSYCHO CUT, PSI STRIKE, PSYCHIC, IRON HEAD | 5 % (vain HYUJAL METSÄ) | 55 kolikkoa | hyvin vaikea (0,25) |
 | ALGISH | 1. vaihe | `algish.png` + `sprites/algish_*.png` | POISON JAB, SLEEP POWDER | kalastus 40 % (SAARIMERI) | 25 kolikkoa | helppo (0,7) |
@@ -29,7 +30,7 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
-PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 45 % (SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin. SNOW MOUNTAINilla puskissa on 43 % (BINCHULCIN 30 %, OVERCHILL 10 %, UNDERCHILL 3 %). BINCHULCIN oppii ICE FANGin kehittyessään OVERCHILLiksi, ja OVERCHILL oppii IRON HEADin kehittyessään UNDERCHILLiksi.
+PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 80 % (EYEVIL 30 %, SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %, PSIDUOCIPE 5 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin. SNOW MOUNTAINilla puskissa on 43 % (BINCHULCIN 30 %, OVERCHILL 10 %, UNDERCHILL 3 %). BINCHULCIN oppii ICE FANGin kehittyessään OVERCHILLiksi, ja OVERCHILL oppii IRON HEADin kehittyessään UNDERCHILLiksi.
 
 ### Kiiltävät muodot
 
@@ -114,7 +115,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - HOITOLAN yläpuolelta polku nousee puskien välistä pohjoiseen **SNOW MOUNTAINILLE**.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
    - Hohtava metsä: liilat puut, ruoho ja puskat, hohtavat siniset ja liilat sienet (pienet sienet ja isot, kiinteät sienet sykkivät) sekä leijuvat valopisteet.
-   - Liiloista puskista voi tulla **SQUISHROOM** (20 %), **SHROOCID** (15 %) tai **PSISTIEL** (10 %) askelta kohden.
+   - Liiloista puskista voi tulla **EYEVIL** (30 %), **SQUISHROOM** (20 %), **SHROOCID** (15 %), **PSISTIEL** (10 %) tai **PSIDUOCIPE** (5 %) askelta kohden.
    - Täällä taistellessa taustakin on liila, ja taivaalla tuikkii sinisiä ja liiloja valoja.
    - Kun menet alueelle, sen nimi liukuu hetkeksi ruudun yläreunaan. Sama tapahtuu palatessa PUSKAMETSÄÄN.
    - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
