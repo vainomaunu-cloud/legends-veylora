@@ -44,44 +44,48 @@ const MAPS = {
       '12,20': { to: 'hyujal', x: 12, y: 2, dir: 'down' },
       '27,10': { to: 'sea', x: 1, y: 10, dir: 'right' },
       '18,0': { to: 'snow', x: 12, y: 18, dir: 'up' },
-      '0,12': { to: 'town', x: 22, y: 9, dir: 'left' },
+      '0,12': { to: 'town', x: 28, y: 10, dir: 'left' },
     },
     sign: 'PUSKAMETSÄ\nPuskissa piileskelee AMPERITEja, ZUBUGeja, GOLBUGeja ja harvinaisia AMPEREEMeja. ' + CENTER_NAME + ' parantaa ja myy palloja. Etelään: HYUJAL METSÄ. Pohjoiseen: SNOW MOUNTAIN. Länteen: VEYLORAN KYLÄ.',
   },
-  // a small, quiet village west of PUSKAMETSÄ: houses, flower beds, a fenced pond. No bushes, no creatures.
-  // K house (3x3, sprites/houses.png)  O house door (talk with Z)  Y wooden fence  ~ pond water
+  // a small, quiet village west of PUSKAMETSÄ: five houses, bushes, flowers and a pond. No creatures live here.
+  // K house (3x3, sprites/houses.png)  O house door (talk with Z)  ~ pond water  (Y wooden fence, unused now)
   town: {
     name: 'VEYLORAN KYLÄ',
     tiles: 'tilesTown', rustle: 'bushRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
-      'TTTTTTTTTTTTTTTTTTTTTTTT',
-      'TTTTTTTTTTTTTTTTTTTTTTTT',
-      'TT..*.........*......,TT',
-      'TT..KKK......KKK......TT',
-      'TT..KKK......KKK..*...TT',
-      'TT..KOK...S..KOK......TT',
-      'TT...=........=.......TT',
-      'TT...==========.......TT',
-      'TT.*......=.........,.TT',
-      'TT........=============X',
-      'TT.*......=..YYYYYY...TT',
-      'TT........=..Y~~~~Y...TT',
-      'TT..KKK...=..Y~~~~Y.*.TT',
-      'TT..KKK...=..YYYYYY...TT',
-      'TT..KOK...=...........TT',
-      'TT...======.*....*....TT',
-      'TTTTTTTTTTTTTTTTTTTTTTTT',
-      'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TT.*.....*........*.......*.TT',
+      'TT..KKK......KKK......KKK...TT',
+      'TT..KKK...,..KKK...,..KKK...TT',
+      'TT..KOK.*....KOK..*...KOK..*TT',
+      'TT...=........=........=....TT',
+      'TT...===================.BBBTT',
+      'TTBBBBBB...=....BBBBB...BBBBTT',
+      'TTBBBBB....=S...............TT',
+      'TT.........==================X',
+      'TTBBB..,...=.........,..BBBBTT',
+      'TTBBBB.....=...~~~~.*....BBBTT',
+      'TT..KKK....=..~~~~~...KKK...TT',
+      'TT..KKK..,.=..~~~~....KKK...TT',
+      'TT..KOK.*..=.......*..KOK...TT',
+      'TT...=.....=.BBBBBB....=...*TT',
+      'TT.*.===================....TT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
-    encounters: [],
-    warps: { '23,9': { to: 'forest', x: 1, y: 12, dir: 'right' } },
+    encounters: [],   // the village bushes are just bushes: nothing jumps out
+    warps: { '29,10': { to: 'forest', x: 1, y: 12, dir: 'right' } },
     // what is said at each house door (x,y of the O tile)
     houseTexts: {
       '5,5': 'Kylän vanhin avaa oven: "Tervetuloa VEYLORAN KYLÄÄN! Puskametsän puskissa piileskelee otuksia, joten pidä palloja aina mukana."',
       '14,5': 'Ovi on lukossa. Ikkunasta näkyy hyllyllinen kiiltäviä PYYDYSPALLOJA...',
-      '5,14': 'Kalastaja vilkuttaa ovelta: "Tässä lammessa ei asu otuksia. SAARIMERELLÄ nappaa paljon paremmin!"',
+      '23,5': 'Lapsi kurkistaa ovelta: "Isona minusta tulee maailman paras otuskouluttaja! Oletko jo käynyt REGI TEMPPELISSÄ?"',
+      '5,15': 'Kalastaja vilkuttaa ovelta: "Tässä lammessa ei asu otuksia. SAARIMERELLÄ nappaa paljon paremmin!"',
+      '23,15': 'Puutarhuri huikkaa: "Kylän puskat ovat ihan tavallisia puskia, niistä ei hyppää otuksia. Villit otukset asuvat metsissä!"',
     },
-    sign: 'VEYLORAN KYLÄ\nPieni ja rauhallinen kylä PUSKAMETSÄN länsipuolella. Täällä ei ole puskia eikä villejä otuksia. Itään: PUSKAMETSÄ.',
+    sign: 'VEYLORAN KYLÄ\nPieni ja rauhallinen kylä PUSKAMETSÄN länsipuolella. Kylän puskissa ei asu villejä otuksia. Itään: PUSKAMETSÄ.',
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
@@ -249,11 +253,11 @@ for (const [id, m] of Object.entries(MAPS)) {
     if (ch === 'H') m.center = { x, y };   // ends at the top-left H
     if (ch === 'Q') m.kiosk = { x, y };    // ends at the top-left Q
   }
-  // houses: the top-left K of each 3x3 house block; colour (red, blue, green, ...) in reading order
+  // houses: the top-left K of each 3x3 house block; roof colour (red, blue, green, orange, purple) in reading order
   m.houses = [];
   for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
     const isHouse = (cx, cy) => cy >= 0 && cx >= 0 && 'KO'.includes(m.rows[cy][cx]);
-    if (m.rows[y][x] === 'K' && !isHouse(x - 1, y) && !isHouse(x, y - 1)) m.houses.push({ x, y, style: m.houses.length % 3 });
+    if (m.rows[y][x] === 'K' && !isHouse(x - 1, y) && !isHouse(x, y - 1)) m.houses.push({ x, y, style: m.houses.length % 5 });
   }
   // statues: each "AA" pair is one statue (species from m.statues in reading order), "EE" an empty pedestal
   m.statueList = [];
@@ -305,7 +309,7 @@ const MINI_COLORS_MAP = {
   hyujal: { '.': '#6b4f9e', ',': '#6b4f9e', '*': '#8e6cc4', '=': '#5a5f8c', 'X': '#5a5f8c', 'T': '#4a2580', 'B': '#9a62e0' },
   sea: { '=': '#f2db9a', '*': '#f2db9a', '.': '#8ed45a', ',': '#8ed45a', 'T': '#3fa34a' },
   snow: { '.': '#eef4fb', ',': '#eef4fb', '*': '#ffffff', '=': '#b4c4d8', 'X': '#b4c4d8', 'T': '#2f5a3a', 'B': '#5f8a6a' },
-  town: { 'K': '#d8483a', 'O': '#8a5a2c', 'Y': '#c68a4a', '~': '#3e9be0' },
+  town: { 'K': '#d8483a', 'O': '#8a5a2c', 'Y': '#c68a4a', '~': '#3e9be0', 'B': '#3f9a44' },
   temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78' },
 };
 

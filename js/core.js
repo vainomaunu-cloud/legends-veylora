@@ -77,7 +77,7 @@ const SPRITES = {
   tilesSnow: 'sprites/tiles_snow.png',            // SNOW MOUNTAIN tiles (same order as tiles.png)
   bushRustleSnow: 'sprites/bush_rustle_snow.png',
   tilesTown: 'sprites/tiles_town.png',            // VEYLORAN KYLÄ tiles (tiles.png + water 13-14 + fence 15)
-  houses: 'sprites/houses.png',                  // 3 houses 48x48 (red, blue, green roof)
+  houses: 'sprites/houses.png',                  // 5 houses 48x48 (red, blue, green, orange, purple roof)
   tilesTemple: 'sprites/tiles_temple.png',        // TEMPLE tiles (floor, carpet, runes, braziers, tablet, walls)
   thunderbolt: 'sprites/thunderbolt.png', // 3 frames 16x32
   spark: 'sprites/spark.png',             // 3 frames 32x32
