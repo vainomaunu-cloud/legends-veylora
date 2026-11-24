@@ -595,12 +595,21 @@ const overworld = {
         // KOKOELMA: which species have been caught (unknown ones show as -----)
         const all = catchableSpecies();
         const got = all.filter(id => game.caught.includes(id)).length;
-        textBox.show(`NAPATTU ${got}/${all.length}\nSHINY CHARM: ${game.shinyCharm ? 'ON' : 'EI'}`, 128, 112);
+        // the SHINY CHARM does not need the regis: count only the species it needs
+        const need = charmSpecies(), have = need.filter(id => game.caught.includes(id)).length;
+        textBox.show(`NAPATTU ${got}/${all.length}\nSHINY CHARM ${game.shinyCharm ? 'ON' : `${have}/${need.length}`}`, 128, 112);
         this.showWallet = false;
         const rows = all.map(id => game.caught.includes(id) ? SPECIES[id].name : '-----');
         yield* pagedChoose(rows, 4, 4, 120);
         this.showWallet = true;
-        if (!game.shinyCharm) yield* textBox.say('Nappaa jokaista otusta vähintään yksi, niin saat SHINY CHARMin. Sen kanssa kiiltäviä näkee useammin!');
+        if (!game.shinyCharm && have === need.length) {   // complete already (e.g. from an older save): hand it out now
+          game.shinyCharm = true;
+          yield* flashScreen(2);
+          yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
+          yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/75 (ennen 1/100).');
+        } else if (!game.shinyCharm) {
+          yield* textBox.say(`Nappaa tai kehitä jokaista otusta vähintään yksi, niin saat SHINY CHARMin (${have}/${need.length}). Regejä ei tarvita! Sen kanssa kiiltäviä näkee useammin.`);
+        }
       } else if (c === 4) {
         this.showWallet = false;
         yield* this.pcMenu();
