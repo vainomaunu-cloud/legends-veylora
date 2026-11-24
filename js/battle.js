@@ -338,7 +338,7 @@ function newVisual(pos) {
 const battle = {
   runner: new Runner(),
   t: 0, shake: 0, flash: 0, dark: 0,
-  fx: [], bolt: null, menu: null, result: null,
+  fx: [], glints: [], bolt: null, menu: null, result: null,
 
   // opts.enemy: a trainer { name, team: [{ species, level }], reward, onWin } (no catching, no running)
   // opts.regi: a regi on its pedestal (beating it only sends it back; it must be caught)
@@ -369,7 +369,7 @@ const battle = {
     this.xpShown = this.me.xp;
     this.trainer = { x: 240, show: true };
     this.showFoeInfo = false; this.showMeInfo = false;
-    this.fx = []; this.bolt = null; this.ball = null; this.menu = null; this.result = null;
+    this.fx = []; this.glints = []; this.bolt = null; this.ball = null; this.menu = null; this.result = null;
     this.shake = this.flash = this.dark = 0;
     this.runAttempts = 0;
     this.runner = new Runner();
@@ -390,9 +390,65 @@ const battle = {
     this.addFx('spark', mv.x + 32, mv.y + 36, [0, 0, 1, 1, 2, 2, 2], 2);
     yield* tween(14, k => { mv.scale = 0.1 + 0.9 * k; });
     mv.scale = 1;
+    if (this.me.shiny) yield* this.shinySparkle(mv);
     this.showMeInfo = true;
     yield* wait(10);
     textBox.hide();
+  },
+
+  // ----- shiny sparkle: big twinkling four-point stars -----
+  // a glint: { x, y, vx, vy, t, life, size, c } grows, shines and fades (drawn by drawGlints)
+  addGlint(x, y, size, c, vx = 0, vy = 0, life = 26, delay = 0) {
+    this.glints.push({ x, y, vx, vy, t: -delay, life, size, c });
+  },
+
+  *shinySparkle(v) {
+    const cx = v.x + 32, cy = v.y + 34;
+    const GOLD = ['#fff6a0', '#ffe14a', '#ffffff', '#ffd6f8', '#bff4ff'];
+    this.flash = 2;
+    // 1) a big star bursts in the middle, eight stars shoot out in a ring
+    this.addGlint(cx, cy, 14, '#ffffff', 0, 0, 30);
+    for (let n = 0; n < 8; n++) {
+      const a = n * Math.PI / 4;
+      this.addGlint(cx, cy, 7, GOLD[n % 2], Math.cos(a) * 2.2, Math.sin(a) * 1.8, 30);
+    }
+    yield* wait(10);
+    // 2) stars twinkle all around the creature while glitter drifts up
+    for (let i = 0; i < 46; i++) {
+      if (i % 3 === 0) this.addGlint(cx + rnd(-30, 30), cy + rnd(-30, 22), rnd(4, 9), GOLD[rnd(0, GOLD.length - 1)], 0, -0.15, rnd(18, 28));
+      if (i % 2 === 0) this.addGlint(cx + rnd(-26, 26), cy + rnd(0, 26), 2, GOLD[rnd(0, 2)], rnd(-2, 2) * 0.1, -0.6 - Math.random() * 0.5, 30);
+      yield;
+    }
+    // 3) a last big twinkle on the creature
+    this.addGlint(cx + rnd(-8, 8), cy - rnd(8, 16), 12, '#ffffff', 0, 0, 26);
+    yield* wait(24);
+  },
+
+  drawGlints() {
+    for (const g of this.glints) {
+      if (g.t < 0) continue;
+      const k = g.t / g.life;
+      const r = Math.round(g.size * Math.sin(k * Math.PI));   // grows, then shrinks
+      if (r <= 0) continue;
+      const x = Math.round(g.x), y = Math.round(g.y);
+      ctx.globalAlpha = k > 0.75 ? (1 - k) * 4 : 1;
+      ctx.fillStyle = g.c;
+      ctx.fillRect(x - r, y, r * 2 + 1, 1);                  // long cross
+      ctx.fillRect(x, y - r, 1, r * 2 + 1);
+      if (r >= 4) {                                          // thicker middle and short diagonal rays
+        const m = Math.max(1, Math.round(r / 3));
+        ctx.fillRect(x - m, y - 1, m * 2 + 1, 3);
+        ctx.fillRect(x - 1, y - m, 3, m * 2 + 1);
+        const d = Math.round(r / 2.5);
+        for (let i = 2; i <= d; i++) {
+          ctx.fillRect(x + i, y + i, 1, 1); ctx.fillRect(x - i, y - i, 1, 1);
+          ctx.fillRect(x + i, y - i, 1, 1); ctx.fillRect(x - i, y + i, 1, 1);
+        }
+      }
+      ctx.fillStyle = '#ffffff';                             // white hot centre
+      ctx.fillRect(x - (r >= 4 ? 1 : 0), y - (r >= 4 ? 1 : 0), r >= 4 ? 3 : 1, r >= 4 ? 3 : 1);
+    }
+    ctx.globalAlpha = 1;
   },
 
   *main() {
@@ -403,12 +459,7 @@ const battle = {
       this.trainer.x = Math.round(240 - (240 - 36) * k);
     });
     this.showFoeInfo = true;
-    if (foe.shiny) {
-      for (let i = 0; i < 5; i++) {
-        this.addFx('spark', fv.x + 32 + rnd(-26, 26), fv.y + 32 + rnd(-24, 20), [0, 0, 1, 1, 2, 2]);
-        yield* wait(6);
-      }
-    }
+    if (foe.shiny) yield* this.shinySparkle(fv);
     if (this.kind === 'trainer') {
       yield* textBox.say(`${this.enemy.name} haastaa sinut taisteluun!`);
       yield* textBox.say(`${this.enemy.name} lähetti ${foe.name}n!`);
@@ -1611,6 +1662,8 @@ const battle = {
     }
     for (const f of this.fx) f.t++;
     this.fx = this.fx.filter(f => f.t < f.frames.length);
+    for (const g of this.glints) { g.t++; if (g.t > 0) { g.x += g.vx; g.y += g.vy; } }
+    this.glints = this.glints.filter(g => g.t < g.life);
     if (this.shake > 0) this.shake--;
     if (this.flash > 0) this.flash--;
     this.runner.update();
@@ -1757,6 +1810,7 @@ const battle = {
     }
     if (this.thrown) drawFrame(this.thrown.img, this.thrown.f, 16, 16, Math.round(this.thrown.x - 8), Math.round(this.thrown.y - 8));
     for (const f of this.fx) drawFrame(f.img, f.frames[f.t], f.fw, f.fh, f.x, f.y, f.scale);
+    this.drawGlints();
     if (this.evo) {
       const img = this.evo.white ? makeWhite(this.evo.key) : IMG[this.evo.key];
       ctx.drawImage(img, 0, 0, 32, 32, W / 2 - 32, 30, 64, 64);
