@@ -725,7 +725,9 @@ const battle = {
 
   *chooseMove() {
     const moves = this.me.moves;
-    this.menu = { type: 'moves', index: this.lastMove || 0 };
+    // the last chosen move may belong to a creature with more moves: keep the cursor on a real move
+    this.lastMove = Math.min(this.lastMove || 0, moves.length - 1);
+    this.menu = { type: 'moves', index: this.lastMove };
     while (true) {
       if (take('up')) this.menu.index = (this.menu.index + moves.length - 1) % moves.length;
       if (take('down')) this.menu.index = (this.menu.index + 1) % moves.length;
@@ -1764,7 +1766,7 @@ const battle = {
       const n = this.me.moves.length, y0 = n > 3 ? 116 : n > 2 ? 117 : 121, dy = n > 3 ? 10 : n > 2 ? 12 : 16;
       this.me.moves.forEach((m, i) => drawText(ctx, m.name, 22, y0 + i * dy, m.left > 0 ? '#283040' : '#98a0b0'));
       drawText(ctx, '►', 11, y0 + this.menu.index * dy, '#e04838');
-      const m = this.me.moves[this.menu.index];
+      const m = this.me.moves[this.menu.index] || this.me.moves[0];
       drawBox(152, 112, 88, 48);
       drawText(ctx, 'PP', 161, 121); drawTextRight(ctx, `${m.left}/${m.pp}`, 231, 121);
       drawText(ctx, 'VOIMA', 161, 137); drawTextRight(ctx, m.powerText || String(m.power), 231, 137);
