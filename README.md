@@ -118,6 +118,13 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Metsän alareunasta polku vie etelään **HYUJAL METSÄÄN**.
    - HOITOLAN ohi itään kulkeva polku jatkuu metsän oikean reunan läpi **SAARIMERELLE**.
    - HOITOLAN yläpuolelta polku nousee puskien välistä pohjoiseen **SNOW MOUNTAINILLE**.
+   - Aloituspaikan vierestä polku kulkee länteen metsän vasemman reunan läpi **VEYLORAN KYLÄÄN**.
+2b. **VEYLORAN KYLÄ** (24 × 18 ruutua, PUSKAMETSÄN länsipuolella)
+   - Pieni ja rauhallinen kylä: kolme taloa (punainen, sininen ja vihreä katto, ikkunoissa kukkalaatikot), hiekkapolut, kukkia, kyltti ja puuaidan ympäröimä lampi. Soi PUSKAMETSÄN musiikki.
+   - **Ei puskia eikä villejä otuksia.**
+   - Mene talon oven eteen ja paina Z: kylän vanhin ja kalastaja puhuvat, sininen talo on lukossa (tekstit kartan `houseTexts`-kohdassa).
+   - Kartassa talo on `KKK`-lohko (3 × 3, ovi `O` alarivin keskellä), aita `Y` ja lampi `~`.
+   - Itäreunan polku vie takaisin PUSKAMETSÄÄN.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
    - Hohtava metsä: liilat puut, ruoho ja puskat, hohtavat siniset ja liilat sienet (pienet sienet ja isot, kiinteät sienet sykkivät) sekä leijuvat valopisteet.
    - Liiloista puskista voi tulla **EYEVIL** (30 %), **EYEBALDON** (10 %), **SQUISHROOM** (20 %), **SHROOCID** (15 %), **PSISTIEL** (10 %) tai **PSIDUOCIPE** (5 %) askelta kohden.
@@ -264,6 +271,8 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/bush_rustle.png` | 48×16 | Puskan heilunta, 3 kuvaa |
 | `sprites/tiles_hyujal.png` | 208×16 | HYUJAL METSÄN ruudut samassa järjestyksessä kuin `tiles.png`, paitsi: 3–4 pienet hohtavat sienet (animaatio), 7–8 iso hohtava sieni (animaatio, ei pääse läpi) |
 | `sprites/bush_rustle_hyujal.png` | 48×16 | Liilan puskan heilunta, 3 kuvaa |
+| `sprites/tiles_town.png` | 256×16 | VEYLORAN KYLÄN ruudut: samat kuin `tiles.png` (0–12), lisäksi vesi (13–14) ja puuaita (15) |
+| `sprites/houses.png` | 144×48 | Kolme 48×48 taloa: punainen, sininen ja vihreä katto, savupiippu, ikkunat kukkalaatikoineen ja ovi alarivin keskellä |
 | `sprites/tiles_temple.png` | 208×16 | REGI TEMPPELIN ruudut: lattia (0–1, 5–6, 10), matto (2), hehkuva riimu (3–4), kivimalja pinkillä liekillä (7–8), kivitaulu (9), tiiliseinän etupuoli (11) ja seinän yläosa (12) |
 | `sprites/tiles_snow.png` | 208×16 | SNOW MOUNTAINin ruudut samassa järjestyksessä kuin `tiles.png`: lumi, lumi 2, lumipolku, kimalteleva lumi (3–4), lumiset kuuset (5, 11–12), lumihuippuinen puska (6, 10), kyltti (9) |
 | `sprites/bush_rustle_snow.png` | 48×16 | Lumisen puskan heilunta (lunta tippuu), 3 kuvaa |

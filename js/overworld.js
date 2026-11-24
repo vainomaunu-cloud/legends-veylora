@@ -23,7 +23,7 @@ const MAPS = {
       'TT....S====.HHH..=........TT',
       'TT...,....=.HDH..==========X',
       'TT..*.....=......=....,...TT',
-      'TT........==P=====........TT',
+      'X===========P=====........TT',
       'TT..T.......=......T......TT',
       'TT.BBBBB....=...........BBTT',
       'TT.BBBBBBB..=..BBBBBB..BBBTT',
@@ -44,8 +44,44 @@ const MAPS = {
       '12,20': { to: 'hyujal', x: 12, y: 2, dir: 'down' },
       '27,10': { to: 'sea', x: 1, y: 10, dir: 'right' },
       '18,0': { to: 'snow', x: 12, y: 18, dir: 'up' },
+      '0,12': { to: 'town', x: 22, y: 9, dir: 'left' },
     },
-    sign: 'PUSKAMETSÄ\nPuskissa piileskelee AMPERITEja, ZUBUGeja, GOLBUGeja ja harvinaisia AMPEREEMeja. ' + CENTER_NAME + ' parantaa ja myy palloja. Etelään: HYUJAL METSÄ. Pohjoiseen: SNOW MOUNTAIN.',
+    sign: 'PUSKAMETSÄ\nPuskissa piileskelee AMPERITEja, ZUBUGeja, GOLBUGeja ja harvinaisia AMPEREEMeja. ' + CENTER_NAME + ' parantaa ja myy palloja. Etelään: HYUJAL METSÄ. Pohjoiseen: SNOW MOUNTAIN. Länteen: VEYLORAN KYLÄ.',
+  },
+  // a small, quiet village west of PUSKAMETSÄ: houses, flower beds, a fenced pond. No bushes, no creatures.
+  // K house (3x3, sprites/houses.png)  O house door (talk with Z)  Y wooden fence  ~ pond water
+  town: {
+    name: 'VEYLORAN KYLÄ',
+    tiles: 'tilesTown', rustle: 'bushRustle', shade: '#2a6a30', music: 'overworld',
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'TT..*.........*......,TT',
+      'TT..KKK......KKK......TT',
+      'TT..KKK......KKK..*...TT',
+      'TT..KOK...S..KOK......TT',
+      'TT...=........=.......TT',
+      'TT...==========.......TT',
+      'TT.*......=.........,.TT',
+      'TT........=============X',
+      'TT.*......=..YYYYYY...TT',
+      'TT........=..Y~~~~Y...TT',
+      'TT..KKK...=..Y~~~~Y.*.TT',
+      'TT..KKK...=..YYYYYY...TT',
+      'TT..KOK...=...........TT',
+      'TT...======.*....*....TT',
+      'TTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTT',
+    ],
+    encounters: [],
+    warps: { '23,9': { to: 'forest', x: 1, y: 12, dir: 'right' } },
+    // what is said at each house door (x,y of the O tile)
+    houseTexts: {
+      '5,5': 'Kylän vanhin avaa oven: "Tervetuloa VEYLORAN KYLÄÄN! Puskametsän puskissa piileskelee otuksia, joten pidä palloja aina mukana."',
+      '14,5': 'Ovi on lukossa. Ikkunasta näkyy hyllyllinen kiiltäviä PYYDYSPALLOJA...',
+      '5,14': 'Kalastaja vilkuttaa ovelta: "Tässä lammessa ei asu otuksia. SAARIMERELLÄ nappaa paljon paremmin!"',
+    },
+    sign: 'VEYLORAN KYLÄ\nPieni ja rauhallinen kylä PUSKAMETSÄN länsipuolella. Täällä ei ole puskia eikä villejä otuksia. Itään: PUSKAMETSÄ.',
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
@@ -213,6 +249,12 @@ for (const [id, m] of Object.entries(MAPS)) {
     if (ch === 'H') m.center = { x, y };   // ends at the top-left H
     if (ch === 'Q') m.kiosk = { x, y };    // ends at the top-left Q
   }
+  // houses: the top-left K of each 3x3 house block; colour (red, blue, green, ...) in reading order
+  m.houses = [];
+  for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
+    const isHouse = (cx, cy) => cy >= 0 && cx >= 0 && 'KO'.includes(m.rows[cy][cx]);
+    if (m.rows[y][x] === 'K' && !isHouse(x - 1, y) && !isHouse(x, y - 1)) m.houses.push({ x, y, style: m.houses.length % 3 });
+  }
   // statues: each "AA" pair is one statue (species from m.statues in reading order), "EE" an empty pedestal
   m.statueList = [];
   let n = 0;
@@ -229,7 +271,7 @@ for (const [id, m] of Object.entries(MAPS)) {
   }
 }
 
-const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0 };
+const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15 };
 const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) draw T as bricks
 const WATER = '~';
 const GREAT_NAME = 'GREAT PALLO';
@@ -245,7 +287,7 @@ const BALL_TYPES = [
 const ballType = key => BALL_TYPES.find(b => b.key === key);
 const totalBalls = () => BALL_TYPES.reduce((n, b) => n + game[b.key], 0);
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
-const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E']);
+const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E', 'K', 'O', 'Y']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
 const WALK_SPEED = 1.5;        // pixels per frame (16 px tile = about 11 frames)
 const TREE_LIFT = 6;           // trees are drawn this many px up so the rows overlap
@@ -263,6 +305,7 @@ const MINI_COLORS_MAP = {
   hyujal: { '.': '#6b4f9e', ',': '#6b4f9e', '*': '#8e6cc4', '=': '#5a5f8c', 'X': '#5a5f8c', 'T': '#4a2580', 'B': '#9a62e0' },
   sea: { '=': '#f2db9a', '*': '#f2db9a', '.': '#8ed45a', ',': '#8ed45a', 'T': '#3fa34a' },
   snow: { '.': '#eef4fb', ',': '#eef4fb', '*': '#ffffff', '=': '#b4c4d8', 'X': '#b4c4d8', 'T': '#2f5a3a', 'B': '#5f8a6a' },
+  town: { 'K': '#d8483a', 'O': '#8a5a2c', 'Y': '#c68a4a', '~': '#3e9be0' },
   temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78' },
 };
 
@@ -508,6 +551,7 @@ const overworld = {
     if (regi) { this.runner.run(this.regiTouch(regi)); return; }
     const tile = this.tileAt(fx, fy);
     if (tile === 'S') this.say((this.map.signs && this.map.signs[`${fx},${fy}`]) || this.map.sign);
+    if (tile === 'O') this.say((this.map.houseTexts && this.map.houseTexts[`${fx},${fy}`]) || 'Ovi on lukossa.');
     if (tile === 'D') this.runner.run(this.centerVisit());
     if (tile === 'R') this.runner.run(this.kioskVisit());
   },
@@ -686,6 +730,7 @@ const overworld = {
       }
       if (m.center && ty === m.center.y + 2) ctx.drawImage(IMG.center, m.center.x * TILE - camX, m.center.y * TILE - camY);
       if (m.kiosk && ty === m.kiosk.y + 1) ctx.drawImage(IMG.kiosk, m.kiosk.x * TILE - camX, m.kiosk.y * TILE - camY);
+      for (const h of m.houses) if (ty === h.y + 2) drawFrame(IMG.houses, h.style, 48, 48, h.x * TILE - camX, h.y * TILE - camY);
       for (const s of m.statueList) if (s.y === ty) this.drawStatue(s, s.x * TILE - camX, ty * TILE - camY);
       for (const id of m.npcs || []) {
         const n = NPCS[id], at = n.pos();
