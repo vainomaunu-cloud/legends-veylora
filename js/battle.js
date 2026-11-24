@@ -681,7 +681,8 @@ const battle = {
     return false;
   },
 
-  // KOKOELMA: remember a new species, and hand out the SHINY CHARM when every species has been caught
+  // KOKOELMA: remember a new species (caught, or reached by evolving), and hand out the SHINY CHARM
+  // when every species is in it
   *registerCatch(species) {
     if (!game.caught.includes(species)) {
       game.caught.push(species);
@@ -692,7 +693,7 @@ const battle = {
       game.shinyCharm = true;
       this.flash = 8;
       for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
-      yield* textBox.say('Olet napannut KAIKKI otukset! Sait SHINY CHARMin!');
+      yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
       yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/75 (ennen 1/100).');
     }
   },
@@ -1568,6 +1569,8 @@ const battle = {
       me.moves.unshift(newMove(id));
       yield* textBox.say(`${to.name} oppi uuden liikkeen: ${MOVES[id].name}!`);
     }
+    // the new form counts for the KOKOELMA and the SHINY CHARM just like catching it
+    if (catchableSpecies().includes(me.species)) yield* this.registerCatch(me.species);
     yield* tween(15, k => { this.dark = 0.85 * (1 - k); });
     this.dark = 0;
     this.evo = null;

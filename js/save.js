@@ -118,7 +118,9 @@ const saveGame = {
     game.masterBalls = Math.max(0, d.masterBalls | 0);
     // older saves have no collection yet: start it from the team (the starter does not count)
     game.caught = (Array.isArray(d.caught) ? d.caught : party.map(m => m.species)).filter(id => SPECIES[id] && id !== 'duckonda');
-    game.caught = [...new Set(game.caught)];
+    // evolving counts too: forms already evolved in the team or the PC (from before this rule) join the collection
+    const owned = [...party, ...game.pc].map(m => m.species).filter(id => catchableSpecies().includes(id));
+    game.caught = [...new Set([...game.caught, ...owned])];
     game.shinyCharm = !!d.shinyCharm;
     game.guardianBeaten = !!d.guardianBeaten;
     game.regisCaught = (Array.isArray(d.regisCaught) ? d.regisCaught : []).filter(id => SPECIES[id]);
