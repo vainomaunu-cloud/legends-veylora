@@ -606,7 +606,7 @@ const overworld = {
           game.shinyCharm = true;
           yield* flashScreen(2);
           yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
-          yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/75 (ennen 1/100).');
+          yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/125 (ennen 1/200).');
         } else if (!game.shinyCharm) {
           yield* textBox.say(`Nappaa tai kehitä jokaista otusta vähintään yksi, niin saat SHINY CHARMin (${have}/${need.length}). Regejä ei tarvita! Sen kanssa kiiltäviä näkee useammin.`);
         }

@@ -38,8 +38,8 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 
 ### Kiiltävät muodot
 
-- Jokainen kohdattu villi otus on **1/100** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
-- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatavat HUMMIRDING ja QUACKOBRA sekä regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/75** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
+- Jokainen kohdattu villi otus on **1/200** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
+- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatavat HUMMIRDING ja QUACKOBRA sekä regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/125** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
 - **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (tuntemattomat näkyvät viivoina), montako on napattu (regit mukaan lukien) sekä SHINY CHARMin edistymisen ilman regejä (esim. SHINY CHARM 18/19) tai ON, kun se on saatu. Jos kokoelma on jo valmis mutta SHINY CHARMia ei vielä ole (esim. vanhassa tallennuksessa), se annetaan heti KOKOELMAA katsottaessa. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran **tai kun oma otus kehittyy siksi** (esim. EYEVIL → EYEBALDON lisää EYEBALDONin). Vanhoissa tallennuksissa jo kehittyneet otukset (tiimissä tai PC:ssä) lisätään kokoelmaan, kun peli ladataan.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi, ja teksti kertoo, että se on KIILTÄVÄ.

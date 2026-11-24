@@ -316,8 +316,8 @@ function calcDamage(att, def, move) {
 }
 
 // speStage: -1..-3 from STICKY WEB (reset every battle)
-const SHINY_CHANCE = 1 / 100;
-const SHINY_CHANCE_CHARM = 1 / 75;   // with the SHINY CHARM
+const SHINY_CHANCE = 1 / 200;
+const SHINY_CHANCE_CHARM = 1 / 125;  // with the SHINY CHARM
 const shinyChance = () => (game.shinyCharm ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
 // every species that can be caught (the starter can only be chosen, not caught)
 const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckonda' && !SPECIES[id].evolveOnly);
@@ -704,7 +704,7 @@ const battle = {
       this.flash = 8;
       for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
       yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
-      yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/75 (ennen 1/100).');
+      yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/125 (ennen 1/200).');
     }
   },
 

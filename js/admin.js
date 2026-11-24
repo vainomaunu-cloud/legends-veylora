@@ -74,7 +74,7 @@ const admin = {
 
       <h4>Kokoelma ja SHINY CHARM</h4>
       <div class="admRow">Napattu <b>${catchableSpecies().filter(id => game.caught.includes(id)).length}/${catchableSpecies().length}</b>
-        · SHINY CHARM <b>${game.shinyCharm ? 'ON (1/75)' : 'EI (1/100)'}</b></div>
+        · SHINY CHARM <b>${game.shinyCharm ? 'ON (1/125)' : 'EI (1/200)'}</b></div>
       <div class="admRow"><button data-act="catchall">Merkitse kaikki napatuiksi</button>
         <button data-act="charm">${game.shinyCharm ? 'Poista' : 'Anna'} SHINY CHARM</button>
         <button data-act="resetdex">Tyhjennä kokoelma</button></div>
