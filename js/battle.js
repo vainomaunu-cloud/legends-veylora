@@ -173,13 +173,12 @@ const SPECIES = {
     feetY: 2,
     sprites: { front: 'hummird', blink: 'hummirdBlink', hurt: 'hummirdHurt', attack: 'hummirdAttack', back: 'hummirdBack', backAttack: 'hummirdBackAttack' },
   },
-  // only by evolving HUMMIRD (never sits on the palms)
+  // by evolving HUMMIRD, or (rarely) in the VEYLORAN KYLÄ bushes; never sits on the palms
   hummirding: {
     name: 'HUMMIRDING',
     base: { hp: 65, atk: 80, def: 60, spa: 75, spd: 60, spe: 105 },
     moves: ['twister', 'airslash', 'tackle'],
     xpYield: 130, coins: 45, catchRate: 0.3, feetY: 16,
-    evolveOnly: true,   // not needed for the SHINY CHARM (it can't be caught in the wild)
     sprites: { front: 'hummirding', blink: 'hummirdingBlink', hurt: 'hummirdingHurt', attack: 'hummirdingAttack', back: 'hummirdingBack', backAttack: 'hummirdingBackAttack' },
   },
   // the three regis of the REGI TEMPPELI: level 50, on the pedestals, never shiny in the wild (only from the admin panel).

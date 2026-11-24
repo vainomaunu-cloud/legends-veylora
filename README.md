@@ -26,8 +26,8 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | UNDERCHILL | 3. vaihe (kehittyy tasolla 16) | `underchill.png` + `sprites/underchill_*.png` | IRON HEAD, ICE FANG, ICE CREAM THROW, BLIZZARD | 3 % (SNOW MOUNTAIN) | 55 kolikkoa | hyvin vaikea (0,25) |
 | SINIRAMEN | 1. vaihe | `siniramen.png` + `sprites/siniramen_*.png` | TACKLE, FIRE SPIN, MUD SHOT | 15 % (SNOW MOUNTAIN) | 20 kolikkoa | helppo (0,6) |
 | POLTEARAMEN | 2. vaihe (kehittyy tasolla 16, oppii FLAMETHROWERin) | `poltearamen.png` + `sprites/poltearamen_*.png` | FLAMETHROWER, FIRE SPIN, MUD SHOT, TACKLE | 5 % (SNOW MOUNTAIN) | 55 kolikkoa | vaikea (0,3) |
-| HUMMIRD | 1. vaihe | `hummird.png` + `sprites/hummird_*.png` | AIR SLASH, TACKLE | SAARIMEREN palmujen päällä (kävele palmua päin) | 20 kolikkoa | keskitaso (0,6) |
-| HUMMIRDING | 2. vaihe (kehittyy tasolla 14) | `hummirding.png` + `sprites/hummirding_*.png` | TWISTER, AIR SLASH, TACKLE | vain kehittämällä | 45 kolikkoa | – |
+| HUMMIRD | 1. vaihe | `hummird.png` + `sprites/hummird_*.png` | AIR SLASH, TACKLE | SAARIMEREN palmujen päällä (kävele palmua päin) ja VEYLORAN KYLÄN puskissa 15 % | 20 kolikkoa | keskitaso (0,6) |
+| HUMMIRDING | 2. vaihe (kehittyy tasolla 14) | `hummirding.png` + `sprites/hummirding_*.png` | TWISTER, AIR SLASH, TACKLE | VEYLORAN KYLÄN puskissa 5 % (tai kehittämällä) | 45 kolikkoa | vaikea (0,3) |
 | REGIACID | regi, ei kehity | `regiacid.png` + `sprites/regiacid_*.png` | REGI POWER, ACID PULSE, POISON JAB, FIRE PUNCH | REGI TEMPPELIN keskimmäinen jalusta, LV50 | – | erittäin vaikea (0,12) |
 | REGIPSY | regi, ei kehity | `regipsy.png` + `sprites/regipsy_*.png` | REGI POWER, PSYCHO CUT, PSYCHIC, MIND HEAL | REGI TEMPPELIN oikea jalusta, LV50 | – | erittäin vaikea (0,12) |
 | REGISMILE | regi, ei kehity | `regismile.png` + `sprites/regismile_*.png` | REGI POWER, HAPPINESS PULSE, BABYDOLL EYES, CHARM | REGI TEMPPELIN vasen jalusta, LV50 | – | erittäin vaikea (0,12) |
@@ -39,7 +39,7 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 ### Kiiltävät muodot
 
 - Jokainen kohdattu villi otus on **1/200** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
-- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatavat HUMMIRDING ja QUACKOBRA sekä regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/125** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
+- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatava QUACKOBRA sekä regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/125** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
 - **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (tuntemattomat näkyvät viivoina), montako on napattu (regit mukaan lukien) sekä SHINY CHARMin edistymisen ilman regejä (esim. SHINY CHARM 18/19) tai ON, kun se on saatu. Jos kokoelma on jo valmis mutta SHINY CHARMia ei vielä ole (esim. vanhassa tallennuksessa), se annetaan heti KOKOELMAA katsottaessa. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran **tai kun oma otus kehittyy siksi** (esim. EYEVIL → EYEBALDON lisää EYEBALDONin). Vanhoissa tallennuksissa jo kehittyneet otukset (tiimissä tai PC:ssä) lisätään kokoelmaan, kun peli ladataan.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi, ja teksti kertoo, että se on KIILTÄVÄ.
@@ -120,8 +120,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - HOITOLAN yläpuolelta polku nousee puskien välistä pohjoiseen **SNOW MOUNTAINILLE**.
    - Aloituspaikan vierestä polku kulkee länteen metsän vasemman reunan läpi **VEYLORAN KYLÄÄN**.
 2b. **VEYLORAN KYLÄ** (30 × 20 ruutua, PUSKAMETSÄN länsipuolella)
-   - Pieni ja rauhallinen kylä: viisi taloa (punainen, sininen, vihreä, oranssi ja violetti katto, ikkunoissa kukkalaatikot), hiekkakadut, kukkia, puskarivejä, kyltti ja avoin lampi. Soi PUSKAMETSÄN musiikki.
-   - **Puskia on, mutta niistä ei hyppää otuksia** (kylän `encounters`-lista on tyhjä). Lampeen ei pääse, eikä siinä voi kalastaa otuksia.
+   - Pieni kylä: viisi taloa (punainen, sininen, vihreä, oranssi ja violetti katto, ikkunoissa kukkalaatikot), hiekkakadut, kukkia, puskarivejä, kyltti ja avoin lampi. Soi PUSKAMETSÄN musiikki.
+   - **Kylän puskista voi tulla** **HUMMIRD** (15 %), **SQUISHROOM** (15 %), **SINIRAMEN** (15 %), **HUMMIRDING** (5 %) tai **POLTEARAMEN** (5 %) askelta kohden, tasoilla 3–10. Lampeen ei pääse, eikä siinä voi kalastaa otuksia.
    - Mene talon oven eteen ja paina Z: kylän vanhin, lapsi, kalastaja ja puutarhuri puhuvat, sininen talo on lukossa (tekstit kartan `houseTexts`-kohdassa).
    - Kartassa talo on `KKK`-lohko (3 × 3, ovi `O` alarivin keskellä), puska `B` ja lampi `~`. Talojen kattovärit menevät lukujärjestyksessä.
    - Itäreunan polku vie takaisin PUSKAMETSÄÄN.
@@ -221,7 +221,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 - **Palovamma** (BRN): otus menettää jokaisen vuoron lopussa 1/16 maksimi-HP:staan, ja sen fyysiset hyökkäykset tekevät puolet vähemmän vahinkoa. Pysyy, kunnes otus parannetaan HOITOLASSA.
 - **Myrkytetty** (PSN) otus menettää jokaisen vuoron lopussa 1/8 maksimi-HP:staan. Myrkky jää taistelun jälkeen voimaan, kunnes otus parannetaan HOITOLASSA. Tila näkyy merkkinä tietolaatikon vieressä.
 - Tilasta kärsivä villi otus on helpompi napata (×1,5).
-- **Tasot:** XP-raja on taso³. Villien otusten taso riippuu alueesta, ei omasta tiimistä: PUSKAMETSÄ 2–9, HYUJAL METSÄ 6–14, SAARIMERI (ranta, palmut ja kalastus) 9–18 ja SNOW MOUNTAIN 18–26 (`WILD_LEVELS` tiedostossa `js/main.js`). Pelaaja aloittaa DUCKONDAlla tasolta 5.
+- **Tasot:** XP-raja on taso³. Villien otusten taso riippuu alueesta, ei omasta tiimistä: PUSKAMETSÄ 2–9, HYUJAL METSÄ 6–14, SAARIMERI (ranta, palmut ja kalastus) 9–18, SNOW MOUNTAIN 18–26 ja VEYLORAN KYLÄ 3–10 (`WILD_LEVELS` tiedostossa `js/main.js`). Pelaaja aloittaa DUCKONDAlla tasolta 5.
 - **Kokemuspisteet** (vain taistelussa olevalle) = lajin XP-arvo · vihollisen taso / 7 (AMPERITE 50, AMPEREEM 120).
 - **Pakeneminen** onnistuu ensin 75 %:n todennäköisyydellä, ja jokainen epäonnistunut yritys nostaa mahdollisuutta.
 - Jos PP:t loppuvat kesken taistelun, otus käyttää automaattisesti RIMPUILU-hyökkäystä.

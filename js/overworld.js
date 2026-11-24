@@ -48,7 +48,7 @@ const MAPS = {
     },
     sign: 'PUSKAMETSÄ\nPuskissa piileskelee AMPERITEja, ZUBUGeja, GOLBUGeja ja harvinaisia AMPEREEMeja. ' + CENTER_NAME + ' parantaa ja myy palloja. Etelään: HYUJAL METSÄ. Pohjoiseen: SNOW MOUNTAIN. Länteen: VEYLORAN KYLÄ.',
   },
-  // a small, quiet village west of PUSKAMETSÄ: five houses, bushes, flowers and a pond. No creatures live here.
+  // a small village west of PUSKAMETSÄ: five houses, bushes (with creatures), flowers and a pond
   // K house (3x3, sprites/houses.png)  O house door (talk with Z)  ~ pond water  (Y wooden fence, unused now)
   town: {
     name: 'VEYLORAN KYLÄ',
@@ -75,7 +75,14 @@ const MAPS = {
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
-    encounters: [],   // the village bushes are just bushes: nothing jumps out
+    // chance per step in a village bush
+    encounters: [
+      { species: 'hummird', chance: 0.15 },
+      { species: 'squishroom', chance: 0.15 },
+      { species: 'siniramen', chance: 0.15 },
+      { species: 'hummirding', chance: 0.05 },
+      { species: 'poltearamen', chance: 0.05 },
+    ],
     warps: { '29,10': { to: 'forest', x: 1, y: 12, dir: 'right' } },
     // what is said at each house door (x,y of the O tile)
     houseTexts: {
@@ -83,9 +90,9 @@ const MAPS = {
       '14,5': 'Ovi on lukossa. Ikkunasta näkyy hyllyllinen kiiltäviä PYYDYSPALLOJA...',
       '23,5': 'Lapsi kurkistaa ovelta: "Isona minusta tulee maailman paras otuskouluttaja! Oletko jo käynyt REGI TEMPPELISSÄ?"',
       '5,15': 'Kalastaja vilkuttaa ovelta: "Tässä lammessa ei asu otuksia. SAARIMERELLÄ nappaa paljon paremmin!"',
-      '23,15': 'Puutarhuri huikkaa: "Kylän puskat ovat ihan tavallisia puskia, niistä ei hyppää otuksia. Villit otukset asuvat metsissä!"',
+      '23,15': 'Puutarhuri huikkaa: "Kylän puskiin on muuttanut HUMMIRDeja, SQUISHROOMeja ja jopa ramen-otuksia! Varo kun kuljet niiden läpi."',
     },
-    sign: 'VEYLORAN KYLÄ\nPieni ja rauhallinen kylä PUSKAMETSÄN länsipuolella. Kylän puskissa ei asu villejä otuksia. Itään: PUSKAMETSÄ.',
+    sign: 'VEYLORAN KYLÄ\nPieni kylä PUSKAMETSÄN länsipuolella. Kylän puskissa piileskelee HUMMIRDeja, SQUISHROOMeja, SINIRAMENeja ja harvinaisia HUMMIRDINGeja ja POLTEARAMENeja. Itään: PUSKAMETSÄ.',
   },
   hyujal: {
     name: 'HYUJAL METSÄ',

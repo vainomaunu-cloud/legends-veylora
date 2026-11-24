@@ -26,6 +26,7 @@ const WILD_LEVELS = {
   hyujal: [6, 14],    // HYUJAL METSÄ
   sea: [9, 18],       // SAARIMERI (beach, palms and fishing)
   snow: [18, 26],     // SNOW MOUNTAIN
+  town: [3, 10],      // VEYLORAN KYLÄ
 };
 
 function wildLevel() {
