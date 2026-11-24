@@ -86,7 +86,16 @@ const SPECIES = {
     base: { hp: 50, atk: 65, def: 50, spa: 70, spd: 55, spe: 65 },
     moves: ['babydolleyes', 'darkpulse', 'poisonjab'],
     xpYield: 65, coins: 30, catchRate: 0.5, feetY: 0,
+    evolveAt: 14, evolveTo: 'eyebaldon',
     sprites: { front: 'eyevil', blink: 'eyevilBlink', hurt: 'eyevilHurt', attack: 'eyevilAttack', back: 'eyevilBack', backAttack: 'eyevilBackAttack' },
+  },
+  // EYEVIL evolves at level 14 (and learns STARING EYE); also 10 % in HYUJAL METSÄ bushes
+  eyebaldon: {
+    name: 'EYEBALDON',
+    base: { hp: 70, atk: 85, def: 70, spa: 95, spd: 75, spe: 80 },
+    moves: ['staringeye', 'babydolleyes', 'darkpulse', 'poisonjab'],
+    xpYield: 140, coins: 50, catchRate: 0.3, feetY: 0,
+    sprites: { front: 'eyebaldon', blink: 'eyebaldonBlink', hurt: 'eyebaldonHurt', attack: 'eyebaldonAttack', back: 'eyebaldonBack', backAttack: 'eyebaldonBackAttack' },
   },
   // SAARIMERI fishing
   algish: {
@@ -219,6 +228,8 @@ const MOVES = {
   twister: { id: 'twister', name: 'TWISTER', power: 70, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'twister' },
   blizzard: { id: 'blizzard', name: 'BLIZZARD', power: 110, acc: 70, pp: 5, special: true, anim: 'blizzard' },
   icefang: { id: 'icefang', name: 'ICE FANG', power: 65, acc: 95, pp: 15, special: false, flinch: 0.1, anim: 'icefang' },
+  // EYEBALDON: a piercing stare that can freeze the target in place
+  staringeye: { id: 'staringeye', name: 'STARING EYE', power: 85, acc: 100, pp: 10, special: true, paralyze: 0.3, anim: 'staringeye' },
   // regi moves
   regipower: { id: 'regipower', name: 'REGI POWER', power: 120, acc: 90, pp: 5, special: true, anim: 'regipower' },
   acidpulse: { id: 'acidpulse', name: 'ACID PULSE', power: 85, acc: 100, pp: 10, special: true, poison: 0.3, anim: 'acidpulse' },
@@ -748,6 +759,7 @@ const battle = {
     else if (move.anim === 'psistrike') yield* this.animPsiStrike(av, dv);
     else if (move.anim === 'psychic') yield* this.animPsychic(av, dv);
     else if (move.anim === 'psychocut') yield* this.animPsychoCut(av, dv);
+    else if (move.anim === 'staringeye') yield* this.animStaringEye(av, dv);
     else if (move.anim === 'regipower') yield* this.animRegiPower(av, dv);
     else if (move.anim === 'acidpulse') yield* this.animAcidPulse(av, dv);
     else if (move.anim === 'firepunch') yield* this.animFirePunch(av, dv, mine ? 1 : -1);
@@ -1002,6 +1014,41 @@ const battle = {
     this.parts = null;
     av.pose = 'idle';
     yield* tween(6, k => { this.tint = 0.25 * (1 - k); });
+    this.tint = 0; this.tintRGB = null;
+    yield* wait(6);
+  },
+
+  // STARING EYE: the screen goes dark, a huge red-ringed eye opens over the target and stares, then a red flash
+  *animStaringEye(av, dv) {
+    av.pose = 'attack';
+    this.tintRGB = '20,0,30';
+    yield* tween(10, k => { this.tint = 0.55 * k; });
+    const cx = dv.x + 32, cy = dv.y + 30;
+    for (let i = 0; i < 50; i++) {
+      const open = Math.min(1, i / 14);             // the lids open
+      const h = 12 * open, w = 26;
+      this.parts = [];
+      for (let a = 0; a < Math.PI * 2; a += 0.09) {   // eye outline (almond shape) and white
+        const x = cx + Math.cos(a) * w, y = cy + Math.sin(a) * h;
+        this.parts.push({ x, y, c: '#ff3a3a', s: 2 });
+      }
+      for (let yy = -h + 2; yy <= h - 2; yy += 2) {
+        const half = w * Math.sqrt(Math.max(0, 1 - (yy * yy) / (h * h))) - 2;
+        for (let xx = -half; xx <= half; xx += 2) this.parts.push({ x: cx + xx, y: cy + yy, c: '#f0e8f0', s: 2 });
+      }
+      if (open >= 1) {                                // the pupil narrows to a slit and twitches
+        const px = cx + Math.round(Math.sin(i / 3) * 2);
+        for (let yy = -9; yy <= 9; yy += 2) this.parts.push({ x: px, y: cy + yy, c: '#110010', s: 3 });
+        for (let yy = -5; yy <= 5; yy += 2) this.parts.push({ x: px - 2, y: cy + yy, c: '#c03030', s: 2 }, { x: px + 2, y: cy + yy, c: '#c03030', s: 2 });
+      }
+      if (i === 30) { this.flash = 3; this.shake = 8; }
+      if (i > 30) { dv.dx = (i % 2 ? 1 : -1); }       // the target trembles under the stare
+      yield;
+    }
+    dv.dx = 0;
+    this.parts = null;
+    av.pose = 'idle';
+    yield* tween(8, k => { this.tint = 0.55 * (1 - k); });
     this.tint = 0; this.tintRGB = null;
     yield* wait(6);
   },

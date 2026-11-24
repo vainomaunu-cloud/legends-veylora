@@ -76,9 +76,10 @@ const MAPS = {
       { species: 'psistiel', chance: 0.10 },
       { species: 'psiduocipe', chance: 0.05 },
       { species: 'eyevil', chance: 0.30 },
+      { species: 'eyebaldon', chance: 0.10 },
     ],
     warps: { '12,0': { to: 'forest', x: 12, y: 18, dir: 'up' } },
-    sign: 'HYUJAL METSÄ\nPuut ja sienet hohtavat... Liilojen puskien seassa piileskelee SQUISHROOMeja, myrkyllisiä SHROOCIDeja ja salaperäisiä PSISTIELejä. Varjoissa vaanii EYEVILejä, ja joskus harvoin näkyy jopa PSIDUOCIPE!',
+    sign: 'HYUJAL METSÄ\nPuut ja sienet hohtavat... Liilojen puskien seassa piileskelee SQUISHROOMeja, myrkyllisiä SHROOCIDeja ja salaperäisiä PSISTIELejä. Varjoissa vaanii EYEVILejä ja niiden isoja EYEBALDONeja, ja joskus harvoin näkyy jopa PSIDUOCIPE!',
   },
   // snowy forest north of PUSKAMETSÄ (no creatures yet)
   snow: {

@@ -13,7 +13,8 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | GOLBUG | 2. vaihe (kehittyy tasolla 10) | `golbug.png` + `sprites/golbug_*.png` | AIR SLASH, BUG BUZZ, STICKY WEB | 8 % | 50 kolikkoa | vaikea (0,35) |
 | SQUISHROOM | ei kehity | `squishroom.png` + `sprites/squishroom_*.png` | MUD SHOT, FAIRY WIND, GIGA DRAIN | 20 % (vain HYUJAL METSÄ) | 30 kolikkoa, nappaamisesta myös 30 | keskitaso (0,5) |
 | SHROOCID | ei kehity | `shroocid.png` + `sprites/shroocid_*.png` | POISON JAB, IRON HEAD, SLUDGE WAVE | 15 % (vain HYUJAL METSÄ) | 20 kolikkoa, nappaamisesta myös 20 | keskitaso (0,5) |
-| EYEVIL | ei kehity | `eyevil.png` + `sprites/eyevil_*.png` | BABYDOLL EYES, DARK PULSE, POISON JAB | 30 % (vain HYUJAL METSÄ) | 30 kolikkoa | keskitaso (0,5) |
+| EYEVIL | 1. vaihe | `eyevil.png` + `sprites/eyevil_*.png` | BABYDOLL EYES, DARK PULSE, POISON JAB | 30 % (vain HYUJAL METSÄ) | 30 kolikkoa | keskitaso (0,5) |
+| EYEBALDON | 2. vaihe (kehittyy tasolla 14, oppii STARING EYEn) | `eyebaldon.png` + `sprites/eyebaldon_*.png` | STARING EYE, BABYDOLL EYES, DARK PULSE, POISON JAB | 10 % (vain HYUJAL METSÄ) | 50 kolikkoa | vaikea (0,3) |
 | PSISTIEL | 1. vaihe | `psistiel.png` + `sprites/psistiel_*.png` | PSI STRIKE, PSYCHIC, IRON HEAD | 10 % (vain HYUJAL METSÄ) | 30 kolikkoa | keskitaso (0,45) |
 | PSIDUOCIPE | 2. vaihe (kehittyy tasolla 20, oppii PSYCHO CUTin) | `psiduocipe.png` + `sprites/psiduocipe_*.png` | PSYCHO CUT, PSI STRIKE, PSYCHIC, IRON HEAD | 5 % (vain HYUJAL METSÄ) | 55 kolikkoa | hyvin vaikea (0,25) |
 | ALGISH | 1. vaihe | `algish.png` + `sprites/algish_*.png` | POISON JAB, SLEEP POWDER | kalastus 40 % (SAARIMERI) | 25 kolikkoa | helppo (0,7) |
@@ -30,7 +31,7 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
-PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 80 % (EYEVIL 30 %, SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %, PSIDUOCIPE 5 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin. SNOW MOUNTAINilla puskissa on 43 % (BINCHULCIN 30 %, OVERCHILL 10 %, UNDERCHILL 3 %). BINCHULCIN oppii ICE FANGin kehittyessään OVERCHILLiksi, ja OVERCHILL oppii IRON HEADin kehittyessään UNDERCHILLiksi.
+PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 90 % (EYEVIL 30 %, EYEBALDON 10 %, SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %, PSIDUOCIPE 5 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin. SNOW MOUNTAINilla puskissa on 43 % (BINCHULCIN 30 %, OVERCHILL 10 %, UNDERCHILL 3 %). BINCHULCIN oppii ICE FANGin kehittyessään OVERCHILLiksi, ja OVERCHILL oppii IRON HEADin kehittyessään UNDERCHILLiksi.
 
 ### Kiiltävät muodot
 
@@ -115,7 +116,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - HOITOLAN yläpuolelta polku nousee puskien välistä pohjoiseen **SNOW MOUNTAINILLE**.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
    - Hohtava metsä: liilat puut, ruoho ja puskat, hohtavat siniset ja liilat sienet (pienet sienet ja isot, kiinteät sienet sykkivät) sekä leijuvat valopisteet.
-   - Liiloista puskista voi tulla **EYEVIL** (30 %), **SQUISHROOM** (20 %), **SHROOCID** (15 %), **PSISTIEL** (10 %) tai **PSIDUOCIPE** (5 %) askelta kohden.
+   - Liiloista puskista voi tulla **EYEVIL** (30 %), **EYEBALDON** (10 %), **SQUISHROOM** (20 %), **SHROOCID** (15 %), **PSISTIEL** (10 %) tai **PSIDUOCIPE** (5 %) askelta kohden.
    - Täällä taistellessa taustakin on liila, ja taivaalla tuikkii sinisiä ja liiloja valoja.
    - Kun menet alueelle, sen nimi liukuu hetkeksi ruudun yläreunaan. Sama tapahtuu palatessa PUSKAMETSÄÄN.
    - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
@@ -151,7 +152,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Valikko: TAISTELE / PALLO / VAIHDA / PAKENE.
    - **VAIHDA:** valitse tiimistä toinen otus taisteluun (näkyy HP). Uupunutta tai jo taistelevaa ei voi valita, ja B peruu. Vaihto vie vuoron, joten villi otus hyökkää heti uutta vastaan. Pois vaihdetun nopeusmuutokset ja tulipyörre nollautuvat. XP:n saa se, joka on taistelussa voiton hetkellä.
    - Nopeampi otus hyökkää ensin. Tasatilanteessa järjestys arvotaan.
-   - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10, PSISTIEL → PSIDUOCIPE tasolla 20 (oppii PSYCHO CUTin).
+   - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10, PSISTIEL → PSIDUOCIPE tasolla 20 (oppii PSYCHO CUTin), EYEVIL → EYEBALDON tasolla 14 (oppii STARING EYEn).
    - Jos oma otus uupuu, seuraava tiimiläinen, jolla on HP:ta, lähtee taisteluun.
    - Jos koko tiimi uupuu, heräät HOITOLAN ovelta täysin voimin.
 
@@ -190,6 +191,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 | ICE FANG | 65 | 95 % | 15 | Fyysinen hyökkäys, jäiset hampaat ja jääsirpaleet. 10 %: kohde säpsähtää |
 | TWISTER | 70 | 100 % | 15 | Erikoishyökkäys. Pyörteinen tuulipatsas nostaa kohdetta. 20 %: kohde säpsähtää |
 | PSYCHO CUT | 70 | 100 % | 20 | Fyysinen hyökkäys. Violetti taivas ja kaksi hehkuvaa vaaleanpunaista terää viiltää kohteen. Kriittisen osuman mahdollisuus 1/8 (tavallisesti 1/16) |
+| STARING EYE | 85 | 100 % | 10 | Erikoishyökkäys. Ruutu pimenee, kohteen ylle aukeaa valtava punareunainen silmä, jonka rakopupilli tuijottaa, ja kohde vapisee. 30 %: halvaannuttaa |
 | REGI POWER | 120 | 90 % | 5 | Regien erikoishyökkäys. Taivas muuttuu tumman violetiksi, kulta-pinkki-turkoosit renkaat romahtavat kohteeseen ja valtava säteiden räjähdys |
 | ACID PULSE | 85 | 100 % | 10 | Erikoishyökkäys. Vihreä-violetit happopisarat lentävät kohteeseen ja happorenkaat aaltoilevat. 30 %: myrkyttää |
 | FIRE PUNCH | 75 | 100 % | 15 | Fyysinen hyökkäys. Nyrkki syttyy palamaan, syöksy ja tulipurkaus. 10 %: palovamma |
