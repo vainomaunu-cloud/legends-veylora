@@ -111,13 +111,15 @@ const MAPS = {
       { species: 'binchulin', chance: 0.30 },
       { species: 'overchill', chance: 0.10 },
       { species: 'underchill', chance: 0.03 },
+      { species: 'siniramen', chance: 0.15 },
+      { species: 'poltearamen', chance: 0.05 },
     ],
     npcs: ['guardian'],   // the TEMPLE GUARDIAN blocks the way up until beaten
     warps: {
       '12,19': { to: 'forest', x: 18, y: 1, dir: 'down' },
       '12,0': { to: 'temple', x: 11, y: 21, dir: 'up' },
     },
-    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa piileskelee BINCHULCINeja, OVERCHILLejä ja harvinaisia UNDERCHILLejä. Polku ylös vie REGI TEMPPELIIN.',
+    sign: 'SNOW MOUNTAIN\nKylmä tuuli puhaltaa vuorelta... Lumisissa puskissa piileskelee BINCHULCINeja, OVERCHILLejä ja harvinaisia UNDERCHILLejä. Lumessa höyryävät myös SINIRAMENit ja kuumat POLTEARAMENit. Polku ylös vie REGI TEMPPELIIN.',
   },
   // purple-pink temple on top of SNOW MOUNTAIN: no bushes, no creatures, just statues
   // T wall (drawn as bricks, not trees)  A statue (2 tiles wide, AA)  E empty pedestal (EE)  M brazier with a pink flame  * glowing rune

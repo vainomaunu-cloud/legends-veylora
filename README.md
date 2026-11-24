@@ -23,6 +23,8 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | BINCHULCIN | 1. vaihe | `binchulin.png` + `sprites/binchulin_*.png` | ICE CREAM THROW, BLIZZARD | 30 % (SNOW MOUNTAIN) | 15 kolikkoa | helppo (0,7) |
 | OVERCHILL | 2. vaihe (kehittyy tasolla 9) | `overchill.png` + `sprites/overchill_*.png` | ICE FANG, ICE CREAM THROW, BLIZZARD | 10 % (SNOW MOUNTAIN) | 35 kolikkoa | keskitaso (0,45) |
 | UNDERCHILL | 3. vaihe (kehittyy tasolla 16) | `underchill.png` + `sprites/underchill_*.png` | IRON HEAD, ICE FANG, ICE CREAM THROW, BLIZZARD | 3 % (SNOW MOUNTAIN) | 55 kolikkoa | hyvin vaikea (0,25) |
+| SINIRAMEN | 1. vaihe | `siniramen.png` + `sprites/siniramen_*.png` | TACKLE, FIRE SPIN, MUD SHOT | 15 % (SNOW MOUNTAIN) | 20 kolikkoa | helppo (0,6) |
+| POLTEARAMEN | 2. vaihe (kehittyy tasolla 16, oppii FLAMETHROWERin) | `poltearamen.png` + `sprites/poltearamen_*.png` | FLAMETHROWER, FIRE SPIN, MUD SHOT, TACKLE | 5 % (SNOW MOUNTAIN) | 55 kolikkoa | vaikea (0,3) |
 | HUMMIRD | 1. vaihe | `hummird.png` + `sprites/hummird_*.png` | AIR SLASH, TACKLE | SAARIMEREN palmujen päällä (kävele palmua päin) | 20 kolikkoa | keskitaso (0,6) |
 | HUMMIRDING | 2. vaihe (kehittyy tasolla 14) | `hummirding.png` + `sprites/hummirding_*.png` | TWISTER, AIR SLASH, TACKLE | vain kehittämällä | 45 kolikkoa | – |
 | REGIACID | regi, ei kehity | `regiacid.png` + `sprites/regiacid_*.png` | REGI POWER, ACID PULSE, POISON JAB, FIRE PUNCH | REGI TEMPPELIN keskimmäinen jalusta, LV50 | – | erittäin vaikea (0,12) |
@@ -31,7 +33,7 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
-PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 90 % (EYEVIL 30 %, EYEBALDON 10 %, SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %, PSIDUOCIPE 5 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin. SNOW MOUNTAINilla puskissa on 43 % (BINCHULCIN 30 %, OVERCHILL 10 %, UNDERCHILL 3 %). BINCHULCIN oppii ICE FANGin kehittyessään OVERCHILLiksi, ja OVERCHILL oppii IRON HEADin kehittyessään UNDERCHILLiksi.
+PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 90 % (EYEVIL 30 %, EYEBALDON 10 %, SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %, PSIDUOCIPE 5 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin. SNOW MOUNTAINilla puskissa on 63 % (BINCHULCIN 30 %, SINIRAMEN 15 %, OVERCHILL 10 %, POLTEARAMEN 5 %, UNDERCHILL 3 %). BINCHULCIN oppii ICE FANGin kehittyessään OVERCHILLiksi, ja OVERCHILL oppii IRON HEADin kehittyessään UNDERCHILLiksi.
 
 ### Kiiltävät muodot
 
@@ -122,7 +124,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
 4. **SNOW MOUNTAIN** (26 × 20 ruutua)
    - Luminen metsä PUSKAMETSÄN pohjoispuolella: lumiset kuuset, lumihuippuiset puskat, kimaltelevaa lunta ja tallattu lumipolku keskellä. Lunta sataa koko ajan.
-   - Lumisista puskista voi tulla **BINCHULCIN** (30 %), **OVERCHILL** (10 %) tai **UNDERCHILL** (3 %). Kyltti on polun varrella.
+   - Lumisista puskista voi tulla **BINCHULCIN** (30 %), **SINIRAMEN** (15 %), **OVERCHILL** (10 %), **POLTEARAMEN** (5 %) tai **UNDERCHILL** (3 %). Kyltti on polun varrella.
    - Täällä taistellaan lumisella taustalla.
    - Polku jatkuu pohjoisreunan läpi **REGI TEMPPELIIN**, mutta polun yläpäässä seisoo **TEMPPELIN VARTIJA** (violetti huppu, `sprites/guardian.png`). Kävele häntä päin tai paina Z, niin hän haastaa kouluttajataisteluun: **PSISTIEL LV35** ja **SHROOCID LV35**.
      - Kouluttajan otuksia ei voi napata, eikä taistelusta voi paeta. Kun ensimmäinen uupuu, vartija lähettää seuraavan. Voitosta saa XP:tä ja **500 kolikkoa**.
@@ -152,7 +154,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Valikko: TAISTELE / PALLO / VAIHDA / PAKENE.
    - **VAIHDA:** valitse tiimistä toinen otus taisteluun (näkyy HP). Uupunutta tai jo taistelevaa ei voi valita, ja B peruu. Vaihto vie vuoron, joten villi otus hyökkää heti uutta vastaan. Pois vaihdetun nopeusmuutokset ja tulipyörre nollautuvat. XP:n saa se, joka on taistelussa voiton hetkellä.
    - Nopeampi otus hyökkää ensin. Tasatilanteessa järjestys arvotaan.
-   - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10, PSISTIEL → PSIDUOCIPE tasolla 20 (oppii PSYCHO CUTin), EYEVIL → EYEBALDON tasolla 14 (oppii STARING EYEn).
+   - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10, PSISTIEL → PSIDUOCIPE tasolla 20 (oppii PSYCHO CUTin), EYEVIL → EYEBALDON tasolla 14 (oppii STARING EYEn), SINIRAMEN → POLTEARAMEN tasolla 16 (oppii FLAMETHROWERin).
    - Jos oma otus uupuu, seuraava tiimiläinen, jolla on HP:ta, lähtee taisteluun.
    - Jos koko tiimi uupuu, heräät HOITOLAN ovelta täysin voimin.
 

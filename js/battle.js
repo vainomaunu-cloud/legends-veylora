@@ -147,6 +147,22 @@ const SPECIES = {
     xpYield: 170, coins: 55, catchRate: 0.25, feetY: 2,
     sprites: { front: 'underchill', blink: 'underchillBlink', hurt: 'underchillHurt', attack: 'underchillAttack', back: 'underchillBack', backAttack: 'underchillBackAttack' },
   },
+  // SNOW MOUNTAIN bushes: steaming bowls of ramen (SINIRAMEN evolves at 16 and learns FLAMETHROWER)
+  siniramen: {
+    name: 'SINIRAMEN',
+    base: { hp: 55, atk: 55, def: 55, spa: 60, spd: 50, spe: 45 },
+    moves: ['tackle', 'firespin', 'mudshot'],
+    xpYield: 65, coins: 20, catchRate: 0.6, feetY: 4,
+    evolveAt: 16, evolveTo: 'poltearamen',
+    sprites: { front: 'siniramen', blink: 'siniramenBlink', hurt: 'siniramenHurt', attack: 'siniramenAttack', back: 'siniramenBack', backAttack: 'siniramenBackAttack' },
+  },
+  poltearamen: {
+    name: 'POLTEARAMEN',
+    base: { hp: 80, atk: 85, def: 75, spa: 95, spd: 70, spe: 60 },
+    moves: ['flamethrower', 'firespin', 'mudshot', 'tackle'],
+    xpYield: 150, coins: 55, catchRate: 0.3, feetY: -2,
+    sprites: { front: 'poltearamen', blink: 'poltearamenBlink', hurt: 'poltearamenHurt', attack: 'poltearamenAttack', back: 'poltearamenBack', backAttack: 'poltearamenBackAttack' },
+  },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
     name: 'HUMMIRD',
