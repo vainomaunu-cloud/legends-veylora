@@ -6,7 +6,8 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 
 | Laji | Vaihe | Sprite | Liikkeet | Puskasta / askel | Voitosta | Nappausvaikeus |
 |---|---|---|---|---|---|---|
-| DUCKONDA | aloitusotus, ei kehity | `duckonda.png` + `sprites/duckonda_*.png` | FIRE SPIN, FLAMETHROWER, FLAME TORNADO | ei koskaan (vain aloitusotuksena) | – | – |
+| DUCKONDA | aloitusotus, 1. vaihe | `duckonda.png` + `sprites/duckonda_*.png` | FIRE SPIN, FLAMETHROWER, FLAME TORNADO | ei koskaan (vain aloitusotuksena) | – | – |
+| QUACKOBRA | 2. vaihe (DUCKONDA kehittyy tasolla 17, oppii POISON JABin) | `quackobra.png` + `sprites/quackobra_*.png` | POISON JAB, FIRE SPIN, FLAMETHROWER, FLAME TORNADO | ei koskaan (vain kehittämällä) | – | – |
 | AMPERITE | 1. vaihe | `moi 1st evo.png` + `sprites/amperite_*.png` | ELECTROBALL, TACKLE | 15 % | 25 kolikkoa | helppo (0,7) |
 | AMPEREEM | 2. vaihe (kehittyy tasolla 8) | `moi.png` + `sprites/moi_*.png` | THUNDERBOLT, ELECTROBALL, TACKLE | 5 % | 50 kolikkoa | vaikea (0,35) |
 | ZUBUG | 1. vaihe | `zubug.png` + `sprites/zubug_*.png` | BUG BUZZ, STICKY WEB | 15 % | 25 kolikkoa | helppo (0,7) |
@@ -38,7 +39,7 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 ### Kiiltävät muodot
 
 - Jokainen kohdattu villi otus on **1/100** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
-- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatava HUMMIRDING ja regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/75** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
+- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatavat HUMMIRDING ja QUACKOBRA sekä regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/75** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
 - **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (tuntemattomat näkyvät viivoina), montako on napattu ja onko SHINY CHARM jo saatu. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran **tai kun oma otus kehittyy siksi** (esim. EYEVIL → EYEBALDON lisää EYEBALDONin). Vanhoissa tallennuksissa jo kehittyneet otukset (tiimissä tai PC:ssä) lisätään kokoelmaan, kun peli ladataan.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi, ja teksti kertoo, että se on KIILTÄVÄ.
@@ -155,7 +156,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Valikko: TAISTELE / PALLO / VAIHDA / PAKENE.
    - **VAIHDA:** valitse tiimistä toinen otus taisteluun (näkyy HP). Uupunutta tai jo taistelevaa ei voi valita, ja B peruu. Vaihto vie vuoron, joten villi otus hyökkää heti uutta vastaan. Pois vaihdetun nopeusmuutokset ja tulipyörre nollautuvat. XP:n saa se, joka on taistelussa voiton hetkellä.
    - Nopeampi otus hyökkää ensin. Tasatilanteessa järjestys arvotaan.
-   - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10, PSISTIEL → PSIDUOCIPE tasolla 20 (oppii PSYCHO CUTin), EYEVIL → EYEBALDON tasolla 14 (oppii STARING EYEn), SINIRAMEN → POLTEARAMEN tasolla 16 (oppii FLAMETHROWERin).
+   - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10, PSISTIEL → PSIDUOCIPE tasolla 20 (oppii PSYCHO CUTin), EYEVIL → EYEBALDON tasolla 14 (oppii STARING EYEn), SINIRAMEN → POLTEARAMEN tasolla 16 (oppii FLAMETHROWERin), DUCKONDA → QUACKOBRA tasolla 17 (oppii POISON JABin). Kiiltävä pysyy kiiltävänä kehittyessään.
    - Jos oma otus uupuu, seuraava tiimiläinen, jolla on HP:ta, lähtee taisteluun.
    - Jos koko tiimi uupuu, heräät HOITOLAN ovelta täysin voimin.
 

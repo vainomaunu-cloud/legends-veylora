@@ -215,7 +215,17 @@ const SPECIES = {
     catchRate: 0,
     shinyChance: 1 / 10,
     feetY: 8,
+    evolveAt: 17, evolveTo: 'quackobra',
     sprites: { front: 'duckonda', blink: 'duckondaBlink', hurt: 'duckondaHurt', attack: 'duckondaAttack', back: 'duckondaBack', backAttack: 'duckondaBackAttack' },
+  },
+  // only by evolving DUCKONDA at level 17 (learns POISON JAB); never appears anywhere in the wild
+  quackobra: {
+    name: 'QUACKOBRA',
+    base: { hp: 75, atk: 80, def: 65, spa: 95, spd: 70, spe: 80 },
+    moves: ['firespin', 'flamethrower', 'flametornado', 'poisonjab'],
+    xpYield: 140, coins: 0, catchRate: 0, feetY: 4,
+    evolveOnly: true,   // not in the KOKOELMA list and not needed for the SHINY CHARM
+    sprites: { front: 'quackobra', blink: 'quackobraBlink', hurt: 'quackobraHurt', attack: 'quackobraAttack', back: 'quackobraBack', backAttack: 'quackobraBackAttack' },
   },
 };
 
