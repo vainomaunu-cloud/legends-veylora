@@ -73,7 +73,6 @@ const SPRITES = {
   moiBack: 'sprites/moi_back.png',        // 32x32 back (player side)
   moiBackAttack: 'sprites/moi_back_attack.png',
   player: 'sprites/player.png',           // 16x16 frames, 3 cols x 4 rows (down, up, left, right)
-  guardian: 'sprites/guardian.png',       // TEMPLE GUARDIAN trainer, same layout as player.png
   trainerBack: 'sprites/trainer_back.png',// 32x32
   tiles: 'sprites/tiles.png',             // 16x16 tiles in one row
   bushRustle: 'sprites/bush_rustle.png',  // 3 frames 16x16

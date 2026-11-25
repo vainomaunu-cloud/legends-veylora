@@ -82,8 +82,6 @@ const admin = {
         <button data-act="resetdex">Tyhjennä kokoelma</button></div>
 
       <h4>REGI TEMPPELI</h4>
-      <div class="admRow">TEMPPELIN VARTIJA <b>${game.guardianBeaten ? 'voitettu' : 'ei voitettu'}</b>
-        <button data-act="guardian">${game.guardianBeaten ? 'Palauta vartija' : 'Merkitse voitetuksi'}</button></div>
       <div class="admRow">REGI SHARDIT <b>${game.shards.length}/${SHARD_TOTAL}${game.shardsGiven ? ', annettu' : ''}</b>
         <button data-act="shards">Kaikki shardit</button><button data-act="shardsReset">Palauta shardit</button></div>
       <div class="admRow">Napatut regit <b>${game.regisCaught.map(id => SPECIES[id].name).join(', ') || '-'}</b>
@@ -147,7 +145,6 @@ const admin = {
           { ...(SPECIES[foe].legendary ? { regi: true, level: 50 } : {}), ...(shiny ? { shiny: true } : {}) });
         return;
       }
-      case 'guardian': game.guardianBeaten = !game.guardianBeaten; return this.changed(`TEMPPELIN VARTIJA: ${game.guardianBeaten ? 'voitettu' : 'palautettu'}`);
       case 'regis': game.regisCaught = []; return this.changed('Regit palautettu jalustoille');
       case 'shards': game.shards = Object.values(MAPS).filter(q => q.shard).map(q => q.id); return this.changed('Kaikki REGI SHARDIT kerätty');
       case 'shardsReset': game.shards = []; game.shardsGiven = false; return this.changed('REGI SHARDIT palautettu kartoille');

@@ -92,7 +92,7 @@ const saveGame = {
       pc: game.pc.map(pack),
       coins: game.coins, balls: game.balls, greatBalls: game.greatBalls, ultraBalls: game.ultraBalls, masterBalls: game.masterBalls,
       caught: game.caught, shinyCharm: game.shinyCharm,
-      guardianBeaten: game.guardianBeaten, regisCaught: game.regisCaught, shards: game.shards, shardsGiven: game.shardsGiven,
+      regisCaught: game.regisCaught, shards: game.shards, shardsGiven: game.shardsGiven,
       map: overworld.map.id, x: p.tx, y: p.ty, dir: p.dir,
     };
     try { localStorage.setItem(slotKey(this.slotId), JSON.stringify(d)); } catch (e) { return false; }
@@ -123,7 +123,6 @@ const saveGame = {
     const owned = [...party, ...game.pc].map(m => m.species).filter(id => catchableSpecies().includes(id));
     game.caught = [...new Set([...game.caught, ...owned])];
     game.shinyCharm = !!d.shinyCharm;
-    game.guardianBeaten = !!d.guardianBeaten;
     game.regisCaught = (Array.isArray(d.regisCaught) ? d.regisCaught : []).filter(id => SPECIES[id]);
     game.shards = (Array.isArray(d.shards) ? d.shards : []).filter(id => typeof id === 'string');
     game.shardsGiven = !!d.shardsGiven;

@@ -213,7 +213,6 @@ const MAPS = {
       { species: 'siniramen', chance: 0.15 },
       { species: 'poltearamen', chance: 0.05 },
     ],
-    npcs: ['guardian'],   // the TEMPLE GUARDIAN blocks the way up until beaten
     warps: {
       '12,19': { to: 'forest', x: 18, y: 1, dir: 'down' },
       '12,0': { to: 'temple', x: 11, y: 21, dir: 'up' },
@@ -495,31 +494,7 @@ function buildTreeRows(m) {
 }
 
 // ---------- people standing on the maps (MAPS[...].npcs) ----------
-const GUARDIAN_NAME = 'TEMPPELIN VARTIJA';
 const NPCS = {
-  // stands in the snow path right below the way up to REGI TEMPPELI; steps aside once beaten
-  guardian: {
-    sprite: 'guardian',
-    pos: () => (game.guardianBeaten ? { x: 13, y: 1, dir: 'left' } : { x: 12, y: 1, dir: 'down' }),
-    *talk() {
-      if (game.guardianBeaten) {
-        yield* textBox.say(`${GUARDIAN_NAME}: Mene vain. Regit odottavat REGI TEMPPELIN perällä.`);
-        return;
-      }
-      yield* textBox.say(`${GUARDIAN_NAME}: Seis! Ylhäällä on REGI TEMPPELI.`);
-      yield* textBox.say(`${GUARDIAN_NAME}: Sisään pääsee vain se, joka voittaa minut. Taistellaan!`);
-      startEncounter(null, 'trainer', {
-        enemy: {
-          name: GUARDIAN_NAME, reward: 500,
-          team: [{ species: 'psistiel', level: 35 }, { species: 'shroocid', level: 35 }],
-          *onWin() {
-            game.guardianBeaten = true;
-            yield* textBox.say(`${GUARDIAN_NAME}: Olet vahva! REGI TEMPPELI on nyt avoinna sinulle.`);
-          },
-        },
-      });
-    },
-  },
   // stands in front of the WORMHOLE in REGI TEMPPELI; lets you through once you bring the five REGI SHARDs
   wormkeeper: {
     sprite: 'wormkeeper',

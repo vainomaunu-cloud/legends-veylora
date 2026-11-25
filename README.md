@@ -147,9 +147,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Luminen metsä PUSKAMETSÄN pohjoispuolella: lumiset kuuset, lumihuippuiset puskat, kimaltelevaa lunta ja tallattu lumipolku keskellä. Lunta sataa koko ajan.
    - Lumisista puskista voi tulla **BINCHULCIN** (30 %), **SINIRAMEN** (15 %), **OVERCHILL** (10 %), **POLTEARAMEN** (5 %) tai **UNDERCHILL** (3 %). Kyltti on polun varrella.
    - Täällä taistellaan lumisella taustalla.
-   - Polku jatkuu pohjoisreunan läpi **REGI TEMPPELIIN**, mutta polun yläpäässä seisoo **TEMPPELIN VARTIJA** (violetti huppu, `sprites/guardian.png`). Kävele häntä päin tai paina Z, niin hän haastaa kouluttajataisteluun: **PSISTIEL LV35** ja **SHROOCID LV35**.
-     - Kouluttajan otuksia ei voi napata, eikä taistelusta voi paeta. Kun ensimmäinen uupuu, vartija lähettää seuraavan. Voitosta saa XP:tä ja **500 kolikkoa**.
-     - Kun voitat, vartija astuu sivuun ja REGI TEMPPELI aukeaa (tallentuu). Jos häviät, heräät HOITOLASTA ja voit yrittää uudelleen.
+   - Polku jatkuu pohjoisreunan läpi suoraan **REGI TEMPPELIIN**.
 4b. **REGI TEMPPELI** (24 × 23 ruutua, SNOW MOUNTAINin yläpuolella)
    - Violetti-pinkki temppeli: kivilaattalattia, violetti matto keskellä, hehkuvat riimut lattiassa, pinkillä liekillä palavat kivimaljat, tiiliseinät ja vaaleanpunaisia kipinöitä ilmassa. Soi HYUJAL METSÄN musiikki.
    - **Ei puskia eikä villejä otuksia.**
