@@ -88,7 +88,7 @@ const SPRITES = {
   hit: 'sprites/hit.png',                 // 2 frames 32x32
 };
 // Creatures whose files follow the plain pattern: <name>.png + sprites/<name>_blink.png ... _back_attack.png
-for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg', 'binchulin', 'overchill', 'underchill', 'hummird', 'hummirding', 'psiduocipe', 'regiacid', 'regipsy', 'regismile', 'eyevil', 'eyebaldon', 'siniramen', 'poltearamen', 'quackobra', 'coril', 'cornechaun', 'corneliva']) {
+for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg', 'binchulin', 'overchill', 'underchill', 'hummird', 'hummirding', 'psiduocipe', 'regiacid', 'regipsy', 'regismile', 'eyevil', 'eyebaldon', 'siniramen', 'poltearamen', 'quackobra', 'coril', 'cornechaun', 'corneliva', 'scarghost']) {
   SPRITES[k] = k + '.png';
   for (const [suffix, name] of [['Blink', 'blink'], ['Hurt', 'hurt'], ['Attack', 'attack'], ['Back', 'back'], ['BackAttack', 'back_attack']]) {
     SPRITES[k + suffix] = `sprites/${k}_${name}.png`;
@@ -101,7 +101,7 @@ const SHINY_FILES = {
   binchulin: 'kiiltävä binchulin.png', overchill: 'kiiltävä overchill.png', underchill: 'kiiltävä undechill.png',
   hummird: 'kiiltävä hummird.png', hummirding: 'kiiltävä hummirding.png', psiduocipe: 'kiiltävä psiduocipe.png', eyevil: 'kiiltävä eyevil.png', eyebaldon: 'kiiltävä eyebaldon.png',
   siniramen: 'kiiltävä siniramen.png', poltearamen: 'kiiltävä poltearamen.png', quackobra: 'quackobra kiiltävä.png',
-  coril: 'kiiltävä coril.png', cornechaun: 'kiiltävä cornechaun.png', corneliva: 'kiiltävä corneliva.png',
+  coril: 'kiiltävä coril.png', cornechaun: 'kiiltävä cornechaun.png', corneliva: 'kiiltävä corneliva.png', scarghost: 'kiiltävä scarghost.png',
   regiacid: 'regiaci kiiltävä (vain admin panelilla).png', regipsy: 'regipsy kiiltävä (vain admin panelilla).png', regismile: 'regismile kiiltävä (vain admin panelilla).png',
   moi: 'kiiltävä ampereem.png', amperite: 'kiiltävä amperite.png', zubug: 'kiiltävä zubug.png',
   golbug: 'kiiltävä golbug.png', squishroom: 'kiiltävä squishroom.png', shroocid: 'kiiltävä shroocid.png',

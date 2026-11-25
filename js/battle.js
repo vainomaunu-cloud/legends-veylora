@@ -187,6 +187,14 @@ const SPECIES = {
     xpYield: 170, coins: 55, catchRate: 0.25, feetY: 2,
     sprites: { front: 'corneliva', blink: 'cornelivaBlink', hurt: 'cornelivaHurt', attack: 'cornelivaAttack', back: 'cornelivaBack', backAttack: 'cornelivaBackAttack' },
   },
+  // MAATILA corn field: a haunted scarecrow that hides in the hay
+  scarghost: {
+    name: 'SCARGHOST',
+    base: { hp: 60, atk: 75, def: 60, spa: 80, spd: 70, spe: 70 },
+    moves: ['shadowclaw', 'shadowball', 'hayhide'],
+    xpYield: 100, coins: 40, catchRate: 0.4, feetY: 0,
+    sprites: { front: 'scarghost', blink: 'scarghostBlink', hurt: 'scarghostHurt', attack: 'scarghostAttack', back: 'scarghostBack', backAttack: 'scarghostBackAttack' },
+  },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
     name: 'HUMMIRD',
@@ -277,6 +285,10 @@ const MOVES = {
   twister: { id: 'twister', name: 'TWISTER', power: 70, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'twister' },
   blizzard: { id: 'blizzard', name: 'BLIZZARD', power: 110, acc: 70, pp: 5, special: true, anim: 'blizzard' },
   icefang: { id: 'icefang', name: 'ICE FANG', power: 65, acc: 95, pp: 15, special: false, flinch: 0.1, anim: 'icefang' },
+  // SCARGHOST
+  shadowclaw: { id: 'shadowclaw', name: 'SHADOW CLAW', power: 70, acc: 100, pp: 15, special: false, highCrit: true, anim: 'shadowclaw' },
+  shadowball: { id: 'shadowball', name: 'SHADOW BALL', power: 80, acc: 100, pp: 15, special: true, anim: 'shadowball' },
+  hayhide: { id: 'hayhide', name: 'HAY HIDE', power: 0, powerText: '-', acc: 100, pp: 10, special: true, evade: 1, anim: 'hayhide' },
   // corn creatures
   energyball: { id: 'energyball', name: 'ENERGY BALL', power: 90, acc: 100, pp: 10, special: true, anim: 'energyball' },
   corngun: { id: 'corngun', name: 'CORN GUN', power: 85, acc: 95, pp: 15, special: false, flinch: 0.2, anim: 'corngun' },
@@ -396,7 +408,7 @@ const battle = {
     }
     this.foe.shiny = hasShinyArt(this.foe.species) && (opts.shiny !== undefined ? !!opts.shiny
       : this.kind === 'wild' && !SPECIES[this.foe.species].legendary && Math.random() < shinyChance());
-    for (const m of game.party) { m.speStage = 0; m.atkStage = 0; m.flinch = false; m.trapTurns = 0; }
+    for (const m of game.party) { m.speStage = 0; m.atkStage = 0; m.evaStage = 0; m.flinch = false; m.trapTurns = 0; }
     this.tint = 0; this.tintRGB = null;
     this.thrown = null; this.parts = null; this.waves = null; this.webFx = null; this.slashes = null;
     this.evo = null;
@@ -627,7 +639,7 @@ const battle = {
       if (m.hp <= 0) { yield* textBox.say(`${m.name} on uupunut eikä jaksa taistella.`); continue; }
       // call the current one back
       const old = this.me, mv = this.meV;
-      old.speStage = 0; old.atkStage = 0; old.trapTurns = 0; old.flinch = false;
+      old.speStage = 0; old.atkStage = 0; old.evaStage = 0; old.trapTurns = 0; old.flinch = false;
       yield* textBox.say(`Tule takaisin, ${old.name}!`, { auto: 6, keep: true });
       this.addFx('spark', mv.x + 32, mv.y + 36, [0, 0, 1, 1, 2, 2]);
       yield* tween(12, k => { mv.scale = 1 - 0.9 * k; });
@@ -636,7 +648,7 @@ const battle = {
       textBox.hide();
       yield* wait(8);
       this.me = m;
-      m.speStage = 0; m.atkStage = 0; m.trapTurns = 0; m.flinch = false;
+      m.speStage = 0; m.atkStage = 0; m.evaStage = 0; m.trapTurns = 0; m.flinch = false;
       yield* this.sendOut();
       return true;
     }
@@ -803,8 +815,20 @@ const battle = {
     }
     if (!move.struggle) move.left--;
     yield* textBox.say(`${who} käytti ${move.name}!`, { auto: 14, keep: true });
-    if (Math.random() * 100 >= move.acc) {
-      yield* textBox.say('Mutta se meni ohi!');
+    // HAY HIDE raises the target's evasion: each stage makes attacks on it miss more (3 / (3 + stages))
+    const eva = move.heal || move.evade ? 0 : Math.max(0, def.evaStage || 0);
+    if (Math.random() * 100 >= move.acc * 3 / (3 + eva)) {
+      yield* textBox.say(eva ? `Mutta se meni ohi! ${target} piileskelee heinien seassa.` : 'Mutta se meni ohi!');
+      return;
+    }
+    if (move.evade) {   // HAY HIDE: no damage, the user hides in a swirl of hay and gets harder to hit
+      yield* this.animHayHide(av);
+      if ((att.evaStage || 0) >= 3) yield* textBox.say(`${who} ei voi piiloutua enempää!`);
+      else {
+        att.evaStage = (att.evaStage || 0) + move.evade;
+        yield* textBox.say(`${who} piiloutui heinien sekaan! Siihen on nyt vaikeampi osua.`);
+      }
+      textBox.hide();
       return;
     }
     if (move.sleep) {   // SLEEP POWDER: no damage, puts the target to sleep
@@ -869,6 +893,8 @@ const battle = {
     else if (move.anim === 'psychocut') yield* this.animPsychoCut(av, dv);
     else if (move.anim === 'staringeye') yield* this.animStaringEye(av, dv);
     else if (move.anim === 'energyball') yield* this.animEnergyBall(av, dv);
+    else if (move.anim === 'shadowclaw') yield* this.animShadowClaw(av, dv);
+    else if (move.anim === 'shadowball') yield* this.animShadowBall(av, dv);
     else if (move.anim === 'corngun') yield* this.animCornGun(av, dv);
     else if (move.anim === 'regipower') yield* this.animRegiPower(av, dv);
     else if (move.anim === 'acidpulse') yield* this.animAcidPulse(av, dv);
@@ -1126,6 +1152,80 @@ const battle = {
     yield* tween(6, k => { this.tint = 0.25 * (1 - k); });
     this.tint = 0; this.tintRGB = null;
     yield* wait(6);
+  },
+
+  // SHADOW CLAW: the sky darkens and three shadowy claw marks rip across the target
+  *animShadowClaw(av, dv) {
+    av.pose = 'attack';
+    this.tintRGB = '30,0,50';
+    yield* tween(6, k => { this.tint = 0.4 * k; });
+    const cx = dv.x + 32, cy = dv.y + 34;
+    for (let i = 0; i < 22; i++) {
+      this.parts = [];
+      for (let c = 0; c < 3; c++) {
+        const len = Math.min(1, (i - c * 3) / 8);   // the three claws come one after another
+        if (len <= 0) continue;
+        const x0 = cx - 16 + c * 10, y0 = cy - 20;
+        for (let t = 0; t <= len * 30; t += 1.5) {
+          const x = x0 + t * 0.55, y = y0 + t;
+          this.parts.push({ x, y, c: t > len * 30 - 3 ? '#ffffff' : '#2a0a3a', s: 3 }, { x: x + 1, y, c: '#9a4ad0', s: 1 });
+        }
+      }
+      if (i === 8 || i === 14) { this.shake = 6; this.addFx('hit', cx + rnd(-6, 6), cy + rnd(-6, 6), [0, 0, 1, 1]); }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    yield* tween(6, k => { this.tint = 0.4 * (1 - k); });
+    this.tint = 0; this.tintRGB = null;
+    yield* wait(4);
+  },
+
+  // SHADOW BALL: a dark, swirling ball of shadows flies at the target and bursts into purple smoke
+  *animShadowBall(av, dv) {
+    av.pose = 'attack';
+    const sx = av.x + 32, sy = av.y + 26, tx = dv.x + 32, ty = dv.y + 34;
+    const ball = (x, y, r, i) => {
+      this.parts = [];
+      for (let a = 0; a < Math.PI * 2; a += 0.3) for (let rr = 1; rr <= r; rr += 2) {
+        const swirl = Math.sin(a * 2 - i * 0.5 + rr * 0.6) > 0;
+        this.parts.push({ x: x + Math.cos(a) * rr, y: y + Math.sin(a) * rr, c: rr > r - 2 ? '#9a4ad0' : swirl ? '#2a0a3a' : '#4a1a6a', s: 2 });
+      }
+    };
+    for (let i = 0; i < 12; i++) { ball(sx, sy, 2 + i * 0.6, i); yield; }
+    for (let i = 0; i <= 16; i++) { const k = i / 16; ball(sx + (tx - sx) * k, sy + (ty - sy) * k - Math.sin(k * Math.PI) * 10, 9, i); yield; }
+    this.shake = 8;
+    for (let i = 0; i < 18; i++) {   // purple smoke puffs out
+      this.parts = [];
+      for (let n = 0; n < 12; n++) {
+        const a = n * Math.PI / 6 + i * 0.05, r = 3 + i * 1.8;
+        this.parts.push({ x: tx + Math.cos(a) * r, y: ty + Math.sin(a) * r * 0.8 - i * 0.4, c: n % 3 ? '#4a1a6a' : '#b070e0', s: i < 10 ? 4 : 2 });
+      }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    yield* wait(4);
+  },
+
+  // HAY HIDE: a whirl of hay straws spins round the user and it fades in and out of sight
+  *animHayHide(av) {
+    av.pose = 'attack';
+    const cx = av.x + 32, cy = av.y + 36;
+    for (let i = 0; i < 44; i++) {
+      this.parts = [];
+      for (let n = 0; n < 18; n++) {
+        const a = n * Math.PI / 9 + i * 0.25, r = 26 - (n % 3) * 5;
+        const x = cx + Math.cos(a) * r, y = cy + Math.sin(a) * r * 0.5 - (n % 4) * 6;
+        const col = n % 3 === 0 ? '#c8a040' : n % 3 === 1 ? '#e8c860' : '#f4e0a0';
+        this.parts.push({ x, y, c: col, s: 2 }, { x: x + Math.cos(a + 1.6) * 2, y: y + Math.sin(a + 1.6), c: col, s: 1 });
+      }
+      av.show = i < 36 ? i % 4 < 2 || i < 8 : true;   // flickers like it is half hidden
+      yield;
+    }
+    av.show = true;
+    this.parts = null;
+    av.pose = 'idle';
   },
 
   // ENERGY BALL: a glowing green ball of nature energy grows in front of the user, flies over and bursts

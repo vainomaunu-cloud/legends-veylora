@@ -11,6 +11,7 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | CORIL | 1. vaihe | `coril.png` + `sprites/coril_*.png` | TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 30 % | 20 kolikkoa | helppo (0,65) |
 | CORNECHAUN | 2. vaihe (kehittyy tasolla 7, oppii CORN GUNin) | `cornechaun.png` + `sprites/cornechaun_*.png` | CORN GUN, TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 10 % | 35 kolikkoa | keskitaso (0,4) |
 | CORNELIVA | 3. vaihe (kehittyy tasolla 16) | `corneliva.png` + `sprites/corneliva_*.png` | CORN GUN, TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 5 % | 55 kolikkoa | hyvin vaikea (0,25) |
+| SCARGHOST | ei kehity | `scarghost.png` + `sprites/scarghost_*.png` | SHADOW CLAW, SHADOW BALL, HAY HIDE | MAATILAN maissipelto 10 % | 40 kolikkoa | keskitaso (0,4) |
 | AMPERITE | 1. vaihe | `moi 1st evo.png` + `sprites/amperite_*.png` | ELECTROBALL, TACKLE | 15 % | 25 kolikkoa | helppo (0,7) |
 | AMPEREEM | 2. vaihe (kehittyy tasolla 8) | `moi.png` + `sprites/moi_*.png` | THUNDERBOLT, ELECTROBALL, TACKLE | 5 % | 50 kolikkoa | vaikea (0,35) |
 | ZUBUG | 1. vaihe | `zubug.png` + `sprites/zubug_*.png` | BUG BUZZ, STICKY WEB | 15 % | 25 kolikkoa | helppo (0,7) |
@@ -133,7 +134,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 2c. **MAATILA** (30 × 20 ruutua, VEYLORAN KYLÄN länsipuolella)
    - Iso punainen **navetta** (ovi keskellä, paina Z ovella), heinäpaaleja, **maissipelto** ja **lehmäaitaus**, jossa kolme lehmää kävelee rauhassa ja välillä laiduntaa pää alhaalla. Lisäksi maanviljelijän talo ja kyltti.
    - Aitaukseen pääsee alareunan portista. Kun kävelet lehmää päin tai painat Z sen vieressä, se ammuu.
-   - **Maissipellosta voi tulla** **CORIL** (30 %), **CORNECHAUN** (10 %) tai **CORNELIVA** (5 %) askelta kohden, tasoilla 4–12. Maissi heiluu, kun sen läpi kävelee.
+   - **Maissipellosta voi tulla** **CORIL** (30 %), **CORNECHAUN** (10 %), **SCARGHOST** (10 %) tai **CORNELIVA** (5 %) askelta kohden, tasoilla 4–12. Maissi heiluu, kun sen läpi kävelee.
    - Kartassa navetta on `NNNN`-lohko (4 × 3, katto ulottuu rivin ylemmäs), maissi `B`, heinäpaali `M` ja aita `Y`. Lehmien paikat ja aitauksen rajat ovat kartan `cows`- ja `cowPen`-kohdissa.
    - Itäreunan polku vie takaisin VEYLORAN KYLÄÄN.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
@@ -216,6 +217,9 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 | STARING EYE | 85 | 100 % | 10 | Erikoishyökkäys. Ruutu pimenee, kohteen ylle aukeaa valtava punareunainen silmä, jonka rakopupilli tuijottaa, ja kohde vapisee. 30 %: halvaannuttaa |
 | ENERGY BALL | 90 | 100 % | 10 | Erikoishyökkäys. Vihreä luonnonenergian pallo kasvaa käyttäjän edessä, lentää kohteeseen ja räjähtää |
 | CORN GUN | 85 | 95 % | 15 | Fyysinen hyökkäys. Kultaisten maissinjyvien sarja ammutaan kohteeseen, ja se tärisee. 20 %: kohde säpsähtää |
+| SHADOW CLAW | 70 | 100 % | 15 | Fyysinen hyökkäys. Taivas tummuu, ja kolme varjokynnenjälkeä repäisee kohteen. Kriittisen osuman mahdollisuus 1/8 |
+| SHADOW BALL | 80 | 100 % | 15 | Erikoishyökkäys. Tumma, pyörivä varjopallo lentää kohteeseen ja hajoaa violetiksi savuksi |
+| HAY HIDE | – | 100 % | 10 | Ei vahinkoa. Käyttäjä piiloutuu pyörivien heinien sekaan ja välkkyy: sen **väistö** nousee portaan (enintään 3). Jokainen porras pienentää osumatodennäköisyyttä siihen: 3/(3 + portaat), eli 100 % liike osuu 75 %, 60 % ja 50 % todennäköisyydellä. Nollautuu taistelun alussa ja vaihdossa |
 | REGI POWER | 120 | 90 % | 5 | Regien erikoishyökkäys. Taivas muuttuu tumman violetiksi, kulta-pinkki-turkoosit renkaat romahtavat kohteeseen ja valtava säteiden räjähdys |
 | ACID PULSE | 85 | 100 % | 10 | Erikoishyökkäys. Vihreä-violetit happopisarat lentävät kohteeseen ja happorenkaat aaltoilevat. 30 %: myrkyttää |
 | FIRE PUNCH | 75 | 100 % | 15 | Fyysinen hyökkäys. Nyrkki syttyy palamaan, syöksy ja tulipurkaus. 10 %: palovamma |

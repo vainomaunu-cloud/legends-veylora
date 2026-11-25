@@ -130,6 +130,7 @@ const MAPS = {
       { species: 'coril', chance: 0.30 },
       { species: 'cornechaun', chance: 0.10 },
       { species: 'corneliva', chance: 0.05 },
+      { species: 'scarghost', chance: 0.10 },
     ],
     warps: { '29,10': { to: 'town', x: 1, y: 10, dir: 'right' } },
     // cows wander inside the pen (inner area of the fence)
@@ -139,7 +140,7 @@ const MAPS = {
     houseTexts: {
       '22,15': 'Maanviljelijä tervehtii ovelta: "Tervetuloa MAATILALLE! Maissi kasvaa hyvin tänä vuonna, ja lehmät antavat parasta maitoa koko VEYLORASSA!"',
     },
-    sign: 'MAATILA\nNavetta, maissipelto ja lehmäaitaus. Maississa piileskelee CORILeja, CORNECHAUNeja ja harvinaisia CORNELIVOja! Aitaukseen pääsee portista. Itään: VEYLORAN KYLÄ.',
+    sign: 'MAATILA\nNavetta, maissipelto ja lehmäaitaus. Maississa piileskelee CORILeja, CORNECHAUNeja, harvinaisia CORNELIVOja ja kummitteleva SCARGHOST! Aitaukseen pääsee portista. Itään: VEYLORAN KYLÄ.',
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
