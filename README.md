@@ -279,11 +279,11 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/bush_rustle.png` | 48×16 | Puskan heilunta, 3 kuvaa |
 | `sprites/tiles_hyujal.png` | 208×16 | HYUJAL METSÄN ruudut samassa järjestyksessä kuin `tiles.png`, paitsi: 3–4 pienet hohtavat sienet (animaatio), 7–8 iso hohtava sieni (animaatio, ei pääse läpi) |
 | `sprites/bush_rustle_hyujal.png` | 48×16 | Liilan puskan heilunta, 3 kuvaa |
-| `sprites/tiles_farm.png` | 256×16 | MAATILAN ruudut: samat kuin `tiles.png`, mutta 6 = maissi, 10 = maissin etuosa (pelaajan edessä), 7–8 = heinäpaali ja 15 = puuaita |
+| `sprites/tiles_farm.png` | 320×16 | MAATILAN ruudut: samat kuin `tiles.png`, mutta 6 = maissi, 10 = maissin etuosa (pelaajan edessä), 7–8 = heinäpaali; 15–19 = puuaidan palat (tolppa, poikkilaudat vasemmalle ja oikealle, lankku ylös ja alas). Peli liittää palat naapuriruutujen mukaan, joten aitaukset muodostuvat automaattisesti |
 | `sprites/corn_rustle.png` | 48×16 | Maissi heiluu, kun sen läpi kävelee (3 ruutua) |
 | `sprites/barn.png` | 64×64 | Punainen navetta: harmaa mansardikatto, heinäparven luukku, sivuikkunat ja iso X-tuettu pariovi |
 | `sprites/cow.png` | 64×16 | Lehmä 16×16: oikealle seisoo, oikealle syö, vasemmalle seisoo, vasemmalle syö |
-| `sprites/tiles_town.png` | 256×16 | VEYLORAN KYLÄN ruudut: samat kuin `tiles.png` (0–12), lisäksi vesi (13–14) ja puuaita (15) |
+| `sprites/tiles_town.png` | 320×16 | VEYLORAN KYLÄN ruudut: samat kuin `tiles.png` (0–12), lisäksi vesi (13–14) ja puuaidan palat (15–19) |
 | `sprites/houses.png` | 240×48 | Viisi 48×48 taloa: punainen, sininen, vihreä, oranssi ja violetti katto, savupiippu, ikkunat kukkalaatikoineen ja ovi alarivin keskellä |
 | `sprites/tiles_temple.png` | 208×16 | REGI TEMPPELIN ruudut: lattia (0–1, 5–6, 10), matto (2), hehkuva riimu (3–4), kivimalja pinkillä liekillä (7–8), kivitaulu (9), tiiliseinän etupuoli (11) ja seinän yläosa (12) |
 | `sprites/tiles_snow.png` | 208×16 | SNOW MOUNTAINin ruudut samassa järjestyksessä kuin `tiles.png`: lumi, lumi 2, lumipolku, kimalteleva lumi (3–4), lumiset kuuset (5, 11–12), lumihuippuinen puska (6, 10), kyltti (9) |

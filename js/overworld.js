@@ -331,6 +331,8 @@ for (const [id, m] of Object.entries(MAPS)) {
 
 const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15, 'N': 0 };
 const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) draw T as bricks
+// wooden fence Y (tiles_farm.png / tiles_town.png): a post plus rails towards each neighbouring fence tile
+const FENCE_POST = 15, FENCE_LEFT = 16, FENCE_RIGHT = 17, FENCE_UP = 18, FENCE_DOWN = 19;
 const WATER = '~';
 const GREAT_NAME = 'GREAT PALLO';
 const GREAT_PRICE = 75;
@@ -791,6 +793,15 @@ const overworld = {
         if (ch === 'T') {
           if (this.tileAt(tx, ty + 1) === 'T') { ctx.fillStyle = m.shade; ctx.fillRect(sx, sy, TILE, TILE); }
           else drawFrame(tiles, m.treeGround || 0, 16, 16, sx, sy);
+          continue;
+        }
+        if (ch === 'Y') {   // fence: grass, then the rails towards neighbouring fence tiles, then the post on top
+          drawFrame(tiles, 0, 16, 16, sx, sy);
+          if (this.tileAt(tx, ty - 1) === 'Y') drawFrame(tiles, FENCE_UP, 16, 16, sx, sy);
+          if (this.tileAt(tx, ty + 1) === 'Y') drawFrame(tiles, FENCE_DOWN, 16, 16, sx, sy);
+          if (this.tileAt(tx - 1, ty) === 'Y') drawFrame(tiles, FENCE_LEFT, 16, 16, sx, sy);
+          if (this.tileAt(tx + 1, ty) === 'Y') drawFrame(tiles, FENCE_RIGHT, 16, 16, sx, sy);
+          drawFrame(tiles, FENCE_POST, 16, 16, sx, sy);
           continue;
         }
         if (ch === WATER) {
