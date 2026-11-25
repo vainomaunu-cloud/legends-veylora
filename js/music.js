@@ -219,7 +219,7 @@ try { music.muted = localStorage.getItem('veylora-mute') === '1'; } catch (e) { 
 addEventListener('keydown', e => {
   music.init();
   if (music.ctx && music.ctx.state === 'suspended' && !document.hidden) music.ctx.resume();
-  if (e.code === 'KeyM' && !window.adminOpen && !window.invOpen && !window.pcOpen && !window.nameOpen) music.toggleMute();
+  if (e.code === 'KeyM' && !window.adminOpen && !window.invOpen && !window.pcOpen && !window.nameOpen && !window.dexOpen) music.toggleMute();
 });
 // pause the music while the tab is hidden
 document.addEventListener('visibilitychange', () => {

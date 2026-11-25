@@ -75,7 +75,7 @@ const inventory = {
     });
     const btn = document.getElementById('invBtn');
     if (btn) {
-      btn.addEventListener('click', () => { btn.blur(); if (window.pcOpen) return; window.invOpen ? this.close() : this.open(); });
+      btn.addEventListener('click', () => { btn.blur(); if (window.pcOpen || window.dexOpen) return; window.invOpen ? this.close() : this.open(); });
       btn.addEventListener('pointerdown', e => e.stopPropagation());
     }
     const style = document.createElement('style');

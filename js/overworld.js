@@ -647,15 +647,14 @@ const overworld = {
           yield* textBox.say(`${m.name} johtaa nyt tiimiä.`);
         }
       } else if (c === 3) {
-        // KOKOELMA: which species have been caught (unknown ones show as -----)
-        const all = catchableSpecies();
-        const got = all.filter(id => game.caught.includes(id)).length;
+        // KOKOELMA: its own screen with sprite cards (js/dex.js); wait until it is closed
         // the SHINY CHARM does not need the regis: count only the species it needs
         const need = charmSpecies(), have = need.filter(id => game.caught.includes(id)).length;
-        textBox.show(`NAPATTU ${got}/${all.length}\nSHINY CHARM ${game.shinyCharm ? 'ON' : `${have}/${need.length}`}`, 128, 112);
+        textBox.hide();
         this.showWallet = false;
-        const rows = all.map(id => game.caught.includes(id) ? SPECIES[id].name : '-----');
-        yield* pagedChoose(rows, 4, 4, 120);
+        dexScreen.open();
+        while (dexScreen.isOpen) yield;
+        for (const k in held) held[k] = false;   // the key that closed it must not also press the menu
         this.showWallet = true;
         if (!game.shinyCharm && have === need.length) {   // complete already (e.g. from an older save): hand it out now
           game.shinyCharm = true;

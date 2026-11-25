@@ -40,7 +40,7 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 
 - Jokainen kohdattu villi otus on **1/200** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
 - **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatava QUACKOBRA sekä regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/125** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
-- **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (tuntemattomat näkyvät viivoina), montako on napattu (regit mukaan lukien) sekä SHINY CHARMin edistymisen ilman regejä (esim. SHINY CHARM 18/19) tai ON, kun se on saatu. Jos kokoelma on jo valmis mutta SHINY CHARMia ei vielä ole (esim. vanhassa tallennuksessa), se annetaan heti KOKOELMAA katsottaessa. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran **tai kun oma otus kehittyy siksi** (esim. EYEVIL → EYEBALDON lisää EYEBALDONin). Vanhoissa tallennuksissa jo kehittyneet otukset (tiimissä tai PC:ssä) lisätään kokoelmaan, kun peli ladataan.
+- **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (oma ruutu otuskorteilla, ks. HOITOLA), montako on napattu (regit mukaan lukien) sekä SHINY CHARMin edistymisen ilman regejä (esim. SHINY CHARM 18/19) tai ON, kun se on saatu. Jos kokoelma on jo valmis mutta SHINY CHARMia ei vielä ole (esim. vanhassa tallennuksessa), se annetaan heti KOKOELMAA katsottaessa. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran **tai kun oma otus kehittyy siksi** (esim. EYEVIL → EYEBALDON lisää EYEBALDONin). Vanhoissa tallennuksissa jo kehittyneet otukset (tiimissä tai PC:ssä) lisätään kokoelmaan, kun peli ladataan.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi, ja teksti kertoo, että se on KIILTÄVÄ.
 - **Kiiltävän kimallus:** kun kiiltävä villi otus ilmestyy (tai lähetät oman kiiltäväsi taisteluun), sen keskeltä räjähtää iso valkoinen tähti ja kahdeksan kultaista tähteä lentää renkaana ulos. Sen jälkeen isot nelisakaraiset tähdet (kulta, valkoinen, vaaleanpunainen, vaaleansininen) syttyvät, kasvavat ja hiipuvat otuksen ympärillä, ja pientä kimallusta leijuu ylöspäin. Lopuksi yksi iso tähti välähtää otuksen päällä (`shinySparkle` tiedostossa `js/battle.js`).
@@ -105,7 +105,9 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
      - PARANNA: koko tiimin HP, PP ja halvaantuminen.
      - OSTA PALLO: PYYDYSPALLO maksaa 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`) ja **MASTER PALLO 1000 kolikkoa** (`MASTER_PRICE`). Kauppa pysyy auki, kunnes valitset POISTU.
      - TIIMI: valitse, kuka johtaa (lähtee ensimmäisenä taisteluun).
-     - KOKOELMA: napatut lajit sivuittain (8 per sivu, EDELLISET / SEURAAVAT).
+     - KOKOELMA: oma ruutu, jossa jokainen otus on kortti: numero, sprite ja nimi. Napatut (tai kehitetyt) näkyvät värillisinä, muut mustina siluetteina ja "???"-nimellä; regien kortit ovat violetteja. Yläreunassa näkyy napattujen määrä, edistymispalkki ja SHINY CHARMin tilanne (ilman regejä).
+       - Napauta korttia (tai paina Z) nähdäksesi tiedot: iso sprite, **✦ Näytä kiiltävä** -nappi, ominaisuudet palkkeina (HP, hyökkäys, puolustus, erikoishyökkäys, erikoispuolustus, nopeus), liikkeet, kehitys ja mistä otuksen löytää (alue ja todennäköisyys). Nappaamattomasta näkyy vain siluetti.
+       - Näppäimistöllä: nuolet liikkuvat, Z avaa ja sulkee tiedot, tiedoissa vasen/oikea selaa otuksia ja S vaihtaa kiiltävään, X/Esc palaa ja sulkee. Puhelimella kortteja on kolme rivissä, ja lista vierii.
      - PC: oma ruutu otuksille, joita ei halua pitää tiimissä. Vasemmalla on tiimi (6 paikkaa), oikealla PC:n laatikko (30 paikkaa; jos otuksia on enemmän, laatikoita vaihdetaan ◀ ▶ -napeilla).
        - Raahaa otus toisen päälle, niin ne vaihtavat paikkaa (PC ↔ tiimi, tai järjestys tiimin/laatikon sisällä; tiimin ensimmäinen lähtee taisteluun ensin).
        - Tyhjään tiimipaikkaan raahattu otus liittyy tiimiin, tyhjään laatikkopaikkaan raahattu menee PC:hen (tiimiin jää aina vähintään yksi).
@@ -295,6 +297,7 @@ Taistelussa 32×32-spritet piirretään 2× suurennettuna. Pikselit pysyvät ter
 | `js/touch.js` | Kosketusnäytön nappulat ja pelin koko puhelimella/tabletilla |
 | `js/inventory.js` | 🎒 Reppu: pallot, kolikot ja tiimi |
 | `js/pcscreen.js` | HOITOLAN PC -ruutu: tiimi, laatikko ja raahaamalla vaihtaminen |
+| `js/dex.js` | KOKOELMA-ruutu: otuskortit spriteineen, tiedot ja kiiltävä versio |
 | `js/music.js` | Chiptune-musiikki: nuotit (`TRACKS`), soittimet ja ajastus |
 | `js/main.js` | Näkymät, siirtymäefektit, pelisilmukka (60 fps), kolikot ja pallot (`game`) |
 
