@@ -62,7 +62,7 @@ Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUN
 
 Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuksia ei tarvita.
 
-**Villit otukset näkyvät kartalla.** Ne kävelevät hitaasti ruohikolla, lumella ja kivellä, mutta eivät mene puskiin, maissiin, poluille eivätkä lehmäaitaukseen. Kävele otuksen luo (tai paina Z sen edessä), niin taistelu alkaa: "Villi … hyökkäsi kimppuusi!". Otus katoaa kartalta, kun taistelu alkaa, ja noin 10 sekunnin välein uusi otus tulee näkyvistä poissa olevaan paikkaan, kunnes alueella on taas täysi määrä. Kiiltävän otuksen näkee jo kartalla: se on kiiltävän värinen, ja sen päällä tuikkii tähti. Pikkukartalla otukset näkyvät pinkkeinä pisteinä.
+**Villit otukset näkyvät kartalla.** Kartalla ne ovat pienempiä kuin taistelussa (20 px, `WANDER_SIZE`), suunnilleen pelaajan kokoisia. Ne kävelevät hitaasti ruohikolla, lumella ja kivellä, mutta eivät mene puskiin, maissiin, poluille eivätkä lehmäaitaukseen. Kävele otuksen luo (tai paina Z sen edessä), niin taistelu alkaa: "Villi … hyökkäsi kimppuusi!". Otus katoaa kartalta, kun taistelu alkaa, ja noin 10 sekunnin välein uusi otus tulee näkyvistä poissa olevaan paikkaan, kunnes alueella on taas täysi määrä. Kiiltävän otuksen näkee jo kartalla: se on kiiltävän värinen, ja sen päällä tuikkii tähti. Pikkukartalla otukset näkyvät pinkkeinä pisteinä.
 
 | Näppäin | Toiminto |
 |---|---|

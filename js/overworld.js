@@ -410,6 +410,7 @@ const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) 
 const SHARD_TOTAL = 5;                 // REGI SHARDs to find (one per map with `shard`)
 const WANDER_GROUND = '.,*';         // wild creatures walk on open ground only (not in bushes, not on paths)
 const WANDER_RESPAWN = 600;          // frames (about 10 s) between new creatures coming in, while a map has fewer than its count
+const WANDER_SIZE = 20;              // px: creatures on the map are drawn smaller than in battle (their sprites are 32x32)
 const KEEPER_NAME = 'MADONREIÄN VARTIJA';
 // wooden fence Y (tiles_farm.png / tiles_town.png): a post plus rails towards each neighbouring fence tile
 const FENCE_POST = 15, FENCE_LEFT = 16, FENCE_RIGHT = 17, FENCE_UP = 18, FENCE_DOWN = 19;
@@ -1072,17 +1073,19 @@ const overworld = {
         const bob = walking ? Math.floor(this.t / 8) % 2 : 0;
         drawFrame(IMG.cow, frame, 16, 16, Math.round(c.px) - camX, Math.round(c.py) - camY - 2 - bob);
       }
-      for (const c of this.wanderers || []) {   // wild creature walking around, with a soft shadow (violet in MADONREIKÄ)
+      for (const c of this.wanderers || []) {   // wild creature walking around, drawn small (WANDER_SIZE), with a soft shadow (violet in MADONREIKÄ)
         if (Math.floor((c.py + 8) / TILE) !== ty) continue;
-        const bob = Math.round(Math.sin((this.t + c.phase * 7) / 14) * 2);
-        const sx = Math.round(c.px) - camX - 8, sy = Math.round(c.py) - camY - 18;
-        ctx.fillStyle = m.id === 'space' ? 'rgba(20,0,40,0.45)' : 'rgba(0,0,0,0.22)'; ctx.fillRect(sx + 9, sy + 30, 14, 3); ctx.fillRect(sx + 11, sy + 29, 10, 5);
+        const S = WANDER_SIZE;
+        const bob = Math.round(Math.sin((this.t + c.phase * 7) / 14));
+        const sx = Math.round(c.px) - camX + (TILE - S) / 2, sy = Math.round(c.py) - camY + TILE - S - 1;
+        ctx.fillStyle = m.id === 'space' ? 'rgba(20,0,40,0.45)' : 'rgba(0,0,0,0.22)';
+        ctx.fillRect(sx + S / 2 - 5, sy + S - 1, 10, 2); ctx.fillRect(sx + S / 2 - 3, sy + S - 2, 6, 4);
         const key = SPECIES[c.species].sprites[Math.floor((this.t + c.phase * 13) / 8) % 30 === 0 ? 'blink' : 'front'];
         const img = IMG[c.shiny && IMG['shiny_' + key] ? 'shiny_' + key : key];
-        if (c.dir === 'right') { ctx.save(); ctx.translate(sx + 32, 0); ctx.scale(-1, 1); ctx.drawImage(img, 0, sy - bob); ctx.restore(); }
-        else ctx.drawImage(img, sx, sy - bob);
+        if (c.dir === 'right') { ctx.save(); ctx.translate(sx + S, 0); ctx.scale(-1, 1); ctx.drawImage(img, 0, sy - bob, S, S); ctx.restore(); }
+        else ctx.drawImage(img, sx, sy - bob, S, S);
         if (c.shiny && (this.t + c.phase * 5) % 50 < 14) {   // shiny: a little twinkle
-          const k = (this.t + c.phase * 5) % 50, gx = sx + 6 + (c.phase * 7) % 20, gy = sy - bob + 4 + (c.phase * 3) % 14;
+          const k = (this.t + c.phase * 5) % 50, gx = sx + 3 + (c.phase * 7) % (S - 6), gy = sy - bob + 2 + (c.phase * 3) % (S / 2);
           ctx.fillStyle = k % 4 < 2 ? '#ffffff' : '#ffe070';
           ctx.fillRect(gx, gy - 2, 1, 5); ctx.fillRect(gx - 2, gy, 5, 1);
         }
