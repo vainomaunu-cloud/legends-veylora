@@ -56,6 +56,8 @@ const admin = {
         <button data-act="balls" data-n="1">+1</button><button data-act="balls" data-n="10">+10</button><button data-act="balls" data-n="99">+99</button></div>
       <div class="admRow">GREAT PALLOT <b>${game.greatBalls}</b>
         <button data-act="great" data-n="1">+1</button><button data-act="great" data-n="10">+10</button><button data-act="great" data-n="99">+99</button></div>
+      <div class="admRow">ULTRA PALLOT <b>${game.ultraBalls}</b>
+        <button data-act="ultra" data-n="1">+1</button><button data-act="ultra" data-n="10">+10</button><button data-act="ultra" data-n="99">+99</button></div>
       <div class="admRow">MASTER PALLOT <b>${game.masterBalls}</b>
         <button data-act="master" data-n="1">+1</button><button data-act="master" data-n="10">+10</button><button data-act="master" data-n="99">+99</button></div>
 
@@ -101,6 +103,7 @@ const admin = {
       case 'setcoins': game.coins = Math.max(0, parseInt(this.el.querySelector('#admCoins').value, 10) || 0); return this.changed('Kolikot asetettu');
       case 'balls': game.balls += n; return this.changed(`+${n} ${BALL_NAME}A`);
       case 'great': game.greatBalls += n; return this.changed(`+${n} ${GREAT_NAME}A`);
+      case 'ultra': game.ultraBalls += n; return this.changed(`+${n} ${ULTRA_NAME}A`);
       case 'master': game.masterBalls += n; return this.changed(`+${n} ${MASTER_NAME}A`);
       case 'heal': healParty(); return this.changed('Tiimi parannettu');
       case 'setlv': {

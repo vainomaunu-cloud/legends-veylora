@@ -52,6 +52,7 @@ const inventory = {
         <div class="invItems">
           <div class="invItem"><img src="sprites/ball.png" class="invBall" alt=""> PYYDYSPALLOT <b>${game.balls}</b></div>
           <div class="invItem"><img src="sprites/great_ball.png" class="invBall" alt=""> GREAT PALLOT <b>${game.greatBalls}</b></div>
+          <div class="invItem"><img src="sprites/ultra_ball.png" class="invBall" alt=""> ULTRA PALLOT <b>${game.ultraBalls}</b></div>
           <div class="invItem"><img src="sprites/master_ball.png" class="invBall" alt=""> MASTER PALLOT <b>${game.masterBalls}</b></div>
           <div class="invItem">🪙 KOLIKOT <b>${game.coins}</b></div>
         </div>

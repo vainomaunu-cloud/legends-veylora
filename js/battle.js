@@ -670,7 +670,7 @@ const battle = {
   },
 
   // ----- catching -----
-  // GREAT PALLO doubles the catch chance, MASTER PALLO makes it five times better (BALL_TYPES)
+  // GREAT PALLO doubles the catch chance, ULTRA PALLO triples it and MASTER PALLO always catches (BALL_TYPES)
   *throwBall(type) {
     game[type.key]--;
     const foe = this.foe, fv = this.foeV;
@@ -692,7 +692,7 @@ const battle = {
 
     const sp = SPECIES[foe.species];
     let p = sp.catchRate * (1 - (2 / 3) * foe.hp / foe.maxHp) * (foe.status ? 1.5 : 1) * type.mult;
-    const caught = Math.random() < Math.min(1, p);
+    const caught = type.sure || Math.random() < Math.min(1, p);
     const wobbles = caught ? 3 : rnd(0, 2);
     for (let i = 0; i < wobbles; i++) {
       this.thrown.f = 1; yield* wait(8);

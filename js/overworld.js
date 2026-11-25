@@ -342,13 +342,16 @@ const FENCE_POST = 15, FENCE_LEFT = 16, FENCE_RIGHT = 17, FENCE_UP = 18, FENCE_D
 const WATER = '~';
 const GREAT_NAME = 'GREAT PALLO';
 const GREAT_PRICE = 75;
+const ULTRA_NAME = 'ULTRA PALLO';
+const ULTRA_PRICE = 200;
 const MASTER_NAME = 'MASTER PALLO';
 const MASTER_PRICE = 1000;
 // every kind of ball: where it is counted in `game`, its price, how much better it catches, its sprite
 const BALL_TYPES = [
   { key: 'balls', name: BALL_NAME, short: 'PYYDYS', price: BALL_PRICE, mult: 1, img: 'ball' },
   { key: 'greatBalls', name: GREAT_NAME, short: 'GREAT', price: GREAT_PRICE, mult: 2, img: 'greatBall' },
-  { key: 'masterBalls', name: MASTER_NAME, short: 'MASTER', price: MASTER_PRICE, mult: 5, img: 'masterBall' },
+  { key: 'ultraBalls', name: ULTRA_NAME, short: 'ULTRA', price: ULTRA_PRICE, mult: 3, img: 'ultraBall' },
+  { key: 'masterBalls', name: MASTER_NAME, short: 'MASTER', price: MASTER_PRICE, mult: 1, sure: true, img: 'masterBall' },   // sure: always catches
 ];
 const ballType = key => BALL_TYPES.find(b => b.key === key);
 const totalBalls = () => BALL_TYPES.reduce((n, b) => n + game[b.key], 0);
@@ -693,7 +696,7 @@ const overworld = {
       yield* textBox.say(`${b.name} maksaa ${b.price} kolikkoa. Sinulla on vain ${game.coins}.`);
       return false;
     }
-    const better = { 2: ' Se nappaa kaksi kertaa paremmin!', 5: ' Se nappaa viisi kertaa paremmin!' }[b.mult] || '';
+    const better = b.sure ? ' Se nappaa aina!' : { 2: ' Se nappaa kaksi kertaa paremmin!', 3: ' Se nappaa kolme kertaa paremmin!' }[b.mult] || '';
     textBox.show(`Ostatko ${b.name}N ${b.price} kolikolla?${better}`);
     const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
     if (yes === 0) {
@@ -708,7 +711,7 @@ const overworld = {
   *kioskVisit() {
     this.showWallet = true;
     yield* textBox.say('Tervetuloa RANTAKIOSKILLE!');
-    while (!(yield* this.buyBall(['balls', 'greatBalls', 'masterBalls'], 'Mitä saisi olla?')));
+    while (!(yield* this.buyBall(['balls', 'greatBalls', 'ultraBalls', 'masterBalls'],'Mitä saisi olla?')));
     textBox.hide();
     yield* textBox.say('Kiitos ja hyviä kalastushetkiä!');
     this.showWallet = false;
@@ -727,7 +730,7 @@ const overworld = {
         healParty();
         yield* textBox.say('Otuksesi ovat taas täysissä voimissa!');
       } else if (c === 1) {
-        while (!(yield* this.buyBall(['balls', 'masterBalls'], 'Minkä pallon haluat?')));
+        while (!(yield* this.buyBall(['balls', 'ultraBalls', 'masterBalls'],'Minkä pallon haluat?')));
       } else if (c === 2) {
         textBox.show('Kuka johtaa tiimiä?');
         const opts = game.party.map(m => `${m.name}${m.shiny ? '★' : ''} LV${m.level} ${m.hp}/${m.maxHp}`);
@@ -866,11 +869,12 @@ const overworld = {
 
     if (this.banner) this.drawBanner();
     if (this.showWallet) {
-      drawBox(4, 4, 92, 54);
+      drawBox(4, 4, 92, 66);
       drawText(ctx, 'KOLIKOT', 10, 9); drawTextRight(ctx, String(game.coins), 90, 9);
       drawText(ctx, 'PALLOT', 10, 21); drawTextRight(ctx, String(game.balls), 90, 21);
       drawText(ctx, 'GREAT', 10, 33, '#2f7acb'); drawTextRight(ctx, String(game.greatBalls), 90, 33);
-      drawText(ctx, 'MASTER', 10, 45, '#8a3aae'); drawTextRight(ctx, String(game.masterBalls), 90, 45);
+      drawText(ctx, 'ULTRA', 10, 45, '#2a2a33'); drawTextRight(ctx, String(game.ultraBalls), 90, 45);
+      drawText(ctx, 'MASTER', 10, 57, '#8a3aae'); drawTextRight(ctx, String(game.masterBalls), 90, 57);
     }
     textBox.draw();
     menuBox.draw();

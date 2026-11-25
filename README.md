@@ -68,7 +68,7 @@ Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuk
 Peli tallentuu automaattisesti selaimeen, joten sivun voi päivittää tai sulkea:
 - Tallennus tapahtuu taistelun jälkeen, alueelta toiselle siirtyessä, HOITOLASTA ja rantakioskista lähtiessä, 10 sekunnin välein kävellessä sekä silloin, kun sivu suljetaan tai laitetaan taustalle.
 - Pelin alla on lisäksi **💾 Tallenna**-nappi, jolla voi tallentaa itse milloin tahansa kävellessä. Napin vieressä näkyy, milloin peli tallentui viimeksi. Puhelimella vaakasuunnassa nappi on oikeassa yläkulmassa.
-- Napin vieressä on **🎒 Reppu**-nappi: se näyttää kaikkien pallojen (PYYDYS, GREAT, MASTER) ja kolikoiden määrän sekä oman tiimin (HP, XP, tila, liikkeet ja PP). PC:ssä olevat otukset eivät näy repussa. Reppu suljetaan Sulje-napista, taustaa klikkaamalla tai Esc/X-näppäimellä.
+- Napin vieressä on **🎒 Reppu**-nappi: se näyttää kaikkien pallojen (PYYDYS, GREAT, ULTRA, MASTER) ja kolikoiden määrän sekä oman tiimin (HP, XP, tila, liikkeet ja PP). PC:ssä olevat otukset eivät näy repussa. Reppu suljetaan Sulje-napista, taustaa klikkaamalla tai Esc/X-näppäimellä.
 - Mukaan tallentuvat tiimi ja PC:n otukset (tasot, XP, HP, PP, tilat, kiiltävyys), kolikot, pallot ja paikka kartalla.
 - Kesken taistelua ei tallenneta. Jos sivu suljetaan taistelussa, peli jatkuu viimeisestä tallennuksesta ennen taistelua.
 - **Useita pelejä:** aloitusruudussa on **JATKA** ja **UUSI PELI**. Uusi peli ei poista vanhoja, vaan jokainen peli tallentuu omaksi pelikseen.
@@ -107,7 +107,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **Puskat:** joka askeleella puskassa voi tulla vastaan AMPERITE (15 %), ZUBUG (15 %), GOLBUG (8 %) tai AMPEREEM (5 %). Puska heiluu, ja pelaajan jalat jäävät lehtien taakse.
    - **HOITOLA** (keskellä metsää, ovi alareunassa):
      - PARANNA: koko tiimin HP, PP ja halvaantuminen.
-     - OSTA PALLO: PYYDYSPALLO maksaa 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`) ja **MASTER PALLO 1000 kolikkoa** (`MASTER_PRICE`). Kauppa pysyy auki, kunnes valitset POISTU.
+     - OSTA PALLO: PYYDYSPALLO maksaa 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`), **ULTRA PALLO 200 kolikkoa** (`ULTRA_PRICE`) ja **MASTER PALLO 1000 kolikkoa** (`MASTER_PRICE`). Kauppa pysyy auki, kunnes valitset POISTU.
      - TIIMI: valitse, kuka johtaa (lähtee ensimmäisenä taisteluun).
      - KOKOELMA: oma ruutu, jossa jokainen otus on kortti: numero, sprite ja nimi. Napatut (tai kehitetyt) näkyvät värillisinä, muut mustina siluetteina ja "???"-nimellä; regien kortit ovat violetteja. Yläreunassa näkyy napattujen määrä, edistymispalkki ja SHINY CHARMin tilanne (ilman regejä).
        - Napauta korttia (tai paina Z) nähdäksesi tiedot: iso sprite, **✦ Näytä kiiltävä** -nappi, ominaisuudet palkkeina (HP, hyökkäys, puolustus, erikoishyökkäys, erikoispuolustus, nopeus), liikkeet, kehitys ja mistä otuksen löytää (alue ja todennäköisyys). Nappaamattomasta näkyy vain siluetti.
@@ -157,7 +157,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **Regit:** temppelin perällä on kolme jalustaa (`EE`), joilla leijuvat pinkissä hehkussa **REGISMILE** (vasen), **REGIACID** (keskellä) ja **REGIPSY** (oikea) (kartan `regis`-lista).
      - Kävele regiä päin (tai paina Z), niin taistelu alkaa. Regit ovat aina **tasolla 50**, ja ne taistelevat temppelin violetilla taustalla.
      - **Regiä ei voi voittaa pois:** jos se uupuu, se palaa jalustalleen ja taistelu loppuu (ei XP:tä). Taistelu alkaa alusta täysin voimin, kunnes nappaat sen. Paeta saa.
-     - Nappaaminen on vaikeaa (0,12): heikennä regiä, anna sille tila (halvaus, myrkky, palovamma tai uni) ja käytä GREAT PALLOA tai MASTER PALLOA. Täydellä tiimillä napattu regi menee PC:hen.
+     - Nappaaminen on vaikeaa (0,12): heikennä regiä, anna sille tila (halvaus, myrkky, palovamma tai uni) ja käytä GREAT tai ULTRA PALLOA, tai MASTER PALLOA, joka nappaa aina. Täydellä tiimillä napattu regi menee PC:hen.
      - **Napattu regi ei palaa:** sen jalusta jää tyhjäksi ja hehkuu himmeästi.
      - **Regit eivät ole koskaan kiiltäviä** temppelissä.
    - Etelän ovesta pääsee takaisin SNOW MOUNTAINille. Kyltti on oven lähellä.
@@ -167,7 +167,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **RANTAKIOSKI:** mene tiskin eteen ja paina Z. Kioskista saa:
      - PYYDYSPALLO, 50 kolikkoa.
      - GREAT PALLO, 75 kolikkoa (`GREAT_PRICE`). Nappaa **kaksi kertaa** paremmin.
-     - MASTER PALLO, 1000 kolikkoa. Nappaa **viisi kertaa** paremmin.
+     - ULTRA PALLO, 200 kolikkoa (`ULTRA_PRICE`). Nappaa **kolme kertaa** paremmin.
+     - MASTER PALLO, 1000 kolikkoa. Nappaa **aina** (100 %).
    - Puskia ei ole. Rannan ja saarten **palmujen päällä istuu HUMMIRDeja** (jokaisella palmulla 50 % mahdollisuus, arvotaan joka käynnillä, vähintään yksi). Kun kävelet palmua päin, jonka päällä HUMMIRD istuu, se syöksyy alas taisteluun ja lähtee palmulta.
    - Rannan vasempaan reunaan kulkeva hiekkapolku vie takaisin PUSKAMETSÄÄN.
    - Jokaisen alueen uloskäynnillä on pieni vilkkuva nuoli, joka osoittaa poistumissuuntaan.
@@ -181,8 +182,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 
 ## Nappaaminen
 
-- Valitse taistelussa PALLO. Jos sinulla on useampaa palloa (PYYDYS, GREAT, MASTER), peli kysyy, mitä heität. Pallo lentää villin otuksen luo, otus imeytyy palloon, ja pallo heiluu.
-- GREAT PALLO kertoo nappausmahdollisuuden kahdella ja **MASTER PALLO viidellä** (pallot ja kertoimet: `BALL_TYPES` tiedostossa `js/overworld.js`).
+- Valitse taistelussa PALLO. Jos sinulla on useampaa palloa (PYYDYS, GREAT, ULTRA, MASTER), peli kysyy, mitä heität. Pallo lentää villin otuksen luo, otus imeytyy palloon, ja pallo heiluu.
+- GREAT PALLO kertoo nappausmahdollisuuden kahdella, **ULTRA PALLO kolmella** ja **MASTER PALLO nappaa aina** (100 %) (pallot ja kertoimet: `BALL_TYPES` tiedostossa `js/overworld.js`).
 - Kolme heilahdusta = napattu, ja otus liittyy tiimiin (enintään 6; täydellä tiimillä se menee HOITOLAN PC:hen).
 - Todennäköisyys = lajin nappausvaikeus · (1 − ⅔ · HP / max HP), ja halvaantuneella ×1,5. Heikennä otus ensin!
 - Jos otus karkaa, vihollinen saa vuoron.
@@ -279,6 +280,7 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/ball.png` | 48×16 | PYYDYSPALLO: pysty, kallistus vasemmalle, kallistus oikealle (16×16) |
 | `sprites/great_ball.png` | 48×16 | GREAT PALLO: vaaleansininen, kultainen raita, samat 3 asentoa |
 | `sprites/master_ball.png` | 48×16 | MASTER PALLO: violetti, pinkki raita, samat 3 asentoa |
+| `sprites/ultra_ball.png` | 48×16 | ULTRA PALLO: musta, kultainen raita, samat 3 asentoa |
 | `sprites/tiles_sea.png` | 272×16 | SAARIMEREN ruudut: 0–1 saaren ruoho, 2 hiekka, 3–4 simpukat ja meritähti (animaatio), 9 kyltti, 11–12 palmut (läpinäkyvät), 13–14 vesi (animaatio), 15 silta vasen–oikea, 16 silta ylös–alas |
 | `sprites/kiosk.png` | 48×32 | RANTAKIOSKI (3×2 ruutua): raidallinen markiisi, hyllyillä palloja |
 | `sprites/center.png` | 48×48 | HOITOLA-rakennus (3×3 ruutua) |

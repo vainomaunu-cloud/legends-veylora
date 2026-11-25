@@ -56,6 +56,7 @@ const SPRITES = {
   tilesSea: 'sprites/tiles_sea.png',      // SAARIMERI tiles (13-14 water, 15-16 bridges, 11-12 palms)
   kiosk: 'sprites/kiosk.png',             // 48x32 beach kiosk
   greatBall: 'sprites/great_ball.png',    // 3 frames 16x16 GREAT PALLO
+  ultraBall: 'sprites/ultra_ball.png',    // 3 frames 16x16 ULTRA PALLO
   masterBall: 'sprites/master_ball.png',  // 3 frames 16x16 MASTER PALLO
   hummirdSmall: 'sprites/hummird_small.png', // 2 frames 16x16: HUMMIRD sitting on a palm
   center: 'sprites/center.png',          // 48x48 healing center building (HOITOLA)

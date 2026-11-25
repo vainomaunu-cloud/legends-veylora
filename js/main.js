@@ -6,6 +6,7 @@ const game = {
   coins: 0,
   balls: 0,
   greatBalls: 0,
+  ultraBalls: 0,
   masterBalls: 0,
   caught: [],           // species caught at least once (KOKOELMA)
   pc: [],               // creatures stored in the HOITOLA PC
@@ -75,7 +76,7 @@ function newGame(name = saveGame.defaultName()) {
   const starter = makeMon('duckonda', 5);
   starter.shiny = Math.random() < SPECIES.duckonda.shinyChance;
   game.party = [starter];
-  game.coins = 0; game.balls = 0; game.greatBalls = 0; game.masterBalls = 0;
+  game.coins = 0; game.balls = 0; game.greatBalls = 0; game.ultraBalls = 0; game.masterBalls = 0;
   game.caught = []; game.shinyCharm = false; game.pc = [];
   game.guardianBeaten = false; game.regisCaught = [];
   overworld.init();
