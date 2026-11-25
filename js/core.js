@@ -61,6 +61,9 @@ const SPRITES = {
   wormhole: 'sprites/wormhole.png',      // 4 frames 32x32 swirling WORMHOLE
   regiShard: 'sprites/regi_shard.png',   // 2 frames 16x16 REGI SHARD lying on the ground
   wormkeeper: 'sprites/wormkeeper.png',  // MADONREIÄN VARTIJA (player sheet re-coloured)
+  tmcollector: 'sprites/tmcollector.png', // TM-KERÄILIJÄ in VEYLORAN KYLÄ (player sheet re-coloured)
+  tmEmpty: 'sprites/tm_empty.png',       // 16x16 TYHJÄ TM disc
+  tmFalseSwipe: 'sprites/tm_false_swipe.png', // 16x16 FALSE SWIPE TM disc
   masterBall: 'sprites/master_ball.png',  // 3 frames 16x16 MASTER PALLO
   hummirdSmall: 'sprites/hummird_small.png', // 2 frames 16x16: HUMMIRD sitting on a palm
   center: 'sprites/center.png',          // 48x48 healing center building (HOITOLA)

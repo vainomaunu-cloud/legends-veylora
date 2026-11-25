@@ -361,6 +361,8 @@ const MOVES = {
   sparkheal: { id: 'sparkheal', name: 'SPARK HEAL', power: 0, powerText: '-', acc: 100, pp: 10, special: true, heal: 0.5, anim: 'sparkheal' },
   mindcontrol: { id: 'mindcontrol', name: 'MIND CONTROL', power: 75, acc: 100, pp: 15, special: true, lowerAtkChance: 0.3, anim: 'mindcontrol' },
   rest: { id: 'rest', name: 'REST', power: 0, powerText: '-', acc: 100, pp: 10, special: true, rest: true, anim: 'rest' },
+  // FALSE SWIPE (TM from the TM-KERÄILIJÄ): never knocks the target out, it always keeps at least 1 HP
+  falseswipe: { id: 'falseswipe', name: 'FALSE SWIPE', power: 40, acc: 100, pp: 40, special: false, keepOne: true, anim: 'slash' },
 };
 // used automatically when every move is out of PP
 const STRUGGLE = { name: 'RIMPUILU', power: 35, acc: 100, pp: 0, left: 0, special: false, anim: 'tackle', struggle: true };
@@ -412,8 +414,8 @@ function calcDamage(att, def, move) {
 }
 
 // speStage: -1..-3 from STICKY WEB (reset every battle)
-const SHINY_CHANCE = 1 / 200;
-const SHINY_CHANCE_CHARM = 1 / 125;  // with the SHINY CHARM
+const SHINY_CHANCE = 1 / 500;
+const SHINY_CHANCE_CHARM = 1 / 400;  // with the SHINY CHARM (or the BEAST CHARM for ULTRA PEDOT)
 // SHINY CHARM raises the odds for ordinary creatures, BEAST CHARM for the ULTRA PEDOT (each charm only works on its own kind)
 const shinyChance = species => ((SPECIES[species] && SPECIES[species].ultra ? game.beastCharm : game.shinyCharm) ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
 // every species that can be caught (the starter can only be chosen, not caught)
@@ -806,14 +808,14 @@ const battle = {
       this.flash = 8;
       for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
       yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
-      yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/125 (ennen 1/200).');
+      yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/400 (ennen 1/500).');
     }
     if (SPECIES[species].ultra && !game.beastCharm && beastCharmSpecies().every(id => game.caught.includes(id))) {
       game.beastCharm = true;
       this.flash = 8;
       for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
       yield* textBox.say('Olet napannut KAIKKI ULTRA PEDOT! Sait BEAST CHARMin!');
-      yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/125 (ennen 1/200).');
+      yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/400 (ennen 1/500).');
     }
   },
 
@@ -966,7 +968,7 @@ const battle = {
       textBox.hide();
       return;
     }
-    const { dmg, crit } = calcDamage(att, def, move);
+    let { dmg, crit } = calcDamage(att, def, move);
     if (move.anim === 'thunder') yield* this.animThunder(av, dv);
     else if (move.anim === 'electro') yield* this.animElectro(av, dv);
     else if (move.anim === 'buzz') yield* this.animBuzz(av, dv);
@@ -1010,6 +1012,7 @@ const battle = {
     else if (move.anim === 'mindcontrol') yield* this.animMindControl(av, dv);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
+    if (move.keepOne && dmg >= def.hp) dmg = Math.max(0, def.hp - 1);   // FALSE SWIPE leaves the target 1 HP
     def.hp = Math.max(0, def.hp - dmg);
     yield* this.hurt(dv);
     yield* this.drainHp(dv, def);

@@ -15,7 +15,50 @@ const inventory = {
 
   close() {
     window.invOpen = false;
+    this.teach = null;
     this.el.style.display = 'none';
+  },
+
+  // ----- FALSE SWIPE TM: teach it to team members (the TM never runs out) -----
+  // this.teach: null, { } = pick who learns, { i } = that one knows 4 moves: pick one to forget, { msg } = result
+  tmPanel() {
+    const t = this.teach;
+    if (!t) return '';
+    const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+    let body;
+    if (t.msg) {
+      body = `<p>${esc(t.msg)}</p><button type="button" data-tm="close">OK</button>`;
+    } else if (t.i === undefined) {
+      body = '<p>Kenelle opetat FALSE SWIPEn?</p>' + game.party.map((m, i) => {
+        const knows = m.moves.some(x => x.id === 'falseswipe');
+        return `<button type="button" data-tm="mon" data-i="${i}"${knows ? ' disabled' : ''}>${esc(m.name)} LV${m.level}${knows ? ' (osaa jo)' : ''}</button>`;
+      }).join('') + '<button type="button" data-tm="close">Peruuta</button>';
+    } else {
+      const m = game.party[t.i];
+      body = `<p>${esc(m.name)} osaa jo 4 hyökkäystä. Minkä se unohtaa?</p>`
+        + m.moves.map((x, j) => `<button type="button" data-tm="forget" data-j="${j}">${esc(x.name)}</button>`).join('')
+        + '<button type="button" data-tm="close">Peruuta</button>';
+    }
+    return `<div class="invTeach">${body}</div>`;
+  },
+
+  tmClick(b) {
+    const act = b.dataset.tm;
+    if (act === 'open') this.teach = game.view === 'battle' ? { msg: 'TM:ää ei voi käyttää taistelun aikana.' } : {};
+    else if (act === 'close') this.teach = null;
+    else if (act === 'mon') {
+      const i = +b.dataset.i, m = game.party[i];
+      if (m.moves.length < 4) { m.moves.push(newMove('falseswipe')); this.teach = { msg: `${m.name} oppi FALSE SWIPEn!` }; saveGame.save(true); }
+      else this.teach = { i };
+    } else if (act === 'forget') {
+      const m = game.party[this.teach.i], j = +b.dataset.j, old = m.moves[j].name;
+      m.moves[j] = newMove('falseswipe');
+      this.teach = { msg: `${m.name} unohti ${old}${/[AEIOUYÄÖ]$/.test(old) ? "n" : "in"} ja oppi FALSE SWIPEn!` };   // LOW KICKin, PSYCHICin, ENERGY BALLin
+      saveGame.save(true);
+    }
+    this.render();
+    const panel = this.el.querySelector('.invTeach');
+    if (panel) panel.scrollIntoView({ block: 'nearest' });   // the panel sits under the items: bring it into view
   },
 
   render() {
@@ -55,8 +98,11 @@ const inventory = {
           <div class="invItem"><img src="sprites/ultra_ball.png" class="invBall" alt=""> ULTRA PALLOT <b>${game.ultraBalls}</b></div>
           <div class="invItem"><img src="sprites/master_ball.png" class="invBall" alt=""> MASTER PALLOT <b>${game.masterBalls}</b></div>
           ${game.shards.length || game.shardsGiven ? `<div class="invItem"><img src="sprites/regi_shard.png" class="invBall" alt=""> REGI SHARDIT <b>${game.shardsGiven ? "annettu" : game.shards.length + "/" + SHARD_TOTAL}</b></div>` : ""}
+          ${game.emptyTMs ? `<div class="invItem"><img src="sprites/tm_empty.png" class="invBall" alt=""> TYHJÄT TM:T <b>${game.emptyTMs}</b></div>` : ""}
+          ${game.falseSwipeTM ? `<div class="invItem"><img src="sprites/tm_false_swipe.png" class="invBall" alt=""> FALSE SWIPE TM <button type="button" data-tm="open">Opeta</button></div>` : ""}
           <div class="invItem">🪙 KOLIKOT <b>${game.coins}</b></div>
         </div>
+        ${this.tmPanel()}
         <h4>Tiimi (${game.party.length}/6)</h4>
         ${team}
       </div>`;
@@ -69,6 +115,8 @@ const inventory = {
     document.body.appendChild(el);
     this.el = el;
     el.addEventListener('click', e => {
+      const tm = e.target.closest('[data-tm]');
+      if (tm) { this.tmClick(tm); return; }
       if (e.target === el || e.target.closest('[data-close]')) this.close();   // backdrop or close button
     });
     el.addEventListener('pointerdown', e => e.stopPropagation());
@@ -108,7 +156,11 @@ const inventory = {
       #inventory .invMoves { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 4px; }
       #inventory .invMove { background: #333a52; border-radius: 4px; padding: 1px 6px; font-size: 11px; }
       #inventory .invMove small { color: #9aa3b5; }
-      #inventory .invNote { color: #9aa3b5; }`;
+      #inventory .invNote { color: #9aa3b5; }
+      #inventory .invItem button { margin-left: auto; background: #b8453a; border-color: #e07a6a; }
+      #inventory .invTeach { margin-top: 10px; background: #2c2440; border: 1px solid #8a6ad0; border-radius: 8px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 6px; }
+      #inventory .invTeach p { width: 100%; margin: 0 0 4px; font-weight: 600; }
+      #inventory .invTeach button[disabled] { opacity: .45; cursor: default; }`;
     document.head.appendChild(style);
   },
 };

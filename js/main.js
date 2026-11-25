@@ -11,10 +11,12 @@ const game = {
   caught: [],           // species caught at least once (KOKOELMA)
   pc: [],               // creatures stored in the HOITOLA PC
   shinyCharm: false,
-  beastCharm: false,    // every ULTRA PETO caught: shiny ULTRA PEDOT 1/125
+  beastCharm: false,    // every ULTRA PETO caught: shiny ULTRA PEDOT 1/400
   regisCaught: [],      // regis caught from their pedestals (they don't come back)
   shards: [],           // REGI SHARDs picked up (ids of the maps they lay on)
   shardsGiven: false,   // the shards were given to the WORMHOLE KEEPER: the wormhole is open
+  emptyTMs: 0,          // TYHJÄ TMs bought (the TM-KERÄILIJÄ wants 5)
+  falseSwipeTM: false,  // got the FALSE SWIPE TM from the TM-KERÄILIJÄ (it never runs out)
   runner: new Runner(), // transitions
   fade: 0, wipe: 0, white: 0, t: 0,
 };
@@ -81,7 +83,7 @@ function newGame(name = saveGame.defaultName()) {
   game.party = [starter];
   game.coins = 0; game.balls = 0; game.greatBalls = 0; game.ultraBalls = 0; game.masterBalls = 0;
   game.caught = []; game.shinyCharm = false; game.beastCharm = false; game.pc = [];
-  game.regisCaught = []; game.shards = []; game.shardsGiven = false;
+  game.regisCaught = []; game.shards = []; game.shardsGiven = false; game.emptyTMs = 0; game.falseSwipeTM = false;
   overworld.init();
   startGame();
 }
@@ -112,7 +114,7 @@ function startGame() {
     const starter = game.party[0];
     overworld.say(`Tervetuloa Puskametsään! Kumppanisi on DUCKONDA.` +
       (starter.shiny ? ' Vau, se on KIILTÄVÄ! Sellainen on vain joka kymmenennellä.' : '') +
-      ` Kävele puskissa, niin villejä otuksia hyppää esiin. Voitoista saa kolikoita, ja ${CENTER_NAME}sta voi ostaa palloja otusten nappaamiseen.`);
+      ` Villejä otuksia kävelee ruohikolla: kävele otuksen luo, niin taistelu alkaa. Voitoista saa kolikoita, ja ${CENTER_NAME}sta voi ostaa palloja otusten nappaamiseen.`);
     yield* tween(20, k => { game.fade = 1 - k; });
     game.fade = 0;
   })());

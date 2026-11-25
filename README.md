@@ -48,9 +48,9 @@ Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUN
 
 ### Kiiltävät muodot
 
-- Jokainen kohdattu villi otus on **1/200** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
-- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatava QUACKOBRA, regit ja ULTRA PEDOT; ne näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/125** todennäköisyydellä (`SHINY_CHANCE_CHARM`). SHINY CHARM ei vaikuta ULTRA PETOIHIN.
-- **BEAST CHARM:** kun olet napannut jokaisen ULTRA PEDON (VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL), saat BEAST CHARMin. Sen jälkeen ULTRA PEDOT ovat kiiltäviä **1/125** todennäköisyydellä (ilman sitä 1/200). BEAST CHARM ei vaikuta muihin otuksiin. KOKOELMAN yläreuna näyttää molempien charmien edistymisen.
+- Jokainen kohdattu villi otus on **1/500** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
+- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatava QUACKOBRA, regit ja ULTRA PEDOT; ne näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/400** todennäköisyydellä (`SHINY_CHANCE_CHARM`). SHINY CHARM ei vaikuta ULTRA PETOIHIN.
+- **BEAST CHARM:** kun olet napannut jokaisen ULTRA PEDON (VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL), saat BEAST CHARMin. Sen jälkeen ULTRA PEDOT ovat kiiltäviä **1/400** todennäköisyydellä (ilman sitä 1/500). BEAST CHARM ei vaikuta muihin otuksiin. KOKOELMAN yläreuna näyttää molempien charmien edistymisen.
 - **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (oma ruutu otuskorteilla, ks. HOITOLA), montako on napattu (regit mukaan lukien) sekä SHINY CHARMin edistymisen ilman regejä (esim. SHINY CHARM 18/19) tai ON, kun se on saatu. Jos kokoelma on jo valmis mutta SHINY CHARMia ei vielä ole (esim. vanhassa tallennuksessa), se annetaan heti KOKOELMAA katsottaessa. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran **tai kun oma otus kehittyy siksi** (esim. EYEVIL → EYEBALDON lisää EYEBALDONin). Vanhoissa tallennuksissa jo kehittyneet otukset (tiimissä tai PC:ssä) lisätään kokoelmaan, kun peli ladataan.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi, ja teksti kertoo, että se on KIILTÄVÄ.
@@ -116,7 +116,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **Villit otukset kävelevät ruohikolla:** AMPERITE (paino 15), ZUBUG (15), GOLBUG (8) ja AMPEREEM (5). Puskissa ei enää ole otuksia, mutta puska heiluu yhä, ja pelaajan jalat jäävät lehtien taakse.
    - **HOITOLA** (keskellä metsää, ovi alareunassa):
      - PARANNA: koko tiimin HP, PP ja halvaantuminen.
-     - OSTA PALLO: PYYDYSPALLO maksaa 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`), **ULTRA PALLO 200 kolikkoa** (`ULTRA_PRICE`) ja **MASTER PALLO 1000 kolikkoa** (`MASTER_PRICE`). Kauppa pysyy auki, kunnes valitset POISTU.
+     - OSTA: **TYHJÄ TM** maksaa 25 kolikkoa (`EMPTY_TM`), PYYDYSPALLO 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`), **ULTRA PALLO 200 kolikkoa** (`ULTRA_PRICE`) ja **MASTER PALLO 1000 kolikkoa** (`MASTER_PRICE`). Kauppa pysyy auki, kunnes valitset POISTU.
      - TIIMI: valitse, kuka johtaa (lähtee ensimmäisenä taisteluun).
      - KOKOELMA: oma ruutu, jossa jokainen otus on kortti: numero, sprite ja nimi. Napatut (tai kehitetyt) näkyvät värillisinä, muut mustina siluetteina ja "???"-nimellä; regien kortit ovat violetteja. Yläreunassa näkyy napattujen määrä, edistymispalkki ja SHINY CHARMin tilanne (ilman regejä).
        - Napauta korttia (tai paina Z) nähdäksesi tiedot: iso sprite, **✦ Näytä kiiltävä** -nappi, ominaisuudet palkkeina (HP, hyökkäys, puolustus, erikoishyökkäys, erikoispuolustus, nopeus), liikkeet, kehitys ja mistä otuksen löytää (alue ja todennäköisyys). Nappaamattomasta näkyy vain siluetti.
@@ -137,6 +137,9 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 2b. **VEYLORAN KYLÄ** (30 × 20 ruutua, PUSKAMETSÄN länsipuolella)
    - Pieni kylä: viisi taloa (punainen, sininen, vihreä, oranssi ja violetti katto, ikkunoissa kukkalaatikot), hiekkakadut, kukkia, puskarivejä, kyltti ja avoin lampi. Soi PUSKAMETSÄN musiikki.
    - **Kylässä kävelevät** **HUMMIRD**, **SQUISHROOM** ja **SINIRAMEN** (paino 15 kukin) sekä **HUMMIRDING** ja **POLTEARAMEN** (5 kumpikin), tasoilla 3–10. Lampeen ei pääse, eikä siinä voi kalastaa otuksia.
+   - **Sivutehtävä: TM-KERÄILIJÄ** (vihreä lakki ja takki, `sprites/tmcollector.png`) seisoo kylän keskellä kyltin lähellä. Hän kerää TYHJIÄ TM-levyjä: tuo hänelle **5 TYHJÄÄ TM:ää** (25 kolikkoa kappale HOITOLAN kaupasta, `TM_QUEST_COUNT`), niin saat palkinnoksi **FALSE SWIPE TM:n**.
+     - **FALSE SWIPE TM** on REPUSSA. Paina **Opeta** ja valitse tiimistä otus, joka oppii **FALSE SWIPEn**. Jos otus osaa jo 4 hyökkäystä, valitse, minkä se unohtaa. TM ei kulu, joten saman TM:n voi opettaa monelle otukselle. Taistelun aikana TM:ää ei voi käyttää.
+     - **FALSE SWIPE** (voima 40, tarkkuus 100, 40 PP): jättää vastustajalle aina vähintään **1 HP:n**, joten otus ei uuvu ja sen voi napata.
    - Mene talon oven eteen ja paina Z: kylän vanhin, lapsi, kalastaja ja puutarhuri puhuvat, sininen talo on lukossa (tekstit kartan `houseTexts`-kohdassa).
    - Kartassa talo on `KKK`-lohko (3 × 3, ovi `O` alarivin keskellä), puska `B` ja lampi `~`. Talojen kattovärit menevät lukujärjestyksessä.
    - Itäreunan polku vie takaisin PUSKAMETSÄÄN ja länsireunan polku **MAATILALLE**.
@@ -175,7 +178,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 4c. **MADONREIKÄ** (40 × 27 ruutua, madonreiän takana)
    - Kivisiä asteroideja leijuu tähtitaivaalla: kraatereita, hehkuvat tähtipolut, sinisiä tähtikristalleja, leijuvia violetteja kristalleja ja tuikkivia tähtiä. Asteroidien välissä ja kartan reunoilla on avaruutta (`T`), jota ei pääse läpi.
    - **ULTRA PEDOT näkyvät kartalla:** puskia eikä piilotettuja kohtaamisia ole. Kun tulet madonreiästä, kivelle ilmestyy 9 petoa (VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL, kartan `wanderers`). Ne leijuvat ja liikkuvat hitaasti ruudusta toiseen, ja pikkukartalla ne näkyvät pinkkeinä pisteinä. Kävele pedon luo (tai paina Z sen edessä), niin taistelu alkaa. Peto katoaa kartalta, kun taistelu alkaa, ja uudet tulevat, kun palaat madonreiästä uudelleen. Ne ovat tasoilla 30–40, ja niitä vastaan taistellaan tähtitaivaan alla.
-   - **Kiiltävät ULTRA PEDOT:** jokainen kartalle ilmestyvä peto on 1/200 (BEAST CHARMilla 1/125, SHINY CHARM ei auta) todennäköisyydellä kiiltävä (`virtuleast kiiltävä.png` ym. + `sprites/shiny_<nimi>_*.png`). Kiiltävän pedon näkee jo kartalla: se on kiiltävän värinen, ja sen päällä tuikkii pieni tähti. SHINY CHARMiin ULTRA PETOJA ei tarvita: niille on oma BEAST CHARM.
+   - **Kiiltävät ULTRA PEDOT:** jokainen kartalle ilmestyvä peto on 1/500 (BEAST CHARMilla 1/400, SHINY CHARM ei auta) todennäköisyydellä kiiltävä (`virtuleast kiiltävä.png` ym. + `sprites/shiny_<nimi>_*.png`). Kiiltävän pedon näkee jo kartalla: se on kiiltävän värinen, ja sen päällä tuikkii pieni tähti. SHINY CHARMiin ULTRA PETOJA ei tarvita: niille on oma BEAST CHARM.
    - Uusia liikkeitä: VIRTUAL SHOT (kriittinen osuma tulee helpommin), ELECTRO POWER (voi halvaannuttaa), DRAGON BREATH (voi halvaannuttaa), DRAGON CLAW, POISON POWDER (myrkyttää, ei vahinkoa), SWARM, CLOSE COMBAT (120), LOW KICK, SHARP SPEAR (kriittinen osuma tulee helpommin), THUNDER (110, osuu 70 %), SELF DESTRUCTION (200, mutta käyttäjä uupuu itsekin), SPARK HEAL (palauttaa puolet HP:sta), MIND CONTROL (75, voi laskea kohteen hyökkäystä) ja REST (koko HP takaisin ja tila pois, mutta käyttäjä nukkuu 2 vuoroa).
    - Madonreikä vie takaisin REGI TEMPPELIIN.
 5. **SAARIMERI** (30 × 20 ruutua)
@@ -318,6 +321,9 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/wormhole.png` | 128×32 | MADONREIKÄ: 4 pyörivää kuvaa 32×32 |
 | `sprites/regi_shard.png` | 32×16 | REGI SHARD: kristalli ja kimaltava kuva |
 | `sprites/wormkeeper.png` | kuten `player.png` | MADONREIÄN VARTIJA: pelaajan kuva tummansinisellä takilla |
+| `sprites/tmcollector.png` | kuten `player.png` | TM-KERÄILIJÄ: pelaajan kuva vihreällä lakilla ja takilla |
+| `sprites/tm_empty.png` | 16×16 | TYHJÄ TM (harmaa levy) |
+| `sprites/tm_false_swipe.png` | 16×16 | FALSE SWIPE TM (valkoinen levy, punainen raita) |
 | `sprites/tiles_snow.png` | 208×16 | SNOW MOUNTAINin ruudut samassa järjestyksessä kuin `tiles.png`: lumi, lumi 2, lumipolku, kimalteleva lumi (3–4), lumiset kuuset (5, 11–12), lumihuippuinen puska (6, 10), kyltti (9) |
 | `sprites/bush_rustle_snow.png` | 48×16 | Lumisen puskan heilunta (lunta tippuu), 3 kuvaa |
 | `sprites/thunderbolt.png` | 48×32 | Salaman palat, 3 kuvaa 16×32 (pinotaan pystyyn) |

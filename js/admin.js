@@ -76,13 +76,15 @@ const admin = {
 
       <h4>Kokoelma ja SHINY CHARM</h4>
       <div class="admRow">Napattu <b>${catchableSpecies().filter(id => game.caught.includes(id)).length}/${catchableSpecies().length}</b>
-        · SHINY CHARM <b>${game.shinyCharm ? 'ON (1/125)' : 'EI (1/200)'}</b> · BEAST CHARM <b>${game.beastCharm ? 'ON' : 'EI'}</b></div>
+        · SHINY CHARM <b>${game.shinyCharm ? 'ON (1/400)' : 'EI (1/500)'}</b> · BEAST CHARM <b>${game.beastCharm ? 'ON' : 'EI'}</b></div>
       <div class="admRow"><button data-act="catchall">Merkitse kaikki napatuiksi</button>
         <button data-act="charm">${game.shinyCharm ? 'Poista' : 'Anna'} SHINY CHARM</button>
         <button data-act="beastcharm">${game.beastCharm ? 'Poista' : 'Anna'} BEAST CHARM</button>
         <button data-act="resetdex">Tyhjennä kokoelma</button></div>
 
       <h4>REGI TEMPPELI</h4>
+      <div class="admRow">TYHJÄT TM:T <b>${game.emptyTMs}</b> <button data-act="tms" data-n="1">+1</button><button data-act="tms" data-n="5">+5</button>
+        · FALSE SWIPE TM <b>${game.falseSwipeTM ? 'on' : 'ei'}</b> <button data-act="fstm">${game.falseSwipeTM ? 'Poista' : 'Anna'}</button></div>
       <div class="admRow">REGI SHARDIT <b>${game.shards.length}/${SHARD_TOTAL}${game.shardsGiven ? ', annettu' : ''}</b>
         <button data-act="shards">Kaikki shardit</button><button data-act="shardsReset">Palauta shardit</button></div>
       <div class="admRow">Napatut regit <b>${game.regisCaught.map(id => SPECIES[id].name).join(', ') || '-'}</b>
@@ -148,6 +150,8 @@ const admin = {
         return;
       }
       case 'regis': game.regisCaught = []; return this.changed('Regit palautettu jalustoille');
+      case 'tms': game.emptyTMs += n; return this.changed(`+${n} TYHJÄ TM`);
+      case 'fstm': game.falseSwipeTM = !game.falseSwipeTM; return this.changed(`FALSE SWIPE TM ${game.falseSwipeTM ? 'annettu' : 'poistettu'}`);
       case 'shards': game.shards = Object.values(MAPS).filter(q => q.shard).map(q => q.id); return this.changed('Kaikki REGI SHARDIT kerätty');
       case 'shardsReset': game.shards = []; game.shardsGiven = false; return this.changed('REGI SHARDIT palautettu kartoille');
     }

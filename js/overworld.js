@@ -54,6 +54,7 @@ const MAPS = {
   // K house (3x3, sprites/houses.png)  O house door (talk with Z)  ~ pond water  (Y wooden fence, unused now)
   town: {
     name: 'VEYLORAN KYLÄ',
+    npcs: ['tmcollector'],   // TM-KERÄILIJÄ: side quest for the FALSE SWIPE TM
     tiles: 'tilesTown', rustle: 'bushRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
@@ -429,6 +430,10 @@ const BALL_TYPES = [
   { key: 'masterBalls', name: MASTER_NAME, short: 'MASTER', price: MASTER_PRICE, mult: 1, sure: true, img: 'masterBall' },   // sure: always catches
 ];
 const ballType = key => BALL_TYPES.find(b => b.key === key);
+// TYHJÄ TM: sold in the HOITOLA shop; the TM-KERÄILIJÄ in VEYLORAN KYLÄ wants five of them (side quest for the FALSE SWIPE TM)
+const EMPTY_TM = { key: 'emptyTMs', name: 'TYHJÄ TM', acc: 'TYHJÄN TM:N', price: 25, note: ' VEYLORAN KYLÄN TM-KERÄILIJÄ kerää niitä!' };
+const TM_QUEST_COUNT = 5;
+const shopItem = key => (key === EMPTY_TM.key ? EMPTY_TM : ballType(key));
 const totalBalls = () => BALL_TYPES.reduce((n, b) => n + game[b.key], 0);
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
 const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E', 'K', 'O', 'Y', 'N', 'W']);
@@ -551,6 +556,36 @@ const NPCS = {
       game.shardsGiven = true;
       yield* flashScreen(2);
       yield* textBox.say(`${KEEPER_NAME}: Shardit loistavat... Madonreikä on nyt auki! Kosketa sitä, niin pääset MADONREIKÄÄN.`);
+      saveGame.save(true);
+    },
+  },
+  // side quest in VEYLORAN KYLÄ: bring five TYHJÄ TMs (25 coins each in the HOITOLA shop) and get the FALSE SWIPE TM
+  tmcollector: {
+    sprite: 'tmcollector',
+    pos: () => ({ x: 16, y: 9, dir: 'down' }),
+    *talk() {
+      const N = 'TM-KERÄILIJÄ';
+      if (game.falseSwipeTM) {
+        yield* textBox.say(`${N}: FALSE SWIPE TM toimii hienosti, eikö? Opeta se otuksillesi REPUSTA. Sitä voi käyttää yhä uudelleen!`);
+        return;
+      }
+      if (game.emptyTMs < TM_QUEST_COUNT) {
+        yield* textBox.say(`${N}: Hei! Kerään TYHJIÄ TM-levyjä. Niihin voi tallentaa hyökkäyksiä.`);
+        yield* textBox.say(`${N}: Tuo minulle ${TM_QUEST_COUNT} TYHJÄÄ TM:ää, niin annan sinulle palkinnoksi FALSE SWIPE TM:n! Niitä myydään HOITOLASSA 25 kolikolla kappale.`);
+        yield* textBox.say(`${N}: Sinulla on nyt ${game.emptyTMs}/${TM_QUEST_COUNT}.`);
+        return;
+      }
+      yield* textBox.say(`${N}: Vau, sinulla on ${TM_QUEST_COUNT} TYHJÄÄ TM:ää! Saanko ne?`);
+      textBox.show(`Annatko ${TM_QUEST_COUNT} TYHJÄÄ TM:ää?`);
+      const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
+      if (yes !== 0) { yield* textBox.say(`${N}: Voi harmi. Tule takaisin, jos muutat mielesi!`); return; }
+      game.emptyTMs -= TM_QUEST_COUNT;
+      yield* textBox.say(`Annoit ${TM_QUEST_COUNT} TYHJÄÄ TM:ää TM-KERÄILIJÄLLE.`);
+      yield* textBox.say(`${N}: Kiitos! Tallensin yhteen niistä erikoishyökkäyksen. Ole hyvä!`);
+      game.falseSwipeTM = true;
+      yield* flashScreen(1);
+      yield* textBox.say('Sait FALSE SWIPE TM:n!');
+      yield* textBox.say(`${N}: FALSE SWIPE jättää vastustajalle aina vähintään 1 HP:n, joten otus ei uuvu ja sen voi napata. Avaa REPPU ja opeta se otuksillesi. TM ei kulu, joten voit opettaa sen monelle!`);
       saveGame.save(true);
     },
   },
@@ -885,7 +920,7 @@ const overworld = {
 
   // one round of a ball shop: pick a ball, confirm, pay. Returns true when the player leaves (POISTU / X).
   *buyBall(keys, question) {
-    const types = keys.map(ballType);
+    const types = keys.map(shopItem);
     textBox.show(question);
     const c = yield* menuBox.choose([...types.map(b => `${b.name} ${b.price}`), 'POISTU'], 122, 30, 114);
     const b = types[c];
@@ -894,13 +929,14 @@ const overworld = {
       yield* textBox.say(`${b.name} maksaa ${b.price} kolikkoa. Sinulla on vain ${game.coins}.`);
       return false;
     }
-    const better = b.sure ? ' Se nappaa aina!' : { 2: ' Se nappaa kaksi kertaa paremmin!', 3: ' Se nappaa kolme kertaa paremmin!' }[b.mult] || '';
-    textBox.show(`Ostatko ${b.name}N ${b.price} kolikolla?${better}`);
+    const better = b.note || (b.sure ? ' Se nappaa aina!' : { 2: ' Se nappaa kaksi kertaa paremmin!', 3: ' Se nappaa kolme kertaa paremmin!' }[b.mult] || '');
+    const acc = b.acc || `${b.name}N`;   // "PYYDYSPALLON", "TYHJÄN TM:N"
+    textBox.show(`Ostatko ${acc} ${b.price} kolikolla?${better}`);
     const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
     if (yes === 0) {
       game.coins -= b.price;
       game[b.key]++;
-      yield* textBox.say(`Ostit ${b.name}N!`);
+      yield* textBox.say(`Ostit ${acc}!`);
     }
     return false;
   },
@@ -921,14 +957,14 @@ const overworld = {
     yield* textBox.say(`Tervetuloa ${CENTER_NAME}an!`);
     while (true) {
       textBox.show('Miten voin auttaa?');
-      const c = yield* menuBox.choose(['PARANNA', 'OSTA PALLO', 'TIIMI', 'KOKOELMA', 'PC', 'POISTU'], 146, 30, 90);
+      const c = yield* menuBox.choose(['PARANNA', 'OSTA', 'TIIMI', 'KOKOELMA', 'PC', 'POISTU'], 146, 30, 90);
       if (c === 0) {
         textBox.hide();
         yield* flashScreen(2);
         healParty();
         yield* textBox.say('Otuksesi ovat taas täysissä voimissa!');
       } else if (c === 1) {
-        while (!(yield* this.buyBall(['balls', 'ultraBalls', 'masterBalls'],'Minkä pallon haluat?')));
+        while (!(yield* this.buyBall(['balls', 'ultraBalls', 'masterBalls', 'emptyTMs'], 'Mitä haluat ostaa?')));
       } else if (c === 2) {
         textBox.show('Kuka johtaa tiimiä?');
         const opts = game.party.map(m => `${m.name}${m.shiny ? '★' : ''} LV${m.level} ${m.hp}/${m.maxHp}`);
@@ -952,7 +988,7 @@ const overworld = {
           game.shinyCharm = true;
           yield* flashScreen(2);
           yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
-          yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/125 (ennen 1/200).');
+          yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/400 (ennen 1/500).');
         } else if (!game.shinyCharm) {
           yield* textBox.say(`Nappaa tai kehitä jokaista otusta vähintään yksi, niin saat SHINY CHARMin (${have}/${need.length}). Regejä ja ULTRA PETOJA ei tarvita! Sen kanssa kiiltäviä näkee useammin.`);
         }
@@ -962,7 +998,7 @@ const overworld = {
           game.beastCharm = true;
           yield* flashScreen(2);
           yield* textBox.say('Olet napannut KAIKKI ULTRA PEDOT! Sait BEAST CHARMin!');
-          yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/125 (ennen 1/200).');
+          yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/400 (ennen 1/500).');
         } else if (!game.beastCharm && game.shardsGiven) {
           yield* textBox.say(`Nappaa jokainen ULTRA PETO, niin saat BEAST CHARMin (${gotBeasts}/${beasts.length}). SHINY CHARM ei auta ULTRA PETOJEN kanssa, mutta BEAST CHARM auttaa.`);
         }
@@ -1108,12 +1144,13 @@ const overworld = {
 
     if (this.banner) this.drawBanner();
     if (this.showWallet) {
-      drawBox(4, 4, 92, 66);
+      drawBox(4, 4, 92, 78);
       drawText(ctx, 'KOLIKOT', 10, 9); drawTextRight(ctx, String(game.coins), 90, 9);
       drawText(ctx, 'PALLOT', 10, 21); drawTextRight(ctx, String(game.balls), 90, 21);
       drawText(ctx, 'GREAT', 10, 33, '#2f7acb'); drawTextRight(ctx, String(game.greatBalls), 90, 33);
       drawText(ctx, 'ULTRA', 10, 45, '#2a2a33'); drawTextRight(ctx, String(game.ultraBalls), 90, 45);
       drawText(ctx, 'MASTER', 10, 57, '#8a3aae'); drawTextRight(ctx, String(game.masterBalls), 90, 57);
+      drawText(ctx, 'TYHJÄ TM', 10, 69, '#5a6070'); drawTextRight(ctx, String(game.emptyTMs), 90, 69);
     }
     textBox.draw();
     menuBox.draw();
