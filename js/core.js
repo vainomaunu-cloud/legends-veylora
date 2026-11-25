@@ -57,7 +57,7 @@ const SPRITES = {
   kiosk: 'sprites/kiosk.png',             // 48x32 beach kiosk
   greatBall: 'sprites/great_ball.png',    // 3 frames 16x16 GREAT PALLO
   ultraBall: 'sprites/ultra_ball.png',    // 3 frames 16x16 ULTRA PALLO
-  tilesSpace: 'sprites/tiles_space.png',  // AVARUUS tiles (11 rock edge over space, 12 open space)
+  tilesSpace: 'sprites/tiles_space.png',  // MADONREIKÄ tiles (11 rock edge over space, 12 open space)
   wormhole: 'sprites/wormhole.png',      // 4 frames 32x32 swirling WORMHOLE
   regiShard: 'sprites/regi_shard.png',   // 2 frames 16x16 REGI SHARD lying on the ground
   wormkeeper: 'sprites/wormkeeper.png',  // MADONREIÄN VARTIJA (player sheet re-coloured)
@@ -92,7 +92,7 @@ const SPRITES = {
   hit: 'sprites/hit.png',                 // 2 frames 32x32
 };
 // ULTRA PEDOT: your "<name> ultra beast.png" files + sprites/<name>_blink.png ... _back_attack.png
-for (const k of ['virtuleast', 'droison', 'golbuzz', 'algishiod', 'amperitie']) {
+for (const k of ['virtuleast', 'droison', 'golbuzz', 'algishiod', 'amperitie', 'dristiel']) {
   SPRITES[k] = k + ' ultra beast.png';
   for (const [suffix, name] of [['Blink', 'blink'], ['Hurt', 'hurt'], ['Attack', 'attack'], ['Back', 'back'], ['BackAttack', 'back_attack']]) {
     SPRITES[k + suffix] = `sprites/${k}_${name}.png`;
@@ -117,6 +117,8 @@ const SHINY_FILES = {
   moi: 'kiiltävä ampereem.png', amperite: 'kiiltävä amperite.png', zubug: 'kiiltävä zubug.png',
   golbug: 'kiiltävä golbug.png', squishroom: 'kiiltävä squishroom.png', shroocid: 'kiiltävä shroocid.png',
   duckonda: 'duckonda kiiltävä.png',
+  virtuleast: 'virtuleast kiiltävä.png', droison: 'droison kiiltävä.png', golbuzz: 'golbuzz kiiltävä.png',
+  algishiod: 'algishiod kiiltävä.png', amperitie: 'amperitie kiiltävä.png', dristiel: 'dristiel kiiltävä.png',
 };
 for (const [k, file] of Object.entries(SHINY_FILES)) {
   SPRITES['shiny_' + k] = file;

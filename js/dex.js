@@ -46,6 +46,7 @@ const dexScreen = {
     for (const m of Object.values(MAPS)) {
       for (const e of m.encounters || []) if (e.species === id) out.push(`${m.name}: ${m.encounterTiles ? 'kivellä' : 'puskat'} ${String(+(e.chance * 100).toFixed(1)).replace('.', ',')} %`);
       for (const e of m.fishing || []) if (e.species === id) out.push(`${m.name}: kalastus ${Math.round(e.chance * 100)} %`);
+      for (const e of (m.wanderers && m.wanderers.species) || []) if (e.species === id) out.push(`${m.name}: vaeltaa kartalla`);
       if (m.palmBirds && m.palmBirds.species === id) out.push(`${m.name}: palmujen päällä`);
       if ((m.regis || []).includes(id)) out.push(`${m.name}: jalustalla (LV50)`);
     }
@@ -66,6 +67,8 @@ const dexScreen = {
     const all = this.list(), got = all.filter(id => this.has(id)).length;
     const need = charmSpecies(), have = need.filter(id => this.has(id)).length;
     const charm = game.shinyCharm ? '<span class="dexCharm on">✦ SHINY CHARM</span>' : `<span class="dexCharm">SHINY CHARM ${have}/${need.length}</span>`;
+    const beasts = beastCharmSpecies(), gotBeasts = beasts.filter(id => this.has(id)).length;
+    const beastCharm = game.beastCharm ? '<span class="dexCharm on">✦ BEAST CHARM</span>' : `<span class="dexCharm">BEAST CHARM ${gotBeasts}/${beasts.length}</span>`;
     const cards = all.map((id, i) => {
       const known = this.has(id), sp = SPECIES[id];
       return `<button type="button" class="dexCard${known ? '' : ' unknown'}${i === this.cur ? ' cur' : ''}${sp.legendary ? ' regi' : ''}" data-i="${i}">
@@ -77,7 +80,7 @@ const dexScreen = {
     this.el.innerHTML = `
       <div class="dexWin" role="dialog" aria-label="KOKOELMA">
         <div class="dexHead">
-          <div><div class="dexTitle">📖 KOKOELMA</div><div class="dexSub">Napattu ${got}/${all.length} · ${charm}</div></div>
+          <div><div class="dexTitle">📖 KOKOELMA</div><div class="dexSub">Napattu ${got}/${all.length} · ${charm} · ${beastCharm}</div></div>
           <button type="button" data-close>Sulje ✕</button>
         </div>
         <div class="dexBar"><div style="width:${Math.round(got / all.length * 100)}%"></div></div>

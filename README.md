@@ -35,11 +35,12 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | REGIACID | regi, ei kehity | `regiacid.png` + `sprites/regiacid_*.png` | REGI POWER, ACID PULSE, POISON JAB, FIRE PUNCH | REGI TEMPPELIN keskimmäinen jalusta, LV50 | – | erittäin vaikea (0,12) |
 | REGIPSY | regi, ei kehity | `regipsy.png` + `sprites/regipsy_*.png` | REGI POWER, PSYCHO CUT, PSYCHIC, MIND HEAL | REGI TEMPPELIN oikea jalusta, LV50 | – | erittäin vaikea (0,12) |
 | REGISMILE | regi, ei kehity | `regismile.png` + `sprites/regismile_*.png` | REGI POWER, HAPPINESS PULSE, BABYDOLL EYES, CHARM | REGI TEMPPELIN vasen jalusta, LV50 | – | erittäin vaikea (0,12) |
-| VIRTULEAST | ULTRA PETO, ei kehity | `virtuleast ultra beast.png` + `sprites/virtuleast_*.png` | POISON JAB, VIRTUAL SHOT, SLUDGE WAVE, ELECTRO POWER | AVARUUDEN kivellä 2 % | 50 kolikkoa | vaikea (0,2) |
-| DROISON | ULTRA PETO, ei kehity | `droison ultra beast.png` + `sprites/droison_*.png` | POISON JAB, DRAGON BREATH, DRAGON CLAW, POISON POWDER | AVARUUDEN kivellä 2 % | 50 kolikkoa | vaikea (0,2) |
-| GOLBUZZ | ULTRA PETO, ei kehity | `golbuzz ultra beast.png` + `sprites/golbuzz_*.png` | BUG BUZZ, SWARM, CLOSE COMBAT, LOW KICK | AVARUUDEN kivellä 2,5 % | 40 kolikkoa | vaikea (0,22) |
-| ALGISHIOD | ULTRA PETO, ei kehity | `algishiod ultra beast.png` + `sprites/algishiod_*.png` | SHARP SPEAR, ELECTROBALL, SLEEP POWDER, FLAMETHROWER | AVARUUDEN kivellä 2,5 % | 40 kolikkoa | vaikea (0,22) |
-| AMPERITIE | ULTRA PETO, ei kehity | `amperitie ultra beast.png` + `sprites/amperitie_*.png` | THUNDER, SELF DESTRUCTION, ELECTROBALL, SPARK HEAL | AVARUUDEN kivellä 2,5 % | 40 kolikkoa | vaikea (0,22) |
+| VIRTULEAST | ULTRA PETO, ei kehity | `virtuleast ultra beast.png` + `sprites/virtuleast_*.png` | POISON JAB, VIRTUAL SHOT, SLUDGE WAVE, ELECTRO POWER | MADONREIÄSSÄ, vaeltaa kartalla | 50 kolikkoa | vaikea (0,2) |
+| DROISON | ULTRA PETO, ei kehity | `droison ultra beast.png` + `sprites/droison_*.png` | POISON JAB, DRAGON BREATH, DRAGON CLAW, POISON POWDER | MADONREIÄSSÄ, vaeltaa kartalla | 50 kolikkoa | vaikea (0,2) |
+| GOLBUZZ | ULTRA PETO, ei kehity | `golbuzz ultra beast.png` + `sprites/golbuzz_*.png` | BUG BUZZ, SWARM, CLOSE COMBAT, LOW KICK | MADONREIÄSSÄ, vaeltaa kartalla | 40 kolikkoa | vaikea (0,22) |
+| ALGISHIOD | ULTRA PETO, ei kehity | `algishiod ultra beast.png` + `sprites/algishiod_*.png` | SHARP SPEAR, ELECTROBALL, SLEEP POWDER, FLAMETHROWER | MADONREIÄSSÄ, vaeltaa kartalla | 40 kolikkoa | vaikea (0,22) |
+| AMPERITIE | ULTRA PETO, ei kehity | `amperitie ultra beast.png` + `sprites/amperitie_*.png` | THUNDER, SELF DESTRUCTION, ELECTROBALL, SPARK HEAL | MADONREIÄSSÄ, vaeltaa kartalla | 40 kolikkoa | vaikea (0,22) |
+| DRISTIEL | ULTRA PETO, ei kehity | `dristiel ultra beast.png` + `sprites/dristiel_*.png` | PSI STRIKE, PSYCHIC, MIND CONTROL, REST | MADONREIÄSSÄ, vaeltaa kartalla | 40 kolikkoa | vaikea (0,22) |
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
@@ -48,7 +49,8 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 ### Kiiltävät muodot
 
 - Jokainen kohdattu villi otus on **1/200** todennäköisyydellä kiiltävä (`SHINY_CHANCE` tiedostossa `js/battle.js`).
-- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatava QUACKOBRA sekä regit; regit näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/125** todennäköisyydellä (`SHINY_CHANCE_CHARM`).
+- **SHINY CHARM:** kun KOKOELMASSA on jokainen otus, eli olet napannut tai kehittänyt jokaista vähintään yhden (kaikki lajit paitsi aloitusotus DUCKONDA, vain kehittämällä saatava QUACKOBRA, regit ja ULTRA PEDOT; ne näkyvät silti KOKOELMASSA), saat SHINY CHARMin. Sen jälkeen villit otukset ovat kiiltäviä **1/125** todennäköisyydellä (`SHINY_CHANCE_CHARM`). SHINY CHARM ei vaikuta ULTRA PETOIHIN.
+- **BEAST CHARM:** kun olet napannut jokaisen ULTRA PEDON (VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL), saat BEAST CHARMin. Sen jälkeen ULTRA PEDOT ovat kiiltäviä **1/125** todennäköisyydellä (ilman sitä 1/200). BEAST CHARM ei vaikuta muihin otuksiin. KOKOELMAN yläreuna näyttää molempien charmien edistymisen.
 - **KOKOELMA** (HOITOLAN valikossa): näyttää, mitkä otukset on napattu (oma ruutu otuskorteilla, ks. HOITOLA), montako on napattu (regit mukaan lukien) sekä SHINY CHARMin edistymisen ilman regejä (esim. SHINY CHARM 18/19) tai ON, kun se on saatu. Jos kokoelma on jo valmis mutta SHINY CHARMia ei vielä ole (esim. vanhassa tallennuksessa), se annetaan heti KOKOELMAA katsottaessa. Uusi laji lisätään kokoelmaan, kun se napataan ensimmäisen kerran **tai kun oma otus kehittyy siksi** (esim. EYEVIL → EYEBALDON lisää EYEBALDONin). Vanhoissa tallennuksissa jo kehittyneet otukset (tiimissä tai PC:ssä) lisätään kokoelmaan, kun peli ladataan.
 - Aloitusotus DUCKONDA on kiiltävä **1/10** todennäköisyydellä (`shinyChance` DUCKONDAn tiedoissa). Arvonta tehdään, kun uusi peli alkaa, ja aloitusteksti kertoo, jos osui.
 - Kiiltävä otus käyttää sinun "kiiltävä …" -spritejäsi, ja teksti kertoo, että se on KIILTÄVÄ.
@@ -166,13 +168,13 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Etelän ovesta pääsee takaisin SNOW MOUNTAINille. Kyltti on oven lähellä.
    - **Madonreikä:** oven vieressä oikeassa alakulmassa pyörii violetti madonreikä (`WW`, 2 × 2 ruutua, `sprites/wormhole.png`). Sen edessä seisoo **MADONREIÄN VARTIJA** (tummansininen takki, `sprites/wormkeeper.png`).
      - Vartija pyytää keräämään **5 REGI SHARDIA** (`sprites/regi_shard.png`). Ne kimaltelevat maassa: yksi PUSKAMETSÄSSÄ, HYUJAL METSÄSSÄ, SAARIMERELLÄ, SNOW MOUNTAINILLA ja MAATILALLA (kartan `shard`-kohta). Kävele shardin päälle, niin poimit sen. Reppu näyttää, montako sinulla on.
-     - Kun sinulla on kaikki viisi, puhu vartijalle ja anna shardit. Sen jälkeen madonreikä pyörii nopeammin, ja kun kosket sitä, pääset **AVARUUTEEN**. Ilman shardeja vartija ei päästä sisään.
+     - Kun sinulla on kaikki viisi, puhu vartijalle ja anna shardit. Sen jälkeen madonreikä pyörii nopeammin, ja kun kosket sitä, pääset **MADONREIKÄÄN**. Ilman shardeja vartija ei päästä sisään.
      - Shardit ja niiden antaminen tallentuvat.
-4c. **AVARUUS** (26 × 18 ruutua, madonreiän takana)
-   - Kivinen asteroidi leijuu tähtitaivaalla: kraatereita, hehkuva tähtipolku, sinisiä tähtikristalleja, leijuvia violetteja kristalleja ja tuikkivia tähtiä. Kartan reunoilla on avaruutta (`T`), jota ei pääse läpi.
-   - **ULTRA PEDOT:** täällä ei ole puskia. Kun kävelet paljaalla kivellä (ei tähtipolulla), voi tulla VIRTULEAST (2 %), DROISON (2 %), GOLBUZZ (2,5 %), ALGISHIOD (2,5 %) tai AMPERITIE (2,5 %) askelta kohden (kartan `encounterTiles` ja `encounters`). Ne ovat tasoilla 30–40, ja niitä vastaan taistellaan tähtitaivaan alla.
-   - ULTRA PEDOILLA ei vielä ole kiiltäviä muotoja, joten niitä ei tarvita SHINY CHARMiin (KOKOELMAAN ne lasketaan).
-   - Uusia liikkeitä: VIRTUAL SHOT (kriittinen osuma tulee helpommin), ELECTRO POWER (voi halvaannuttaa), DRAGON BREATH (voi halvaannuttaa), DRAGON CLAW, POISON POWDER (myrkyttää, ei vahinkoa), SWARM, CLOSE COMBAT (120), LOW KICK, SHARP SPEAR (kriittinen osuma tulee helpommin), THUNDER (110, osuu 70 %), SELF DESTRUCTION (200, mutta käyttäjä uupuu itsekin) ja SPARK HEAL (palauttaa puolet HP:sta).
+4c. **MADONREIKÄ** (40 × 27 ruutua, madonreiän takana)
+   - Kivisiä asteroideja leijuu tähtitaivaalla: kraatereita, hehkuvat tähtipolut, sinisiä tähtikristalleja, leijuvia violetteja kristalleja ja tuikkivia tähtiä. Asteroidien välissä ja kartan reunoilla on avaruutta (`T`), jota ei pääse läpi.
+   - **ULTRA PEDOT näkyvät kartalla:** puskia eikä piilotettuja kohtaamisia ole. Kun tulet madonreiästä, kivelle ilmestyy 9 petoa (VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL, kartan `wanderers`). Ne leijuvat ja liikkuvat hitaasti ruudusta toiseen, ja pikkukartalla ne näkyvät pinkkeinä pisteinä. Kävele pedon luo (tai paina Z sen edessä), niin taistelu alkaa. Peto katoaa kartalta, kun taistelu alkaa, ja uudet tulevat, kun palaat madonreiästä uudelleen. Ne ovat tasoilla 30–40, ja niitä vastaan taistellaan tähtitaivaan alla.
+   - **Kiiltävät ULTRA PEDOT:** jokainen kartalle ilmestyvä peto on 1/200 (BEAST CHARMilla 1/125, SHINY CHARM ei auta) todennäköisyydellä kiiltävä (`virtuleast kiiltävä.png` ym. + `sprites/shiny_<nimi>_*.png`). Kiiltävän pedon näkee jo kartalla: se on kiiltävän värinen, ja sen päällä tuikkii pieni tähti. SHINY CHARMiin ULTRA PETOJA ei tarvita: niille on oma BEAST CHARM.
+   - Uusia liikkeitä: VIRTUAL SHOT (kriittinen osuma tulee helpommin), ELECTRO POWER (voi halvaannuttaa), DRAGON BREATH (voi halvaannuttaa), DRAGON CLAW, POISON POWDER (myrkyttää, ei vahinkoa), SWARM, CLOSE COMBAT (120), LOW KICK, SHARP SPEAR (kriittinen osuma tulee helpommin), THUNDER (110, osuu 70 %), SELF DESTRUCTION (200, mutta käyttäjä uupuu itsekin), SPARK HEAL (palauttaa puolet HP:sta), MIND CONTROL (75, voi laskea kohteen hyökkäystä) ja REST (koko HP takaisin ja tila pois, mutta käyttäjä nukkuu 2 vuoroa).
    - Madonreikä vie takaisin REGI TEMPPELIIN.
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
@@ -310,7 +312,7 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/tiles_town.png` | 320×16 | VEYLORAN KYLÄN ruudut: samat kuin `tiles.png` (0–12), lisäksi vesi (13–14) ja puuaidan palat (15–19) |
 | `sprites/houses.png` | 240×48 | Viisi 48×48 taloa: punainen, sininen, vihreä, oranssi ja violetti katto, savupiippu, ikkunat kukkalaatikoineen ja ovi alarivin keskellä |
 | `sprites/tiles_temple.png` | 208×16 | REGI TEMPPELIN ruudut: lattia (0–1, 5–6, 10), matto (2), hehkuva riimu (3–4), kivimalja pinkillä liekillä (7–8), kivitaulu (9), tiiliseinän etupuoli (11) ja seinän yläosa (12) |
-| `sprites/tiles_space.png` | 208×16 | AVARUUDEN ruudut: asteroidikivi (0–1, 5–6, 10), tähtipolku (2), tuikkiva tähtikristalli (3–4), leijuva violetti kristalli (7–8), kivitaulu (9), kiven reuna avaruuden yllä (11) ja avaruus (12) |
+| `sprites/tiles_space.png` | 208×16 | MADONREIÄN ruudut: asteroidikivi (0–1, 5–6, 10), tähtipolku (2), tuikkiva tähtikristalli (3–4), leijuva violetti kristalli (7–8), kivitaulu (9), kiven reuna avaruuden yllä (11) ja avaruus (12) |
 | `sprites/wormhole.png` | 128×32 | MADONREIKÄ: 4 pyörivää kuvaa 32×32 |
 | `sprites/regi_shard.png` | 32×16 | REGI SHARD: kristalli ja kimaltava kuva |
 | `sprites/wormkeeper.png` | kuten `player.png` | MADONREIÄN VARTIJA: pelaajan kuva tummansinisellä takilla |

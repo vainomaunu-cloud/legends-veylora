@@ -255,47 +255,61 @@ const MAPS = {
     ],
     encounters: [],
     npcs: ['wormkeeper'],   // stands in front of the wormhole and wants the five REGI SHARDs
-    wormholeTo: { to: 'space', x: 9, y: 14, dir: 'right' },
+    wormholeTo: { to: 'space', x: 9, y: 21, dir: 'right' },
     warps: { '11,22': { to: 'snow', x: 12, y: 1, dir: 'down' } },
     sign: 'REGI TEMPPELI\nVanha violetti temppeli vuoren huipulla. Patsaat esittävät metsien, vuorten ja meren otuksia. Perällä kolme jalustaa odottaa yhä patsaitaan... Täällä on hiljaista: ei puskia eikä villejä otuksia.',
   },
-  // AVARUUS behind the WORMHOLE: a rocky asteroid floating in space (T is open space, not trees)
-  // W the wormhole back to REGI TEMPPELI  M floating crystal  * star crystal
+  // MADONREIKÄ behind the WORMHOLE: rocky asteroids floating in space (T is open space, not trees)
+  // W the wormhole back to REGI TEMPPELI  M floating crystal  * star crystal  = glowing star path
   space: {
-    name: 'AVARUUS',
+    name: 'MADONREIKÄ',
     tiles: 'tilesSpace', rustle: 'bushRustle', shade: '#0a0818', music: 'hyujal', walls: 'space', stars: true, miniBg: '#0a0818',
     rows: [
-      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'TTTTT....TTTTTTTT...TTTTTT',
-      'TTTT..*...TTTTT..M...TTTTT',
-      'TTT...........=......TTTTT',
-      'TTT..M.....====....*..TTTT',
-      'TTTT......==.....,....TTTT',
-      'TTTTT....==...TTT.....TTTT',
-      'TTTTTT..==...TTTTT...TTTTT',
-      'TTTTT...=.....TTT...*.TTTT',
-      'TTTT....=..*.........TTTTT',
-      'TTTT..*.=.......S.M..TTTTT',
-      'TTTTT...=====......TTTTTTT',
-      'TTTTTT.WW...=.....TTTTTTTT',
-      'TTTTTT.WW...=...TTTTTTTTTT',
-      'TTTTTTT.....,..TTTTTTTTTTT',
-      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
-      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTT.....TTTTTTTTTTTTTTT......TTTTTTTT',
+      'TTTT..*......TTTTTTTTTTT...M.....*.TTTTT',
+      'TTT.....M.....TTTTTTT............,..TTTT',
+      'TTT..,.........=========.....TTT.....TTT',
+      'TTTT.......=====TTTTTTT=....TTTTT....TTT',
+      'TTTTT.....=..TTTTTTTTTT=.....TTT..*..TTT',
+      'TTTTTT....=..TTTTTTTTT.=............TTTT',
+      'TTTTT..*..=...TTTTTTT..=...,....M..TTTTT',
+      'TTTT......=.....,......=.........TTTTTTT',
+      'TTTT..M...=....*.......=...TTT....TTTTTT',
+      'TTTTT.....==============..TTTTT....TTTTT',
+      'TTTTTT....=......S.....=...TTT......TTTT',
+      'TTTTT.....=..M.........=..........*..TTT',
+      'TTTT..,...=.......TTT..=.....M........TT',
+      'TTTT......=......TTTTT.===========....TT',
+      'TTTTT..*..=.......TTT.......,....=...TTT',
+      'TTTTTT....=..................*...=..TTTT',
+      'TTTTTTT...=....TTTTT.............=.TTTTT',
+      'TTTTTTTWW.=...TTTTTTTT.....M.....=..TTTT',
+      'TTTTTTTWW===...TTTTTT...,........=...TTT',
+      'TTTTTTT.......TTTTTTTTT.....TTT..=...TTT',
+      'TTTTTTTT..,..TTTTTTTTTTT...TTTTT.....TTT',
+      'TTTTTTTTT...TTTTTTTTTTTTT.*.TTTTT...TTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
-    // no bushes here: ULTRA PEDOT jump out while you walk on the bare rock (. and ,), not on the star path; chance per step
-    encounterTiles: '.,',
-    encounters: [
-      { species: 'virtuleast', chance: 0.02 },
-      { species: 'droison', chance: 0.02 },
-      { species: 'golbuzz', chance: 0.025 },
-      { species: 'algishiod', chance: 0.025 },
-      { species: 'amperitie', chance: 0.025 },
-    ],
+    // no bushes and no hidden encounters: the ULTRA PEDOT wander around the map where you can see them.
+    // Walk into one to battle it. `count` of them are placed every time you arrive; `species` weights pick which.
+    wanderers: {
+      count: 9,
+      species: [
+        { species: 'virtuleast', weight: 2 },
+        { species: 'droison', weight: 2 },
+        { species: 'golbuzz', weight: 2.5 },
+        { species: 'algishiod', weight: 2.5 },
+        { species: 'amperitie', weight: 2.5 },
+        { species: 'dristiel', weight: 2 },
+      ],
+    },
+    encounters: [],
     wormholeTo: { to: 'temple', x: 18, y: 19, dir: 'left' },
     warps: {},
-    sign: 'AVARUUS\nMadonreiän toisella puolella leijuu kivinen asteroidi tähtien keskellä. Kivellä vaeltavat ULTRA PEDOT: VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD ja AMPERITIE. Tähtipolulla on turvallista.',
+    sign: 'MADONREIKÄ\nMadonreiän toisella puolella leijuu kivisiä asteroideja tähtien keskellä. Niillä vaeltavat ULTRA PEDOT: VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL. Kävele pedon luo, niin taistelu alkaa.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
@@ -382,7 +396,7 @@ for (const [id, m] of Object.entries(MAPS)) {
 
 const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15, 'N': 0, 'W': 0 };
 const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) draw T as bricks
-// walls: 'space' (AVARUUS) draws T as open space, with the rock edge (WALL_FACE) right below the floor
+// walls: 'space' (MADONREIKÄ) draws T as open space, with the rock edge (WALL_FACE) right below the floor
 const SHARD_TOTAL = 5;                 // REGI SHARDs to find (one per map with `shard`)
 const KEEPER_NAME = 'MADONREIÄN VARTIJA';
 // wooden fence Y (tiles_farm.png / tiles_town.png): a post plus rails towards each neighbouring fence tile
@@ -514,7 +528,7 @@ const NPCS = {
         return;
       }
       if (have < SHARD_TOTAL) {
-        yield* textBox.say(`${KEEPER_NAME}: Tämä madonreikä vie AVARUUTEEN. Se aukeaa vain viidellä REGI SHARDILLA.`);
+        yield* textBox.say(`${KEEPER_NAME}: Tämän madonreiän takana on MADONREIKÄ, ULTRA PETOJEN maailma. Se aukeaa vain viidellä REGI SHARDILLA.`);
         yield* textBox.say(`${KEEPER_NAME}: Shardit ovat hajallaan ympäri maailmaa: PUSKAMETSÄSSÄ, HYUJAL METSÄSSÄ, SAARIMERELLÄ, SNOW MOUNTAINILLA ja MAATILALLA.`);
         yield* textBox.say(`${KEEPER_NAME}: Kerää ne kaikki ja tuo minulle. Sinulla on nyt ${have}/${SHARD_TOTAL}.`);
         return;
@@ -523,7 +537,7 @@ const NPCS = {
       yield* textBox.say(`Annoit ${SHARD_TOTAL} REGI SHARDIA ${KEEPER_NAME}LLE.`);
       game.shardsGiven = true;
       yield* flashScreen(2);
-      yield* textBox.say(`${KEEPER_NAME}: Shardit loistavat... Madonreikä on nyt auki! Kosketa sitä, niin pääset AVARUUTEEN.`);
+      yield* textBox.say(`${KEEPER_NAME}: Shardit loistavat... Madonreikä on nyt auki! Kosketa sitä, niin pääset MADONREIKÄÄN.`);
       saveGame.save(true);
     },
   },
@@ -560,9 +574,58 @@ const overworld = {
     this.rollPalmBirds();
     // cows in the farm pen: tile position, pixel position, where they are walking to
     this.cows = (this.map.cows || []).map(c => ({ x: c.x, y: c.y, px: c.x * TILE, py: c.y * TILE, tx: c.x, ty: c.y, dir: Math.random() < 0.5 ? 'left' : 'right', wait: rnd(30, 150), eat: 0 }));
+    this.spawnWanderers();
   },
 
   cowAt(x, y) { return (this.cows || []).find(c => (c.x === x && c.y === y) || (c.tx === x && c.ty === y)); },
+
+  // ----- wild creatures you can see walking around (MAPS[...].wanderers, the ULTRA PEDOT in MADONREIKÄ) -----
+  // placed on free rock tiles away from the player every time you arrive; walk into one to battle it
+  spawnWanderers() {
+    this.wanderers = [];
+    const w = this.map.wanderers, p = this.player;
+    if (!w) return;
+    const free = [];
+    for (let y = 0; y < this.map.h; y++) for (let x = 0; x < this.map.w; x++) {
+      if ('.,'.includes(this.map.rows[y][x]) && Math.abs(x - p.tx) + Math.abs(y - p.ty) > 5) free.push({ x, y });
+    }
+    const total = w.species.reduce((n, s) => n + s.weight, 0);
+    for (let i = 0; i < w.count && free.length; i++) {
+      const at = free.splice(rnd(0, free.length - 1), 1)[0];
+      let r = Math.random() * total, species = w.species[0].species;
+      for (const s of w.species) { if (r < s.weight) { species = s.species; break; } r -= s.weight; }
+      const shiny = hasShinyArt(species) && Math.random() < shinyChance(species);   // you can spot a shiny one from afar
+      this.wanderers.push({ species, shiny, x: at.x, y: at.y, px: at.x * TILE, py: at.y * TILE, tx: at.x, ty: at.y, dir: Math.random() < 0.5 ? 'left' : 'right', wait: rnd(20, 120), phase: rnd(0, 99) });
+    }
+  },
+
+  wandererAt(x, y) { return (this.wanderers || []).find(c => (c.x === x && c.y === y) || (c.tx === x && c.ty === y)); },
+
+  // they float from tile to tile now and then (never onto the star path, the wormhole or the player)
+  updateWanderers() {
+    const p = this.player;
+    for (const c of this.wanderers || []) {
+      if (c.px !== c.tx * TILE || c.py !== c.ty * TILE) {
+        c.px += Math.sign(c.tx * TILE - c.px) * 0.5; c.py += Math.sign(c.ty * TILE - c.py) * 0.5;
+        if (c.px === c.tx * TILE && c.py === c.ty * TILE) { c.x = c.tx; c.y = c.ty; }
+        continue;
+      }
+      if (--c.wait > 0) continue;
+      c.wait = rnd(40, 160);
+      const dir = ['up', 'down', 'left', 'right'][rnd(0, 3)];
+      const nx = c.x + DIRS[dir][0], ny = c.y + DIRS[dir][1];
+      if (dir === 'left' || dir === 'right') c.dir = dir;
+      const blocked = !'.,*'.includes(this.tileAt(nx, ny)) || this.wandererAt(nx, ny) || (p.tx === nx && p.ty === ny)
+        || (p.moving && p.tx + DIRS[p.dir][0] === nx && p.ty + DIRS[p.dir][1] === ny);
+      if (!blocked) { c.tx = nx; c.ty = ny; }
+    }
+  },
+
+  // walked into an ULTRA PETO: it is gone from the map once the battle starts (caught, beaten or fled)
+  *wandererTouch(c) {
+    this.wanderers = this.wanderers.filter(q => q !== c);
+    startEncounter(c.species, 'space', { shiny: c.shiny });
+  },
 
   // cows amble around inside their pen now and then, and sometimes put their heads down to eat
   updateCows() {
@@ -622,6 +685,7 @@ const overworld = {
     this.rustles = this.rustles.filter(r => r.t < 18);
     if (this.banner && ++this.banner.t > 170) this.banner = null;
     this.updateCows();
+    this.updateWanderers();
     if (this.runner.busy) { this.runner.update(); return; }
 
     const p = this.player;
@@ -648,6 +712,8 @@ const overworld = {
     const npc = this.npcAt(nx, ny);
     if (npc) { this.runner.run(npc.talk()); return; }               // walked into someone: they talk
     if (this.cowAt(nx, ny)) { this.runner.run(this.cowTalk()); return; }   // bumped into a cow
+    const wild = this.wandererAt(nx, ny);
+    if (wild) { this.runner.run(this.wandererTouch(wild)); return; }   // walked into an ULTRA PETO
     const regi = this.regiAt(nx, ny);
     if (regi) { this.runner.run(this.regiTouch(regi)); return; }    // touched a regi on its pedestal
     if (this.tileAt(nx, ny) === 'W') { this.runner.run(this.wormholeTouch()); return; }   // touched the wormhole
@@ -711,7 +777,7 @@ const overworld = {
     saveGame.save(true);
   },
 
-  // ----- WORMHOLE: REGI TEMPPELI <-> AVARUUS -----
+  // ----- WORMHOLE: REGI TEMPPELI <-> MADONREIKÄ -----
   *wormholeTouch() {
     const to = this.map.wormholeTo;
     if (!to) return;
@@ -738,6 +804,8 @@ const overworld = {
     if (tile === 'O') this.say((this.map.houseTexts && this.map.houseTexts[`${fx},${fy}`]) || 'Ovi on lukossa.');
     if (tile === 'N') this.say(this.map.barnText || 'Navetan ovi on kiinni.');
     if (this.cowAt(fx, fy)) this.runner.run(this.cowTalk());
+    const wild = this.wandererAt(fx, fy);
+    if (wild) this.runner.run(this.wandererTouch(wild));
     if (tile === 'D') this.runner.run(this.centerVisit());
     if (tile === 'R') this.runner.run(this.kioskVisit());
   },
@@ -837,7 +905,17 @@ const overworld = {
           yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
           yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/125 (ennen 1/200).');
         } else if (!game.shinyCharm) {
-          yield* textBox.say(`Nappaa tai kehitä jokaista otusta vähintään yksi, niin saat SHINY CHARMin (${have}/${need.length}). Regejä ei tarvita! Sen kanssa kiiltäviä näkee useammin.`);
+          yield* textBox.say(`Nappaa tai kehitä jokaista otusta vähintään yksi, niin saat SHINY CHARMin (${have}/${need.length}). Regejä ja ULTRA PETOJA ei tarvita! Sen kanssa kiiltäviä näkee useammin.`);
+        }
+        // BEAST CHARM: every ULTRA PETO caught; it only helps with shiny ULTRA PEDOT
+        const beasts = beastCharmSpecies(), gotBeasts = beasts.filter(id => game.caught.includes(id)).length;
+        if (!game.beastCharm && gotBeasts === beasts.length) {
+          game.beastCharm = true;
+          yield* flashScreen(2);
+          yield* textBox.say('Olet napannut KAIKKI ULTRA PEDOT! Sait BEAST CHARMin!');
+          yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/125 (ennen 1/200).');
+        } else if (!game.beastCharm && game.shardsGiven) {
+          yield* textBox.say(`Nappaa jokainen ULTRA PETO, niin saat BEAST CHARMin (${gotBeasts}/${beasts.length}). SHINY CHARM ei auta ULTRA PETOJEN kanssa, mutta BEAST CHARM auttaa.`);
         }
       } else if (c === 4) {
         this.showWallet = false;
@@ -946,6 +1024,21 @@ const overworld = {
         const bob = walking ? Math.floor(this.t / 8) % 2 : 0;
         drawFrame(IMG.cow, frame, 16, 16, Math.round(c.px) - camX, Math.round(c.py) - camY - 2 - bob);
       }
+      for (const c of this.wanderers || []) {   // ULTRA PETO floating over the rock, with a violet shadow
+        if (Math.floor((c.py + 8) / TILE) !== ty) continue;
+        const bob = Math.round(Math.sin((this.t + c.phase * 7) / 14) * 2);
+        const sx = Math.round(c.px) - camX - 8, sy = Math.round(c.py) - camY - 18;
+        ctx.fillStyle = 'rgba(20,0,40,0.45)'; ctx.fillRect(sx + 9, sy + 30, 14, 3); ctx.fillRect(sx + 11, sy + 29, 10, 5);
+        const key = SPECIES[c.species].sprites[Math.floor((this.t + c.phase * 13) / 8) % 30 === 0 ? 'blink' : 'front'];
+        const img = IMG[c.shiny && IMG['shiny_' + key] ? 'shiny_' + key : key];
+        if (c.dir === 'right') { ctx.save(); ctx.translate(sx + 32, 0); ctx.scale(-1, 1); ctx.drawImage(img, 0, sy - bob); ctx.restore(); }
+        else ctx.drawImage(img, sx, sy - bob);
+        if (c.shiny && (this.t + c.phase * 5) % 50 < 14) {   // shiny: a little twinkle
+          const k = (this.t + c.phase * 5) % 50, gx = sx + 6 + (c.phase * 7) % 20, gy = sy - bob + 4 + (c.phase * 3) % 14;
+          ctx.fillStyle = k % 4 < 2 ? '#ffffff' : '#ffe070';
+          ctx.fillRect(gx, gy - 2, 1, 5); ctx.fillRect(gx - 2, gy, 5, 1);
+        }
+      }
       for (const s of m.statueList) if (s.y === ty) this.drawStatue(s, s.x * TILE - camX, ty * TILE - camY);
       for (const id of m.npcs || []) {
         const n = NPCS[id], at = n.pos();
@@ -999,6 +1092,8 @@ const overworld = {
         g.fillRect(Math.round(R + (x + 0.5 - ptx) * S) - 1, Math.round(R + (y + 0.5 - pty) * S) - 1, 3, 3);
       }
     }
+    g.fillStyle = '#ff7ad8';   // ULTRA PEDOT wandering around
+    for (const c of this.wanderers || []) g.fillRect(Math.round(R + (c.px / TILE + 0.5 - ptx) * S) - 1, Math.round(R + (c.py / TILE + 0.5 - pty) * S) - 1, 2, 2);
     g.fillStyle = '#ffffff'; g.fillRect(R - 2, R - 2, 5, 5);
     g.fillStyle = '#e04838'; g.fillRect(R - 1, R - 1, 3, 3);
     // cut to a circle (crisp pixel edge); the mask must be drawn in one go for destination-in

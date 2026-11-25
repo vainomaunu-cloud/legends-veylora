@@ -76,9 +76,10 @@ const admin = {
 
       <h4>Kokoelma ja SHINY CHARM</h4>
       <div class="admRow">Napattu <b>${catchableSpecies().filter(id => game.caught.includes(id)).length}/${catchableSpecies().length}</b>
-        · SHINY CHARM <b>${game.shinyCharm ? 'ON (1/125)' : 'EI (1/200)'}</b></div>
+        · SHINY CHARM <b>${game.shinyCharm ? 'ON (1/125)' : 'EI (1/200)'}</b> · BEAST CHARM <b>${game.beastCharm ? 'ON' : 'EI'}</b></div>
       <div class="admRow"><button data-act="catchall">Merkitse kaikki napatuiksi</button>
         <button data-act="charm">${game.shinyCharm ? 'Poista' : 'Anna'} SHINY CHARM</button>
+        <button data-act="beastcharm">${game.beastCharm ? 'Poista' : 'Anna'} BEAST CHARM</button>
         <button data-act="resetdex">Tyhjennä kokoelma</button></div>
 
       <h4>REGI TEMPPELI</h4>
@@ -126,14 +127,15 @@ const admin = {
       case 'warp': {
         if (!ow) return this.msg('Siirtyminen onnistuu vain kävellessä (ei taistelussa).');
         const id = this.el.querySelector('#admMap').value, m = MAPS[id];
-        const spot = { forest: m.spawn, hyujal: { x: 12, y: 2 }, sea: { x: 2, y: 10 }, snow: { x: 12, y: 17 }, temple: { x: 11, y: 20 }, space: { x: 9, y: 14 }, town: { x: 27, y: 10 }, farm: { x: 27, y: 10 } }[id] || m.spawn || { x: 1, y: 1 };
+        const spot = { forest: m.spawn, hyujal: { x: 12, y: 2 }, sea: { x: 2, y: 10 }, snow: { x: 12, y: 17 }, temple: { x: 11, y: 20 }, space: { x: 9, y: 21 }, town: { x: 27, y: 10 }, farm: { x: 27, y: 10 } }[id] || m.spawn || { x: 1, y: 1 };
         overworld.enterMap(id, spot.x, spot.y, 'down');
         music.play(m.music);
         return this.changed(`Siirrytty: ${m.name}`);
       }
-      case 'catchall': game.caught = catchableSpecies(); game.shinyCharm = true; return this.changed('Kaikki merkitty napatuiksi, SHINY CHARM annettu');
+      case 'catchall': game.caught = catchableSpecies(); game.shinyCharm = true; game.beastCharm = true; return this.changed('Kaikki merkitty napatuiksi, SHINY CHARM ja BEAST CHARM annettu');
       case 'charm': game.shinyCharm = !game.shinyCharm; return this.changed(`SHINY CHARM ${game.shinyCharm ? 'annettu' : 'poistettu'}`);
-      case 'resetdex': game.caught = []; game.shinyCharm = false; return this.changed('Kokoelma tyhjennetty');
+      case 'beastcharm': game.beastCharm = !game.beastCharm; return this.changed(`BEAST CHARM ${game.beastCharm ? 'annettu' : 'poistettu'}`);
+      case 'resetdex': game.caught = []; game.shinyCharm = false; game.beastCharm = false; return this.changed('Kokoelma tyhjennetty');
       case 'save': return this.msg(saveGame.save(true) ? 'Tallennettu' : 'Tallennus onnistuu vain kävellessä.');
       case 'battle': {
         if (!ow) return this.msg('Taistelun voi aloittaa vain kävellessä.');

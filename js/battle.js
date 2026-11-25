@@ -195,7 +195,7 @@ const SPECIES = {
     xpYield: 100, coins: 40, catchRate: 0.4, feetY: 0,
     sprites: { front: 'scarghost', blink: 'scarghostBlink', hurt: 'scarghostHurt', attack: 'scarghostAttack', back: 'scarghostBack', backAttack: 'scarghostBackAttack' },
   },
-  // ULTRA PEDOT: strange beasts from beyond the WORMHOLE, met while walking on the rock in AVARUUS (no shiny art yet)
+  // ULTRA PEDOT: strange beasts from beyond the WORMHOLE, wandering around MADONREIKÄ where you can see them
   virtuleast: {
     name: 'VIRTULEAST', ultra: true,
     base: { hp: 75, atk: 85, def: 70, spa: 105, spd: 75, spe: 85 },
@@ -230,6 +230,13 @@ const SPECIES = {
     moves: ['thunder', 'selfdestruct', 'electroball', 'sparkheal'],
     xpYield: 170, coins: 40, catchRate: 0.22, feetY: 0,
     sprites: { front: 'amperitie', blink: 'amperitieBlink', hurt: 'amperitieHurt', attack: 'amperitieAttack', back: 'amperitieBack', backAttack: 'amperitieBackAttack' },
+  },
+  dristiel: {
+    name: 'DRISTIEL', ultra: true,
+    base: { hp: 75, atk: 70, def: 75, spa: 110, spd: 90, spe: 80 },
+    moves: ['psistrike', 'psychic', 'mindcontrol', 'rest'],
+    xpYield: 170, coins: 40, catchRate: 0.22, feetY: 0,
+    sprites: { front: 'dristiel', blink: 'dristielBlink', hurt: 'dristielHurt', attack: 'dristielAttack', back: 'dristielBack', backAttack: 'dristielBackAttack' },
   },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
@@ -339,7 +346,7 @@ const MOVES = {
   babydolleyes: { id: 'babydolleyes', name: 'BABYDOLL EYES', power: 0, powerText: '-', acc: 100, pp: 30, special: true, lowerAtk: 1, anim: 'hearts' },
   charm: { id: 'charm', name: 'CHARM', power: 0, powerText: '-', acc: 100, pp: 20, special: true, lowerAtk: 2, anim: 'hearts' },
   sleeppowder: { id: 'sleeppowder', name: 'SLEEP POWDER', power: 0, powerText: '-', acc: 75, pp: 15, special: true, sleep: true, anim: 'powder' },
-  // ULTRA PEDOT (AVARUUS)
+  // ULTRA PEDOT (MADONREIKÄ)
   virtualshot: { id: 'virtualshot', name: 'VIRTUAL SHOT', power: 80, acc: 100, pp: 15, special: true, highCrit: true, anim: 'virtualshot' },
   electropower: { id: 'electropower', name: 'ELECTRO POWER', power: 100, acc: 90, pp: 10, special: true, paralyze: 0.2, anim: 'electropower' },
   dragonbreath: { id: 'dragonbreath', name: 'DRAGON BREATH', power: 60, acc: 100, pp: 20, special: true, paralyze: 0.3, anim: 'dragonbreath' },
@@ -352,6 +359,8 @@ const MOVES = {
   thunder: { id: 'thunder', name: 'THUNDER', power: 110, acc: 70, pp: 10, special: true, paralyze: 0.3, anim: 'thunder' },
   selfdestruct: { id: 'selfdestruct', name: 'SELF DESTRUCTION', power: 200, acc: 100, pp: 5, special: false, selfKO: true, anim: 'selfdestruct' },
   sparkheal: { id: 'sparkheal', name: 'SPARK HEAL', power: 0, powerText: '-', acc: 100, pp: 10, special: true, heal: 0.5, anim: 'sparkheal' },
+  mindcontrol: { id: 'mindcontrol', name: 'MIND CONTROL', power: 75, acc: 100, pp: 15, special: true, lowerAtkChance: 0.3, anim: 'mindcontrol' },
+  rest: { id: 'rest', name: 'REST', power: 0, powerText: '-', acc: 100, pp: 10, special: true, rest: true, anim: 'rest' },
 };
 // used automatically when every move is out of PP
 const STRUGGLE = { name: 'RIMPUILU', power: 35, acc: 100, pp: 0, left: 0, special: false, anim: 'tackle', struggle: true };
@@ -405,11 +414,14 @@ function calcDamage(att, def, move) {
 // speStage: -1..-3 from STICKY WEB (reset every battle)
 const SHINY_CHANCE = 1 / 200;
 const SHINY_CHANCE_CHARM = 1 / 125;  // with the SHINY CHARM
-const shinyChance = () => (game.shinyCharm ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
+// SHINY CHARM raises the odds for ordinary creatures, BEAST CHARM for the ULTRA PEDOT (each charm only works on its own kind)
+const shinyChance = species => ((SPECIES[species] && SPECIES[species].ultra ? game.beastCharm : game.shinyCharm) ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
 // every species that can be caught (the starter can only be chosen, not caught)
 const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckonda' && !SPECIES[id].evolveOnly);
-// the SHINY CHARM needs every catchable species except the regis and ULTRA PEDOT (no shiny forms)
+// the SHINY CHARM needs every catchable species except the regis (never shiny) and the ULTRA PEDOT (they have the BEAST CHARM)
 const charmSpecies = () => catchableSpecies().filter(id => !SPECIES[id].legendary && !SPECIES[id].ultra);
+// the BEAST CHARM needs every ULTRA PETO
+const beastCharmSpecies = () => catchableSpecies().filter(id => SPECIES[id].ultra);
 const FIRE = ['#fff06a', '#ffb43d', '#ff7a2a', '#dd3d3d'];
 // shiny creatures use the 'shiny_' version of every sprite
 const spriteKey = (mon, key) => (mon.shiny && IMG['shiny_' + key] ? 'shiny_' + key : key);
@@ -457,7 +469,7 @@ const battle = {
       this.foeQueue = [];
     }
     this.foe.shiny = hasShinyArt(this.foe.species) && (opts.shiny !== undefined ? !!opts.shiny
-      : this.kind === 'wild' && !SPECIES[this.foe.species].legendary && Math.random() < shinyChance());
+      : this.kind === 'wild' && !SPECIES[this.foe.species].legendary && Math.random() < shinyChance(this.foe.species));
     for (const m of game.party) { m.speStage = 0; m.atkStage = 0; m.evaStage = 0; m.flinch = false; m.trapTurns = 0; }
     this.tint = 0; this.tintRGB = null;
     this.thrown = null; this.parts = null; this.waves = null; this.webFx = null; this.slashes = null;
@@ -566,7 +578,7 @@ const battle = {
     } else if (this.kind === 'regi') {
       yield* textBox.say(`${foe.name} heräsi kivijalustaltaan!`);
     } else {
-      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : this.from === 'space' ? `ULTRA PETO ${foe.name} ilmestyi tähtien keskeltä!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
+      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : this.from === 'space' ? `ULTRA PETO ${foe.name} hyökkäsi kimppuusi!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
     }
     if (foe.shiny) yield* textBox.say(`Vau! Se on KIILTÄVÄ ${foe.name}!`);
     yield* tween(18, k => { this.trainer.x = Math.round(36 - 110 * k); });
@@ -796,6 +808,13 @@ const battle = {
       yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
       yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/125 (ennen 1/200).');
     }
+    if (SPECIES[species].ultra && !game.beastCharm && beastCharmSpecies().every(id => game.caught.includes(id))) {
+      game.beastCharm = true;
+      this.flash = 8;
+      for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
+      yield* textBox.say('Olet napannut KAIKKI ULTRA PEDOT! Sait BEAST CHARMin!');
+      yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/125 (ennen 1/200).');
+    }
   },
 
   *chooseMain() {
@@ -904,6 +923,18 @@ const battle = {
       textBox.hide();
       return;
     }
+    if (move.rest) {   // REST: full HP and no status, but the user falls asleep (sleeps 2 turns)
+      yield* this.animMindHeal(av, ['#bfe0ff', '#7ab0ff']);
+      if (att.hp >= att.maxHp && !att.status) yield* textBox.say(`${who}n HP on jo täynnä!`);
+      else {
+        att.hp = att.maxHp; att.status = 'slp'; att.sleepTurns = 3;
+        yield* this.drainHp(av, att);
+        yield* this.sleepFx(av);
+        yield* textBox.say(`${who} nukahti ja parani täysin!`);
+      }
+      textBox.hide();
+      return;
+    }
     if (move.heal) {   // MIND HEAL / SPARK HEAL: the user gets back half of its max HP
       yield* this.animMindHeal(av, move.anim === 'sparkheal' ? ['#fff06a', '#ffd23a'] : undefined);
       if (att.hp >= att.maxHp) yield* textBox.say(`${who}n HP on jo täynnä!`);
@@ -976,6 +1007,7 @@ const battle = {
     else if (move.anim === 'lowkick') { yield* this.animTackle(av, dv, mine ? 1 : -1); this.addFx('hit', dv.x + 32, dv.y + 52, [0, 0, 1, 1]); }
     else if (move.anim === 'spear') yield* this.animSpear(av, dv);
     else if (move.anim === 'selfdestruct') yield* this.animSelfDestruct(av, dv);
+    else if (move.anim === 'mindcontrol') yield* this.animMindControl(av, dv);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
     def.hp = Math.max(0, def.hp - dmg);
@@ -1013,6 +1045,10 @@ const battle = {
       att.hp = Math.min(att.maxHp, att.hp + Math.max(1, Math.floor(dmg * move.drain)));
       yield* this.drainHp(av, att);
       yield* textBox.say(`${who} imi voimaa kohteesta!`);
+    }
+    if (def.hp > 0 && move.lowerAtkChance && Math.random() < move.lowerAtkChance && (def.atkStage || 0) > -3) {   // MIND CONTROL
+      def.atkStage = (def.atkStage || 0) - 1;
+      yield* textBox.say(`${target} on mielenhallinnassa! Sen hyökkäys laski!`);
     }
     if (move.selfKO) {   // SELF DESTRUCTION: the user faints too
       att.hp = 0;
@@ -1825,6 +1861,25 @@ const battle = {
     }
     this.parts = null;
     yield* wait(6);
+  },
+
+  // MIND CONTROL: pink-violet rings spiral into the target's head, which sways from side to side
+  *animMindControl(av, dv) {
+    av.pose = 'attack';
+    const cx = dv.x + 32, cy = dv.y + 26;
+    for (let i = 0; i < 44; i++) {
+      this.parts = [];
+      for (let ring = 0; ring < 3; ring++) {
+        const r = ((44 - i) * 0.9 + ring * 10) % 30 + 2;
+        for (let a = 0; a < Math.PI * 2; a += 0.5) this.parts.push({ x: cx + Math.cos(a + i * 0.2) * r, y: cy + Math.sin(a + i * 0.2) * r * 0.5, c: ring % 2 ? '#ff9cf2' : '#b48aff', s: 2 });
+      }
+      dv.dx = Math.round(Math.sin(i / 4) * 3);
+      if (i % 11 === 0) this.shake = 2;
+      yield;
+    }
+    dv.dx = 0;
+    this.parts = null;
+    av.pose = 'idle';
   },
 
   *animTackle(av, dv, dir) {

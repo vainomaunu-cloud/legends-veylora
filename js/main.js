@@ -11,6 +11,7 @@ const game = {
   caught: [],           // species caught at least once (KOKOELMA)
   pc: [],               // creatures stored in the HOITOLA PC
   shinyCharm: false,
+  beastCharm: false,    // every ULTRA PETO caught: shiny ULTRA PEDOT 1/125
   regisCaught: [],      // regis caught from their pedestals (they don't come back)
   shards: [],           // REGI SHARDs picked up (ids of the maps they lay on)
   shardsGiven: false,   // the shards were given to the WORMHOLE KEEPER: the wormhole is open
@@ -30,7 +31,7 @@ const WILD_LEVELS = {
   snow: [18, 26],     // SNOW MOUNTAIN
   town: [3, 10],      // VEYLORAN KYLÄ
   farm: [4, 12],      // MAATILA (corn field)
-  space: [30, 40],    // AVARUUS (ULTRA PEDOT)
+  space: [30, 40],    // MADONREIKÄ (ULTRA PEDOT)
 };
 
 function wildLevel() {
@@ -79,7 +80,7 @@ function newGame(name = saveGame.defaultName()) {
   starter.shiny = Math.random() < SPECIES.duckonda.shinyChance;
   game.party = [starter];
   game.coins = 0; game.balls = 0; game.greatBalls = 0; game.ultraBalls = 0; game.masterBalls = 0;
-  game.caught = []; game.shinyCharm = false; game.pc = [];
+  game.caught = []; game.shinyCharm = false; game.beastCharm = false; game.pc = [];
   game.regisCaught = []; game.shards = []; game.shardsGiven = false;
   overworld.init();
   startGame();

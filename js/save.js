@@ -91,7 +91,7 @@ const saveGame = {
       party: game.party.map(pack),
       pc: game.pc.map(pack),
       coins: game.coins, balls: game.balls, greatBalls: game.greatBalls, ultraBalls: game.ultraBalls, masterBalls: game.masterBalls,
-      caught: game.caught, shinyCharm: game.shinyCharm,
+      caught: game.caught, shinyCharm: game.shinyCharm, beastCharm: game.beastCharm,
       regisCaught: game.regisCaught, shards: game.shards, shardsGiven: game.shardsGiven,
       map: overworld.map.id, x: p.tx, y: p.ty, dir: p.dir,
     };
@@ -123,6 +123,7 @@ const saveGame = {
     const owned = [...party, ...game.pc].map(m => m.species).filter(id => catchableSpecies().includes(id));
     game.caught = [...new Set([...game.caught, ...owned])];
     game.shinyCharm = !!d.shinyCharm;
+    game.beastCharm = !!d.beastCharm;
     game.regisCaught = (Array.isArray(d.regisCaught) ? d.regisCaught : []).filter(id => SPECIES[id]);
     game.shards = (Array.isArray(d.shards) ? d.shards : []).filter(id => typeof id === 'string');
     game.shardsGiven = !!d.shardsGiven;
