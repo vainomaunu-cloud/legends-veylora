@@ -352,7 +352,7 @@ const charmSpecies = () => catchableSpecies().filter(id => !SPECIES[id].legendar
 const FIRE = ['#fff06a', '#ffb43d', '#ff7a2a', '#dd3d3d'];
 // shiny creatures use the 'shiny_' version of every sprite
 const spriteKey = (mon, key) => (mon.shiny && IMG['shiny_' + key] ? 'shiny_' + key : key);
-// a species can only be shiny when its "kiiltävä ..." picture is in the game (CORIL line: not yet)
+// a species can only be shiny when its "kiiltävä ..." picture is in the game
 const hasShinyArt = id => !!IMG['shiny_' + SPECIES[id].sprites.front];
 
 const speedOf =m => m.spe * (m.status === 'par' ? 0.5 : 1) * 2 / (2 - (m.speStage || 0));

@@ -101,6 +101,7 @@ const SHINY_FILES = {
   binchulin: 'kiiltävä binchulin.png', overchill: 'kiiltävä overchill.png', underchill: 'kiiltävä undechill.png',
   hummird: 'kiiltävä hummird.png', hummirding: 'kiiltävä hummirding.png', psiduocipe: 'kiiltävä psiduocipe.png', eyevil: 'kiiltävä eyevil.png', eyebaldon: 'kiiltävä eyebaldon.png',
   siniramen: 'kiiltävä siniramen.png', poltearamen: 'kiiltävä poltearamen.png', quackobra: 'quackobra kiiltävä.png',
+  coril: 'kiiltävä coril.png', cornechaun: 'kiiltävä cornechaun.png', corneliva: 'kiiltävä corneliva.png',
   regiacid: 'regiaci kiiltävä (vain admin panelilla).png', regipsy: 'regipsy kiiltävä (vain admin panelilla).png', regismile: 'regismile kiiltävä (vain admin panelilla).png',
   moi: 'kiiltävä ampereem.png', amperite: 'kiiltävä amperite.png', zubug: 'kiiltävä zubug.png',
   golbug: 'kiiltävä golbug.png', squishroom: 'kiiltävä squishroom.png', shroocid: 'kiiltävä shroocid.png',
