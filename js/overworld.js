@@ -98,7 +98,7 @@ const MAPS = {
     sign: 'VEYLORAN KYLÄ\nPieni kylä PUSKAMETSÄN länsipuolella. Kylän puskissa piileskelee HUMMIRDeja, SQUISHROOMeja, SINIRAMENeja ja harvinaisia HUMMIRDINGeja ja POLTEARAMENeja. Itään: PUSKAMETSÄ. Länteen: MAATILA.',
   },
   // a farm west of VEYLORAN KYLÄ: a red barn, a corn field, a fenced cow pen with wandering cows and the farmer's house
-  // N barn (4x3, sprites/barn.png, roof reaches one row up)  B corn (walk through, no creatures)  M hay bale
+  // N barn (4x3, sprites/barn.png, roof reaches one row up)  B corn (CORIL, CORNECHAUN and CORNELIVA hide in it)  M hay bale
   // Y fence  K/O farmer's house and its door
   farm: {
     name: 'MAATILA',
@@ -125,7 +125,12 @@ const MAPS = {
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
-    encounters: [],   // the corn field is just corn: nothing jumps out
+    // chance per step in the corn field
+    encounters: [
+      { species: 'coril', chance: 0.30 },
+      { species: 'cornechaun', chance: 0.10 },
+      { species: 'corneliva', chance: 0.05 },
+    ],
     warps: { '29,10': { to: 'town', x: 1, y: 10, dir: 'right' } },
     // cows wander inside the pen (inner area of the fence)
     cows: [{ x: 18, y: 4 }, { x: 23, y: 5 }, { x: 19, y: 7 }],
@@ -134,7 +139,7 @@ const MAPS = {
     houseTexts: {
       '22,15': 'Maanviljelijä tervehtii ovelta: "Tervetuloa MAATILALLE! Maissi kasvaa hyvin tänä vuonna, ja lehmät antavat parasta maitoa koko VEYLORASSA!"',
     },
-    sign: 'MAATILA\nNavetta, maissipelto ja lehmäaitaus. Aitaukseen pääsee portista. Itään: VEYLORAN KYLÄ.',
+    sign: 'MAATILA\nNavetta, maissipelto ja lehmäaitaus. Maississa piileskelee CORILeja, CORNECHAUNeja ja harvinaisia CORNELIVOja! Aitaukseen pääsee portista. Itään: VEYLORAN KYLÄ.',
   },
   hyujal: {
     name: 'HYUJAL METSÄ',

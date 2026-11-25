@@ -27,6 +27,7 @@ const WILD_LEVELS = {
   sea: [9, 18],       // SAARIMERI (beach, palms and fishing)
   snow: [18, 26],     // SNOW MOUNTAIN
   town: [3, 10],      // VEYLORAN KYLÄ
+  farm: [4, 12],      // MAATILA (corn field)
 };
 
 function wildLevel() {

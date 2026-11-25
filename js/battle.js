@@ -163,6 +163,30 @@ const SPECIES = {
     xpYield: 150, coins: 55, catchRate: 0.3, feetY: -2,
     sprites: { front: 'poltearamen', blink: 'poltearamenBlink', hurt: 'poltearamenHurt', attack: 'poltearamenAttack', back: 'poltearamenBack', backAttack: 'poltearamenBackAttack' },
   },
+  // MAATILA corn field: CORIL -> CORNECHAUN (level 7, learns CORN GUN) -> CORNELIVA (level 16)
+  coril: {
+    name: 'CORIL',
+    base: { hp: 45, atk: 50, def: 45, spa: 55, spd: 45, spe: 55 },
+    moves: ['tackle', 'electroball', 'energyball'],
+    xpYield: 55, coins: 20, catchRate: 0.65, feetY: 0,
+    evolveAt: 7, evolveTo: 'cornechaun',
+    sprites: { front: 'coril', blink: 'corilBlink', hurt: 'corilHurt', attack: 'corilAttack', back: 'corilBack', backAttack: 'corilBackAttack' },
+  },
+  cornechaun: {
+    name: 'CORNECHAUN',
+    base: { hp: 60, atk: 70, def: 60, spa: 70, spd: 60, spe: 65 },
+    moves: ['corngun', 'tackle', 'electroball', 'energyball'],
+    xpYield: 110, coins: 35, catchRate: 0.4, feetY: 2,
+    evolveAt: 16, evolveTo: 'corneliva',
+    sprites: { front: 'cornechaun', blink: 'cornechaunBlink', hurt: 'cornechaunHurt', attack: 'cornechaunAttack', back: 'cornechaunBack', backAttack: 'cornechaunBackAttack' },
+  },
+  corneliva: {
+    name: 'CORNELIVA',
+    base: { hp: 80, atk: 90, def: 75, spa: 90, spd: 75, spe: 85 },
+    moves: ['corngun', 'tackle', 'electroball', 'energyball'],
+    xpYield: 170, coins: 55, catchRate: 0.25, feetY: 2,
+    sprites: { front: 'corneliva', blink: 'cornelivaBlink', hurt: 'cornelivaHurt', attack: 'cornelivaAttack', back: 'cornelivaBack', backAttack: 'cornelivaBackAttack' },
+  },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
     name: 'HUMMIRD',
@@ -253,6 +277,9 @@ const MOVES = {
   twister: { id: 'twister', name: 'TWISTER', power: 70, acc: 100, pp: 15, special: true, flinch: 0.2, anim: 'twister' },
   blizzard: { id: 'blizzard', name: 'BLIZZARD', power: 110, acc: 70, pp: 5, special: true, anim: 'blizzard' },
   icefang: { id: 'icefang', name: 'ICE FANG', power: 65, acc: 95, pp: 15, special: false, flinch: 0.1, anim: 'icefang' },
+  // corn creatures
+  energyball: { id: 'energyball', name: 'ENERGY BALL', power: 90, acc: 100, pp: 10, special: true, anim: 'energyball' },
+  corngun: { id: 'corngun', name: 'CORN GUN', power: 85, acc: 95, pp: 15, special: false, flinch: 0.2, anim: 'corngun' },
   // EYEBALDON: a piercing stare that can freeze the target in place
   staringeye: { id: 'staringeye', name: 'STARING EYE', power: 85, acc: 100, pp: 10, special: true, paralyze: 0.3, anim: 'staringeye' },
   // regi moves
@@ -324,7 +351,9 @@ const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckond
 const charmSpecies = () => catchableSpecies().filter(id => !SPECIES[id].legendary);
 const FIRE = ['#fff06a', '#ffb43d', '#ff7a2a', '#dd3d3d'];
 // shiny creatures use the 'shiny_' version of every sprite
-const spriteKey = (mon, key) => (mon.shiny ? 'shiny_' + key : key);
+const spriteKey = (mon, key) => (mon.shiny && IMG['shiny_' + key] ? 'shiny_' + key : key);
+// a species can only be shiny when its "kiiltävä ..." picture is in the game (CORIL line: not yet)
+const hasShinyArt = id => !!IMG['shiny_' + SPECIES[id].sprites.front];
 
 const speedOf =m => m.spe * (m.status === 'par' ? 0.5 : 1) * 2 / (2 - (m.speStage || 0));
 
@@ -365,8 +394,8 @@ const battle = {
       this.foe = makeMon(foeSpecies, foeLevel);
       this.foeQueue = [];
     }
-    this.foe.shiny = opts.shiny !== undefined ? !!opts.shiny
-      : this.kind === 'wild' && !SPECIES[this.foe.species].legendary && Math.random() < shinyChance();
+    this.foe.shiny = hasShinyArt(this.foe.species) && (opts.shiny !== undefined ? !!opts.shiny
+      : this.kind === 'wild' && !SPECIES[this.foe.species].legendary && Math.random() < shinyChance());
     for (const m of game.party) { m.speStage = 0; m.atkStage = 0; m.flinch = false; m.trapTurns = 0; }
     this.tint = 0; this.tintRGB = null;
     this.thrown = null; this.parts = null; this.waves = null; this.webFx = null; this.slashes = null;
@@ -839,6 +868,8 @@ const battle = {
     else if (move.anim === 'psychic') yield* this.animPsychic(av, dv);
     else if (move.anim === 'psychocut') yield* this.animPsychoCut(av, dv);
     else if (move.anim === 'staringeye') yield* this.animStaringEye(av, dv);
+    else if (move.anim === 'energyball') yield* this.animEnergyBall(av, dv);
+    else if (move.anim === 'corngun') yield* this.animCornGun(av, dv);
     else if (move.anim === 'regipower') yield* this.animRegiPower(av, dv);
     else if (move.anim === 'acidpulse') yield* this.animAcidPulse(av, dv);
     else if (move.anim === 'firepunch') yield* this.animFirePunch(av, dv, mine ? 1 : -1);
@@ -1095,6 +1126,60 @@ const battle = {
     yield* tween(6, k => { this.tint = 0.25 * (1 - k); });
     this.tint = 0; this.tintRGB = null;
     yield* wait(6);
+  },
+
+  // ENERGY BALL: a glowing green ball of nature energy grows in front of the user, flies over and bursts
+  *animEnergyBall(av, dv) {
+    av.pose = 'attack';
+    const sx = av.x + 32 + (av === this.meV ? 18 : -18), sy = av.y + 26, tx = dv.x + 32, ty = dv.y + 34;
+    const ball = (x, y, r, i) => {
+      this.parts = [];
+      for (let a = 0; a < Math.PI * 2; a += 0.35) for (let rr = 1; rr <= r; rr += 2) {
+        const sw = Math.sin(a * 3 + i * 0.4 + rr) > 0.3;
+        this.parts.push({ x: x + Math.cos(a) * rr, y: y + Math.sin(a) * rr, c: rr > r - 2 ? '#2f9a3a' : sw ? '#b8ff7a' : '#6cd84a', s: 2 });
+      }
+      this.parts.push({ x, y, c: '#ffffff', s: 3 });
+    };
+    for (let i = 0; i < 16; i++) { ball(sx, sy, 2 + i * 0.5, i); yield; }                 // charging
+    for (let i = 0; i <= 18; i++) {                                                        // flying
+      const k = i / 18; ball(sx + (tx - sx) * k, sy + (ty - sy) * k - Math.sin(k * Math.PI) * 14, 10, i); yield;
+    }
+    this.flash = 2; this.shake = 8;
+    for (let i = 0; i < 14; i++) {                                                         // burst
+      this.parts = [];
+      for (let n = 0; n < 14; n++) {
+        const a = n * Math.PI / 7, r = 4 + i * 2.2;
+        this.parts.push({ x: tx + Math.cos(a) * r, y: ty + Math.sin(a) * r * 0.8, c: n % 2 ? '#b8ff7a' : '#4ac848', s: 3 });
+      }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    yield* wait(4);
+  },
+
+  // CORN GUN: a rapid volley of golden corn kernels pelts the target
+  *animCornGun(av, dv) {
+    av.pose = 'attack';
+    const sx = av.x + 32, sy = av.y + 30, tx = dv.x + 32, ty = dv.y + 34;
+    const shots = 12, gap = 3, dur = 10;
+    for (let i = 0; i <= shots * gap + dur; i++) {
+      this.parts = [];
+      for (let n = 0; n < shots; n++) {
+        const k = (i - n * gap) / dur;
+        if (k < 0 || k > 1) continue;
+        const spread = ((n * 7) % 5 - 2) * 4;
+        const x = sx + (tx - sx) * k, y = sy + (ty + spread - sy) * k;
+        this.parts.push({ x, y, c: '#ffe14a', s: 3 }, { x: x - 1, y: y - 1, c: '#fff6a0', s: 1 }, { x: x - (tx - sx) * 0.03, y, c: '#c8a020', s: 2 });
+        if (Math.abs(k - 1) < 1 / dur) { this.addFx('hit', tx + rnd(-8, 8), ty + spread, [0, 1]); this.shake = 3; }
+      }
+      dv.dx = i > dur && i < shots * gap + dur ? (i % 2 ? 1 : -1) : 0;
+      yield;
+    }
+    dv.dx = 0;
+    this.parts = null;
+    av.pose = 'idle';
+    yield* wait(4);
   },
 
   // STARING EYE: the screen goes dark, a huge red-ringed eye opens over the target and stares, then a red flash

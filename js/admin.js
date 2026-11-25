@@ -109,14 +109,14 @@ const admin = {
         m.level = L; m.xp = xpForLevel(L); calcStats(m); m.hp = m.maxHp;
         return this.changed(`${m.name} on nyt tasolla ${L}`);
       }
-      case 'shiny': { const m = game.party[i]; if (!m) return; m.shiny = !m.shiny; return this.changed(`${m.name}: ${m.shiny ? 'kiiltävä' : 'tavallinen'}`); }
+      case 'shiny': { const m = game.party[i]; if (!m) return; if (!m.shiny && !hasShinyArt(m.species)) return this.msg(`${m.name}: kiiltävää kuvaa ei vielä ole`); m.shiny = !m.shiny; return this.changed(`${m.name}: ${m.shiny ? 'kiiltävä' : 'tavallinen'}`); }
       case 'lead': { const [m] = game.party.splice(i, 1); game.party.unshift(m); return this.changed(`${m.name} johtaa tiimiä`); }
       case 'remove': { if (game.party.length <= 1) return; const [m] = game.party.splice(i, 1); return this.changed(`${m.name} poistettu`); }
       case 'add': {
         if (game.party.length >= 6) return this.msg('Tiimi on täynnä (6)');
         const sp = this.el.querySelector('#admSpecies').value;
         const L = Math.max(1, Math.min(100, parseInt(this.el.querySelector('#admLevel').value, 10) || 5));
-        const m = makeMon(sp, L); m.shiny = this.el.querySelector('#admShiny').checked;
+        const m = makeMon(sp, L); m.shiny = this.el.querySelector('#admShiny').checked && hasShinyArt(sp);
         game.party.push(m);
         return this.changed(`${m.name}${m.shiny ? ' ★' : ''} LV${L} lisätty`);
       }

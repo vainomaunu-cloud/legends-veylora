@@ -8,6 +8,9 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 |---|---|---|---|---|---|---|
 | DUCKONDA | aloitusotus, 1. vaihe | `duckonda.png` + `sprites/duckonda_*.png` | FIRE SPIN, FLAMETHROWER, FLAME TORNADO | ei koskaan (vain aloitusotuksena) | – | – |
 | QUACKOBRA | 2. vaihe (DUCKONDA kehittyy tasolla 17, oppii POISON JABin) | `quackobra.png` + `sprites/quackobra_*.png` | POISON JAB, FIRE SPIN, FLAMETHROWER, FLAME TORNADO | ei koskaan (vain kehittämällä) | – | – |
+| CORIL | 1. vaihe | `coril.png` + `sprites/coril_*.png` | TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 30 % | 20 kolikkoa | helppo (0,65) |
+| CORNECHAUN | 2. vaihe (kehittyy tasolla 7, oppii CORN GUNin) | `cornechaun.png` + `sprites/cornechaun_*.png` | CORN GUN, TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 10 % | 35 kolikkoa | keskitaso (0,4) |
+| CORNELIVA | 3. vaihe (kehittyy tasolla 16) | `corneliva.png` + `sprites/corneliva_*.png` | CORN GUN, TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 5 % | 55 kolikkoa | hyvin vaikea (0,25) |
 | AMPERITE | 1. vaihe | `moi 1st evo.png` + `sprites/amperite_*.png` | ELECTROBALL, TACKLE | 15 % | 25 kolikkoa | helppo (0,7) |
 | AMPEREEM | 2. vaihe (kehittyy tasolla 8) | `moi.png` + `sprites/moi_*.png` | THUNDERBOLT, ELECTROBALL, TACKLE | 5 % | 50 kolikkoa | vaikea (0,35) |
 | ZUBUG | 1. vaihe | `zubug.png` + `sprites/zubug_*.png` | BUG BUZZ, STICKY WEB | 15 % | 25 kolikkoa | helppo (0,7) |
@@ -130,7 +133,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 2c. **MAATILA** (30 × 20 ruutua, VEYLORAN KYLÄN länsipuolella)
    - Iso punainen **navetta** (ovi keskellä, paina Z ovella), heinäpaaleja, **maissipelto** ja **lehmäaitaus**, jossa kolme lehmää kävelee rauhassa ja välillä laiduntaa pää alhaalla. Lisäksi maanviljelijän talo ja kyltti.
    - Aitaukseen pääsee alareunan portista. Kun kävelet lehmää päin tai painat Z sen vieressä, se ammuu.
-   - Maissipellon läpi voi kävellä (maissi heiluu), mutta sieltä ei hyppää otuksia.
+   - **Maissipellosta voi tulla** **CORIL** (30 %), **CORNECHAUN** (10 %) tai **CORNELIVA** (5 %) askelta kohden, tasoilla 4–12. Maissi heiluu, kun sen läpi kävelee.
    - Kartassa navetta on `NNNN`-lohko (4 × 3, katto ulottuu rivin ylemmäs), maissi `B`, heinäpaali `M` ja aita `Y`. Lehmien paikat ja aitauksen rajat ovat kartan `cows`- ja `cowPen`-kohdissa.
    - Itäreunan polku vie takaisin VEYLORAN KYLÄÄN.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
@@ -171,7 +174,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Valikko: TAISTELE / PALLO / VAIHDA / PAKENE.
    - **VAIHDA:** valitse tiimistä toinen otus taisteluun (näkyy HP). Uupunutta tai jo taistelevaa ei voi valita, ja B peruu. Vaihto vie vuoron, joten villi otus hyökkää heti uutta vastaan. Pois vaihdetun nopeusmuutokset ja tulipyörre nollautuvat. XP:n saa se, joka on taistelussa voiton hetkellä.
    - Nopeampi otus hyökkää ensin. Tasatilanteessa järjestys arvotaan.
-   - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10, PSISTIEL → PSIDUOCIPE tasolla 20 (oppii PSYCHO CUTin), EYEVIL → EYEBALDON tasolla 14 (oppii STARING EYEn), SINIRAMEN → POLTEARAMEN tasolla 16 (oppii FLAMETHROWERin), DUCKONDA → QUACKOBRA tasolla 17 (oppii POISON JABin). Kiiltävä pysyy kiiltävänä kehittyessään.
+   - Voitto antaa kokemuspisteitä (XP) ja kolikoita. Tarpeeksi XP:tä nostaa tasoa. Kehittyminen tapahtuu heti taistelun jälkeen (vilkkuva valkoinen siluetti): AMPERITE → AMPEREEM tasolla 8, ZUBUG → GOLBUG tasolla 10, PSISTIEL → PSIDUOCIPE tasolla 20 (oppii PSYCHO CUTin), EYEVIL → EYEBALDON tasolla 14 (oppii STARING EYEn), SINIRAMEN → POLTEARAMEN tasolla 16 (oppii FLAMETHROWERin), DUCKONDA → QUACKOBRA tasolla 17 (oppii POISON JABin), CORIL → CORNECHAUN tasolla 7 (oppii CORN GUNin) → CORNELIVA tasolla 16. Kiiltävä pysyy kiiltävänä kehittyessään.
    - Jos oma otus uupuu, seuraava tiimiläinen, jolla on HP:ta, lähtee taisteluun.
    - Jos koko tiimi uupuu, heräät HOITOLAN ovelta täysin voimin.
 
@@ -211,6 +214,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 | TWISTER | 70 | 100 % | 15 | Erikoishyökkäys. Pyörteinen tuulipatsas nostaa kohdetta. 20 %: kohde säpsähtää |
 | PSYCHO CUT | 70 | 100 % | 20 | Fyysinen hyökkäys. Violetti taivas ja kaksi hehkuvaa vaaleanpunaista terää viiltää kohteen. Kriittisen osuman mahdollisuus 1/8 (tavallisesti 1/16) |
 | STARING EYE | 85 | 100 % | 10 | Erikoishyökkäys. Ruutu pimenee, kohteen ylle aukeaa valtava punareunainen silmä, jonka rakopupilli tuijottaa, ja kohde vapisee. 30 %: halvaannuttaa |
+| ENERGY BALL | 90 | 100 % | 10 | Erikoishyökkäys. Vihreä luonnonenergian pallo kasvaa käyttäjän edessä, lentää kohteeseen ja räjähtää |
+| CORN GUN | 85 | 95 % | 15 | Fyysinen hyökkäys. Kultaisten maissinjyvien sarja ammutaan kohteeseen, ja se tärisee. 20 %: kohde säpsähtää |
 | REGI POWER | 120 | 90 % | 5 | Regien erikoishyökkäys. Taivas muuttuu tumman violetiksi, kulta-pinkki-turkoosit renkaat romahtavat kohteeseen ja valtava säteiden räjähdys |
 | ACID PULSE | 85 | 100 % | 10 | Erikoishyökkäys. Vihreä-violetit happopisarat lentävät kohteeseen ja happorenkaat aaltoilevat. 30 %: myrkyttää |
 | FIRE PUNCH | 75 | 100 % | 15 | Fyysinen hyökkäys. Nyrkki syttyy palamaan, syöksy ja tulipurkaus. 10 %: palovamma |
@@ -229,7 +234,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 - **Palovamma** (BRN): otus menettää jokaisen vuoron lopussa 1/16 maksimi-HP:staan, ja sen fyysiset hyökkäykset tekevät puolet vähemmän vahinkoa. Pysyy, kunnes otus parannetaan HOITOLASSA.
 - **Myrkytetty** (PSN) otus menettää jokaisen vuoron lopussa 1/8 maksimi-HP:staan. Myrkky jää taistelun jälkeen voimaan, kunnes otus parannetaan HOITOLASSA. Tila näkyy merkkinä tietolaatikon vieressä.
 - Tilasta kärsivä villi otus on helpompi napata (×1,5).
-- **Tasot:** XP-raja on taso³. Villien otusten taso riippuu alueesta, ei omasta tiimistä: PUSKAMETSÄ 2–9, HYUJAL METSÄ 6–14, SAARIMERI (ranta, palmut ja kalastus) 9–18, SNOW MOUNTAIN 18–26 ja VEYLORAN KYLÄ 3–10 (`WILD_LEVELS` tiedostossa `js/main.js`). Pelaaja aloittaa DUCKONDAlla tasolta 5.
+- **Tasot:** XP-raja on taso³. Villien otusten taso riippuu alueesta, ei omasta tiimistä: PUSKAMETSÄ 2–9, HYUJAL METSÄ 6–14, SAARIMERI (ranta, palmut ja kalastus) 9–18, SNOW MOUNTAIN 18–26, VEYLORAN KYLÄ 3–10 ja MAATILA 4–12 (`WILD_LEVELS` tiedostossa `js/main.js`). Pelaaja aloittaa DUCKONDAlla tasolta 5.
 - **Kokemuspisteet** (vain taistelussa olevalle) = lajin XP-arvo · vihollisen taso / 7 (AMPERITE 50, AMPEREEM 120).
 - **Pakeneminen** onnistuu ensin 75 %:n todennäköisyydellä, ja jokainen epäonnistunut yritys nostaa mahdollisuutta.
 - Jos PP:t loppuvat kesken taistelun, otus käyttää automaattisesti RIMPUILU-hyökkäystä.
