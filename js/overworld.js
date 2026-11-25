@@ -64,7 +64,7 @@ const MAPS = {
       'TT...===================.BBBTT',
       'TTBBBBBB...=....BBBBB...BBBBTT',
       'TTBBBBB....=S...............TT',
-      'TT.........==================X',
+      'X============================X',
       'TTBBB..,...=.........,..BBBBTT',
       'TTBBBB.....=...~~~~.*....BBBTT',
       'TT..KKK....=..~~~~~...KKK...TT',
@@ -83,7 +83,10 @@ const MAPS = {
       { species: 'hummirding', chance: 0.05 },
       { species: 'poltearamen', chance: 0.05 },
     ],
-    warps: { '29,10': { to: 'forest', x: 1, y: 12, dir: 'right' } },
+    warps: {
+      '29,10': { to: 'forest', x: 1, y: 12, dir: 'right' },
+      '0,10': { to: 'farm', x: 28, y: 10, dir: 'left' },
+    },
     // what is said at each house door (x,y of the O tile)
     houseTexts: {
       '5,5': 'Kylän vanhin avaa oven: "Tervetuloa VEYLORAN KYLÄÄN! Puskametsän puskissa piileskelee otuksia, joten pidä palloja aina mukana."',
@@ -92,7 +95,46 @@ const MAPS = {
       '5,15': 'Kalastaja vilkuttaa ovelta: "Tässä lammessa ei asu otuksia. SAARIMERELLÄ nappaa paljon paremmin!"',
       '23,15': 'Puutarhuri huikkaa: "Kylän puskiin on muuttanut HUMMIRDeja, SQUISHROOMeja ja jopa ramen-otuksia! Varo kun kuljet niiden läpi."',
     },
-    sign: 'VEYLORAN KYLÄ\nPieni kylä PUSKAMETSÄN länsipuolella. Kylän puskissa piileskelee HUMMIRDeja, SQUISHROOMeja, SINIRAMENeja ja harvinaisia HUMMIRDINGeja ja POLTEARAMENeja. Itään: PUSKAMETSÄ.',
+    sign: 'VEYLORAN KYLÄ\nPieni kylä PUSKAMETSÄN länsipuolella. Kylän puskissa piileskelee HUMMIRDeja, SQUISHROOMeja, SINIRAMENeja ja harvinaisia HUMMIRDINGeja ja POLTEARAMENeja. Itään: PUSKAMETSÄ. Länteen: MAATILA.',
+  },
+  // a farm west of VEYLORAN KYLÄ: a red barn, a corn field, a fenced cow pen with wandering cows and the farmer's house
+  // N barn (4x3, sprites/barn.png, roof reaches one row up)  B corn (walk through, no creatures)  M hay bale
+  // Y fence  K/O farmer's house and its door
+  farm: {
+    name: 'MAATILA',
+    tiles: 'tilesFarm', rustle: 'cornRustle', shade: '#2a6a30', music: 'overworld',
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TT......,......YYYYYYYYYYYY.TT',
+      'TT.*.......*...Y..........Y.TT',
+      'TT..NNNN.......Y..........Y*TT',
+      'TT..NNNN.M.....Y..........Y.TT',
+      'TTM.NNNN.MM....Y..........Y.TT',
+      'TT...==......*.Y..........Y.TT',
+      'TT*..=......,..YYYYY.YYYYYY.TT',
+      'TT...=........S.....=.......TT',
+      'TT===========================X',
+      'TT...............=.......,..TT',
+      'TT.BBBBBBBBBB.*..=.*.......*TT',
+      'TT.BBBBBBBBBB....=...KKK....TT',
+      'TT.BBBBBBBBBB..*.=...KKK....TT',
+      'TT.BBBBBBBBBB....=...KOK....TT',
+      'TT.BBBBBBBBBB..,.=....=...*.TT',
+      'TT...............======.....TT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+    ],
+    encounters: [],   // the corn field is just corn: nothing jumps out
+    warps: { '29,10': { to: 'town', x: 1, y: 10, dir: 'right' } },
+    // cows wander inside the pen (inner area of the fence)
+    cows: [{ x: 18, y: 4 }, { x: 23, y: 5 }, { x: 19, y: 7 }],
+    cowPen: { x0: 16, y0: 3, x1: 25, y1: 7 },
+    barnText: 'Navetan iso ovi narisee... Sisällä tuoksuu heinä, ja parvella on pinottuja heinäpaaleja. Lehmät viettävät päivät ulkona aitauksessa.',
+    houseTexts: {
+      '22,15': 'Maanviljelijä tervehtii ovelta: "Tervetuloa MAATILALLE! Maissi kasvaa hyvin tänä vuonna, ja lehmät antavat parasta maitoa koko VEYLORASSA!"',
+    },
+    sign: 'MAATILA\nNavetta, maissipelto ja lehmäaitaus. Aitaukseen pääsee portista. Itään: VEYLORAN KYLÄ.',
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
@@ -266,6 +308,11 @@ for (const [id, m] of Object.entries(MAPS)) {
     const isHouse = (cx, cy) => cy >= 0 && cx >= 0 && 'KO'.includes(m.rows[cy][cx]);
     if (m.rows[y][x] === 'K' && !isHouse(x - 1, y) && !isHouse(x, y - 1)) m.houses.push({ x, y, style: m.houses.length % 5 });
   }
+  // barns: the top-left N of each 4x3 barn block
+  m.barns = [];
+  for (let y = 0; y < m.h; y++) for (let x = 0; x < m.w; x++) {
+    if (m.rows[y][x] === 'N' && m.rows[y][x - 1] !== 'N' && (y === 0 || m.rows[y - 1][x] !== 'N')) m.barns.push({ x, y });
+  }
   // statues: each "AA" pair is one statue (species from m.statues in reading order), "EE" an empty pedestal
   m.statueList = [];
   let n = 0;
@@ -282,7 +329,7 @@ for (const [id, m] of Object.entries(MAPS)) {
   }
 }
 
-const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15 };
+const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15, 'N': 0 };
 const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) draw T as bricks
 const WATER = '~';
 const GREAT_NAME = 'GREAT PALLO';
@@ -298,7 +345,7 @@ const BALL_TYPES = [
 const ballType = key => BALL_TYPES.find(b => b.key === key);
 const totalBalls = () => BALL_TYPES.reduce((n, b) => n + game[b.key], 0);
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
-const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E', 'K', 'O', 'Y']);
+const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E', 'K', 'O', 'Y', 'N']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
 const WALK_SPEED = 1.5;        // pixels per frame (16 px tile = about 11 frames)
 const TREE_LIFT = 6;           // trees are drawn this many px up so the rows overlap
@@ -317,6 +364,7 @@ const MINI_COLORS_MAP = {
   sea: { '=': '#f2db9a', '*': '#f2db9a', '.': '#8ed45a', ',': '#8ed45a', 'T': '#3fa34a' },
   snow: { '.': '#eef4fb', ',': '#eef4fb', '*': '#ffffff', '=': '#b4c4d8', 'X': '#b4c4d8', 'T': '#2f5a3a', 'B': '#5f8a6a' },
   town: { 'K': '#d8483a', 'O': '#8a5a2c', 'Y': '#c68a4a', '~': '#3e9be0', 'B': '#3f9a44' },
+  farm: { 'N': '#c8382e', 'B': '#d8c040', 'M': '#e8c860', 'Y': '#c68a4a', 'K': '#d8483a', 'O': '#8a5a2c' },
   temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78' },
 };
 
@@ -450,6 +498,37 @@ const overworld = {
     Object.assign(this.player, { tx: x, ty: y, dir, moving: false, offset: 0, justWalked: false });
     this.banner = { text: this.map.name, t: 0 };
     this.rollPalmBirds();
+    // cows in the farm pen: tile position, pixel position, where they are walking to
+    this.cows = (this.map.cows || []).map(c => ({ x: c.x, y: c.y, px: c.x * TILE, py: c.y * TILE, tx: c.x, ty: c.y, dir: Math.random() < 0.5 ? 'left' : 'right', wait: rnd(30, 150), eat: 0 }));
+  },
+
+  cowAt(x, y) { return (this.cows || []).find(c => (c.x === x && c.y === y) || (c.tx === x && c.ty === y)); },
+
+  // cows amble around inside their pen now and then, and sometimes put their heads down to eat
+  updateCows() {
+    const pen = this.map.cowPen, p = this.player;
+    for (const c of this.cows || []) {
+      if (c.px !== c.tx * TILE || c.py !== c.ty * TILE) {          // walking one tile, slowly
+        c.px += Math.sign(c.tx * TILE - c.px) * 0.5; c.py += Math.sign(c.ty * TILE - c.py) * 0.5;
+        if (c.px === c.tx * TILE && c.py === c.ty * TILE) { c.x = c.tx; c.y = c.ty; }
+        continue;
+      }
+      if (c.eat > 0) c.eat--;
+      if (--c.wait > 0) continue;
+      c.wait = rnd(60, 220);
+      if (Math.random() < 0.35) { c.eat = rnd(60, 140); continue; }   // graze for a while
+      const dir = ['up', 'down', 'left', 'right'][rnd(0, 3)];
+      const nx = c.x + DIRS[dir][0], ny = c.y + DIRS[dir][1];
+      if (dir === 'left' || dir === 'right') c.dir = dir;
+      const inPen = pen && nx >= pen.x0 && nx <= pen.x1 && ny >= pen.y0 && ny <= pen.y1;
+      const blocked = !inPen || SOLID.has(this.tileAt(nx, ny)) || this.cowAt(nx, ny) || (p.tx === nx && p.ty === ny)
+        || (p.moving && p.tx + DIRS[p.dir][0] === nx && p.ty + DIRS[p.dir][1] === ny);
+      if (!blocked) { c.tx = nx; c.ty = ny; }
+    }
+  },
+
+  *cowTalk() {
+    yield* textBox.say(['Muuuu!', 'Lehmä märehtii tyytyväisenä.', 'Muu? Lehmä katsoo sinua suurilla silmillään.', 'Lehmä heilauttaa häntäänsä. Muuuu!'][rnd(0, 3)]);
   },
 
   // which palms have a HUMMIRD sitting on top (rolled again every time you come to the map)
@@ -482,6 +561,7 @@ const overworld = {
     for (const r of this.rustles) r.t++;
     this.rustles = this.rustles.filter(r => r.t < 18);
     if (this.banner && ++this.banner.t > 170) this.banner = null;
+    this.updateCows();
     if (this.runner.busy) { this.runner.update(); return; }
 
     const p = this.player;
@@ -507,6 +587,7 @@ const overworld = {
     const nx = p.tx + DIRS[d][0], ny = p.ty + DIRS[d][1];
     const npc = this.npcAt(nx, ny);
     if (npc) { this.runner.run(npc.talk()); return; }               // walked into someone: they talk
+    if (this.cowAt(nx, ny)) { this.runner.run(this.cowTalk()); return; }   // bumped into a cow
     const regi = this.regiAt(nx, ny);
     if (regi) { this.runner.run(this.regiTouch(regi)); return; }    // touched a regi on its pedestal
     if (!SOLID.has(this.tileAt(nx, ny))) { p.moving = true; p.offset = 0; p.steps++; }
@@ -563,6 +644,8 @@ const overworld = {
     const tile = this.tileAt(fx, fy);
     if (tile === 'S') this.say((this.map.signs && this.map.signs[`${fx},${fy}`]) || this.map.sign);
     if (tile === 'O') this.say((this.map.houseTexts && this.map.houseTexts[`${fx},${fy}`]) || 'Ovi on lukossa.');
+    if (tile === 'N') this.say(this.map.barnText || 'Navetan ovi on kiinni.');
+    if (this.cowAt(fx, fy)) this.runner.run(this.cowTalk());
     if (tile === 'D') this.runner.run(this.centerVisit());
     if (tile === 'R') this.runner.run(this.kioskVisit());
   },
@@ -741,6 +824,14 @@ const overworld = {
       if (m.center && ty === m.center.y + 2) ctx.drawImage(IMG.center, m.center.x * TILE - camX, m.center.y * TILE - camY);
       if (m.kiosk && ty === m.kiosk.y + 1) ctx.drawImage(IMG.kiosk, m.kiosk.x * TILE - camX, m.kiosk.y * TILE - camY);
       for (const h of m.houses) if (ty === h.y + 2) drawFrame(IMG.houses, h.style, 48, 48, h.x * TILE - camX, h.y * TILE - camY);
+      for (const b of m.barns) if (ty === b.y + 2) ctx.drawImage(IMG.barn, b.x * TILE - camX, (b.y - 1) * TILE - camY);   // roof reaches one row up
+      for (const c of this.cows || []) {
+        if (Math.floor((c.py + 8) / TILE) !== ty) continue;
+        const walking = c.px !== c.tx * TILE || c.py !== c.ty * TILE;
+        const frame = (c.dir === 'left' ? 2 : 0) + (c.eat > 0 && !walking ? 1 : 0);
+        const bob = walking ? Math.floor(this.t / 8) % 2 : 0;
+        drawFrame(IMG.cow, frame, 16, 16, Math.round(c.px) - camX, Math.round(c.py) - camY - 2 - bob);
+      }
       for (const s of m.statueList) if (s.y === ty) this.drawStatue(s, s.x * TILE - camX, ty * TILE - camY);
       for (const id of m.npcs || []) {
         const n = NPCS[id], at = n.pos();

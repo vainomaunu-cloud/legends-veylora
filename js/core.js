@@ -76,6 +76,10 @@ const SPRITES = {
   bushRustleHyujal: 'sprites/bush_rustle_hyujal.png',
   tilesSnow: 'sprites/tiles_snow.png',            // SNOW MOUNTAIN tiles (same order as tiles.png)
   bushRustleSnow: 'sprites/bush_rustle_snow.png',
+  tilesFarm: 'sprites/tiles_farm.png',            // MAATILA tiles (6 corn, 10 corn front, 7-8 hay, 15 fence)
+  cornRustle: 'sprites/corn_rustle.png',          // 3 frames: corn shaking when walked through
+  barn: 'sprites/barn.png',                       // 64x64 red barn (4x3 tiles + roof)
+  cow: 'sprites/cow.png',                         // 16x16 cow: right idle, right eating, left idle, left eating
   tilesTown: 'sprites/tiles_town.png',            // VEYLORAN KYLÄ tiles (tiles.png + water 13-14 + fence 15)
   houses: 'sprites/houses.png',                  // 5 houses 48x48 (red, blue, green, orange, purple roof)
   tilesTemple: 'sprites/tiles_temple.png',        // TEMPLE tiles (floor, carpet, runes, braziers, tablet, walls)

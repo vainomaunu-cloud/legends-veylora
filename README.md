@@ -126,7 +126,13 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **Kylän puskista voi tulla** **HUMMIRD** (15 %), **SQUISHROOM** (15 %), **SINIRAMEN** (15 %), **HUMMIRDING** (5 %) tai **POLTEARAMEN** (5 %) askelta kohden, tasoilla 3–10. Lampeen ei pääse, eikä siinä voi kalastaa otuksia.
    - Mene talon oven eteen ja paina Z: kylän vanhin, lapsi, kalastaja ja puutarhuri puhuvat, sininen talo on lukossa (tekstit kartan `houseTexts`-kohdassa).
    - Kartassa talo on `KKK`-lohko (3 × 3, ovi `O` alarivin keskellä), puska `B` ja lampi `~`. Talojen kattovärit menevät lukujärjestyksessä.
-   - Itäreunan polku vie takaisin PUSKAMETSÄÄN.
+   - Itäreunan polku vie takaisin PUSKAMETSÄÄN ja länsireunan polku **MAATILALLE**.
+2c. **MAATILA** (30 × 20 ruutua, VEYLORAN KYLÄN länsipuolella)
+   - Iso punainen **navetta** (ovi keskellä, paina Z ovella), heinäpaaleja, **maissipelto** ja **lehmäaitaus**, jossa kolme lehmää kävelee rauhassa ja välillä laiduntaa pää alhaalla. Lisäksi maanviljelijän talo ja kyltti.
+   - Aitaukseen pääsee alareunan portista. Kun kävelet lehmää päin tai painat Z sen vieressä, se ammuu.
+   - Maissipellon läpi voi kävellä (maissi heiluu), mutta sieltä ei hyppää otuksia.
+   - Kartassa navetta on `NNNN`-lohko (4 × 3, katto ulottuu rivin ylemmäs), maissi `B`, heinäpaali `M` ja aita `Y`. Lehmien paikat ja aitauksen rajat ovat kartan `cows`- ja `cowPen`-kohdissa.
+   - Itäreunan polku vie takaisin VEYLORAN KYLÄÄN.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
    - Hohtava metsä: liilat puut, ruoho ja puskat, hohtavat siniset ja liilat sienet (pienet sienet ja isot, kiinteät sienet sykkivät) sekä leijuvat valopisteet.
    - Liiloista puskista voi tulla **EYEVIL** (30 %), **EYEBALDON** (10 %), **SQUISHROOM** (20 %), **SHROOCID** (15 %), **PSISTIEL** (10 %) tai **PSIDUOCIPE** (5 %) askelta kohden.
@@ -273,6 +279,10 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/bush_rustle.png` | 48×16 | Puskan heilunta, 3 kuvaa |
 | `sprites/tiles_hyujal.png` | 208×16 | HYUJAL METSÄN ruudut samassa järjestyksessä kuin `tiles.png`, paitsi: 3–4 pienet hohtavat sienet (animaatio), 7–8 iso hohtava sieni (animaatio, ei pääse läpi) |
 | `sprites/bush_rustle_hyujal.png` | 48×16 | Liilan puskan heilunta, 3 kuvaa |
+| `sprites/tiles_farm.png` | 256×16 | MAATILAN ruudut: samat kuin `tiles.png`, mutta 6 = maissi, 10 = maissin etuosa (pelaajan edessä), 7–8 = heinäpaali ja 15 = puuaita |
+| `sprites/corn_rustle.png` | 48×16 | Maissi heiluu, kun sen läpi kävelee (3 ruutua) |
+| `sprites/barn.png` | 64×64 | Punainen navetta: harmaa mansardikatto, heinäparven luukku, sivuikkunat ja iso X-tuettu pariovi |
+| `sprites/cow.png` | 64×16 | Lehmä 16×16: oikealle seisoo, oikealle syö, vasemmalle seisoo, vasemmalle syö |
 | `sprites/tiles_town.png` | 256×16 | VEYLORAN KYLÄN ruudut: samat kuin `tiles.png` (0–12), lisäksi vesi (13–14) ja puuaita (15) |
 | `sprites/houses.png` | 240×48 | Viisi 48×48 taloa: punainen, sininen, vihreä, oranssi ja violetti katto, savupiippu, ikkunat kukkalaatikoineen ja ovi alarivin keskellä |
 | `sprites/tiles_temple.png` | 208×16 | REGI TEMPPELIN ruudut: lattia (0–1, 5–6, 10), matto (2), hehkuva riimu (3–4), kivimalja pinkillä liekillä (7–8), kivitaulu (9), tiiliseinän etupuoli (11) ja seinän yläosa (12) |
