@@ -44,7 +44,7 @@ const dexScreen = {
   whereFound(id) {
     const out = [];
     for (const m of Object.values(MAPS)) {
-      for (const e of m.encounters || []) if (e.species === id) out.push(`${m.name}: puskat ${Math.round(e.chance * 100)} %`);
+      for (const e of m.encounters || []) if (e.species === id) out.push(`${m.name}: ${m.encounterTiles ? 'kivellä' : 'puskat'} ${String(+(e.chance * 100).toFixed(1)).replace('.', ',')} %`);
       for (const e of m.fishing || []) if (e.species === id) out.push(`${m.name}: kalastus ${Math.round(e.chance * 100)} %`);
       if (m.palmBirds && m.palmBirds.species === id) out.push(`${m.name}: palmujen päällä`);
       if ((m.regis || []).includes(id)) out.push(`${m.name}: jalustalla (LV50)`);

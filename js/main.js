@@ -30,6 +30,7 @@ const WILD_LEVELS = {
   snow: [18, 26],     // SNOW MOUNTAIN
   town: [3, 10],      // VEYLORAN KYLÄ
   farm: [4, 12],      // MAATILA (corn field)
+  space: [30, 40],    // AVARUUS (ULTRA PEDOT)
 };
 
 function wildLevel() {

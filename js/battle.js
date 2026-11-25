@@ -195,6 +195,42 @@ const SPECIES = {
     xpYield: 100, coins: 40, catchRate: 0.4, feetY: 0,
     sprites: { front: 'scarghost', blink: 'scarghostBlink', hurt: 'scarghostHurt', attack: 'scarghostAttack', back: 'scarghostBack', backAttack: 'scarghostBackAttack' },
   },
+  // ULTRA PEDOT: strange beasts from beyond the WORMHOLE, met while walking on the rock in AVARUUS (no shiny art yet)
+  virtuleast: {
+    name: 'VIRTULEAST', ultra: true,
+    base: { hp: 75, atk: 85, def: 70, spa: 105, spd: 75, spe: 85 },
+    moves: ['poisonjab', 'virtualshot', 'sludgewave', 'electropower'],
+    xpYield: 180, coins: 50, catchRate: 0.2, feetY: 0,
+    sprites: { front: 'virtuleast', blink: 'virtuleastBlink', hurt: 'virtuleastHurt', attack: 'virtuleastAttack', back: 'virtuleastBack', backAttack: 'virtuleastBackAttack' },
+  },
+  droison: {
+    name: 'DROISON', ultra: true,
+    base: { hp: 80, atk: 100, def: 75, spa: 90, spd: 70, spe: 80 },
+    moves: ['poisonjab', 'dragonbreath', 'dragonclaw', 'poisonpowder'],
+    xpYield: 180, coins: 50, catchRate: 0.2, feetY: 0,
+    sprites: { front: 'droison', blink: 'droisonBlink', hurt: 'droisonHurt', attack: 'droisonAttack', back: 'droisonBack', backAttack: 'droisonBackAttack' },
+  },
+  golbuzz: {
+    name: 'GOLBUZZ', ultra: true,
+    base: { hp: 70, atk: 110, def: 70, spa: 70, spd: 65, spe: 95 },
+    moves: ['bugbuzz', 'swarm', 'closecombat', 'lowkick'],
+    xpYield: 170, coins: 40, catchRate: 0.22, feetY: 0,
+    sprites: { front: 'golbuzz', blink: 'golbuzzBlink', hurt: 'golbuzzHurt', attack: 'golbuzzAttack', back: 'golbuzzBack', backAttack: 'golbuzzBackAttack' },
+  },
+  algishiod: {
+    name: 'ALGISHIOD', ultra: true,
+    base: { hp: 75, atk: 95, def: 70, spa: 95, spd: 70, spe: 80 },
+    moves: ['sharpspear', 'electroball', 'sleeppowder', 'flamethrower'],
+    xpYield: 170, coins: 40, catchRate: 0.22, feetY: 0,
+    sprites: { front: 'algishiod', blink: 'algishiodBlink', hurt: 'algishiodHurt', attack: 'algishiodAttack', back: 'algishiodBack', backAttack: 'algishiodBackAttack' },
+  },
+  amperitie: {
+    name: 'AMPERITIE', ultra: true,
+    base: { hp: 65, atk: 80, def: 65, spa: 110, spd: 70, spe: 105 },
+    moves: ['thunder', 'selfdestruct', 'electroball', 'sparkheal'],
+    xpYield: 170, coins: 40, catchRate: 0.22, feetY: 0,
+    sprites: { front: 'amperitie', blink: 'amperitieBlink', hurt: 'amperitieHurt', attack: 'amperitieAttack', back: 'amperitieBack', backAttack: 'amperitieBackAttack' },
+  },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
     name: 'HUMMIRD',
@@ -303,6 +339,19 @@ const MOVES = {
   babydolleyes: { id: 'babydolleyes', name: 'BABYDOLL EYES', power: 0, powerText: '-', acc: 100, pp: 30, special: true, lowerAtk: 1, anim: 'hearts' },
   charm: { id: 'charm', name: 'CHARM', power: 0, powerText: '-', acc: 100, pp: 20, special: true, lowerAtk: 2, anim: 'hearts' },
   sleeppowder: { id: 'sleeppowder', name: 'SLEEP POWDER', power: 0, powerText: '-', acc: 75, pp: 15, special: true, sleep: true, anim: 'powder' },
+  // ULTRA PEDOT (AVARUUS)
+  virtualshot: { id: 'virtualshot', name: 'VIRTUAL SHOT', power: 80, acc: 100, pp: 15, special: true, highCrit: true, anim: 'virtualshot' },
+  electropower: { id: 'electropower', name: 'ELECTRO POWER', power: 100, acc: 90, pp: 10, special: true, paralyze: 0.2, anim: 'electropower' },
+  dragonbreath: { id: 'dragonbreath', name: 'DRAGON BREATH', power: 60, acc: 100, pp: 20, special: true, paralyze: 0.3, anim: 'dragonbreath' },
+  dragonclaw: { id: 'dragonclaw', name: 'DRAGON CLAW', power: 80, acc: 100, pp: 15, special: false, anim: 'dragonclaw' },
+  poisonpowder: { id: 'poisonpowder', name: 'POISON POWDER', power: 0, powerText: '-', acc: 75, pp: 35, special: true, poisonAll: true, anim: 'powder' },
+  swarm: { id: 'swarm', name: 'SWARM', power: 75, acc: 95, pp: 15, special: false, anim: 'swarm' },
+  closecombat: { id: 'closecombat', name: 'CLOSE COMBAT', power: 120, acc: 100, pp: 5, special: false, anim: 'closecombat' },
+  lowkick: { id: 'lowkick', name: 'LOW KICK', power: 65, acc: 100, pp: 20, special: false, flinch: 0.1, anim: 'lowkick' },
+  sharpspear: { id: 'sharpspear', name: 'SHARP SPEAR', power: 85, acc: 95, pp: 15, special: false, highCrit: true, anim: 'spear' },
+  thunder: { id: 'thunder', name: 'THUNDER', power: 110, acc: 70, pp: 10, special: true, paralyze: 0.3, anim: 'thunder' },
+  selfdestruct: { id: 'selfdestruct', name: 'SELF DESTRUCTION', power: 200, acc: 100, pp: 5, special: false, selfKO: true, anim: 'selfdestruct' },
+  sparkheal: { id: 'sparkheal', name: 'SPARK HEAL', power: 0, powerText: '-', acc: 100, pp: 10, special: true, heal: 0.5, anim: 'sparkheal' },
 };
 // used automatically when every move is out of PP
 const STRUGGLE = { name: 'RIMPUILU', power: 35, acc: 100, pp: 0, left: 0, special: false, anim: 'tackle', struggle: true };
@@ -359,8 +408,8 @@ const SHINY_CHANCE_CHARM = 1 / 125;  // with the SHINY CHARM
 const shinyChance = () => (game.shinyCharm ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
 // every species that can be caught (the starter can only be chosen, not caught)
 const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckonda' && !SPECIES[id].evolveOnly);
-// the SHINY CHARM needs every catchable species except the regis (they can never be shiny anyway)
-const charmSpecies = () => catchableSpecies().filter(id => !SPECIES[id].legendary);
+// the SHINY CHARM needs every catchable species except the regis and ULTRA PEDOT (no shiny forms)
+const charmSpecies = () => catchableSpecies().filter(id => !SPECIES[id].legendary && !SPECIES[id].ultra);
 const FIRE = ['#fff06a', '#ffb43d', '#ff7a2a', '#dd3d3d'];
 // shiny creatures use the 'shiny_' version of every sprite
 const spriteKey = (mon, key) => (mon.shiny && IMG['shiny_' + key] ? 'shiny_' + key : key);
@@ -377,6 +426,7 @@ const BATTLE_BG = {
   snow: { sky: '#e8f0fa', far: '#c8d8ea', near: '#a8c0d8', ground: '#f4f8fc', speck: '#d4e0ee', platDark: '#b8c8dc', plat: '#dfeaf5' },
   sea: { sky: '#d6efff', far: '#a6d6f2', near: '#86c4ec', ground: '#62b2e8', speck: '#8ccaf2', platDark: '#cbaa5e', plat: '#f2db9a' },
   hyujal: { sky: '#d8c6f2', far: '#b08ee0', near: '#9470d0', ground: '#b39ae2', speck: '#9f82d6', platDark: '#7a52b8', plat: '#9a78da', glow: true },
+  space: { sky: '#100c24', far: '#2a2048', near: '#3a3060', ground: '#4a4460', speck: '#5e5878', platDark: '#2a2440', plat: '#7a7498', glow: true },
 };
 const FOE_POS = { x: 150, y: 4 };
 const ME_POS = { x: 28, y: 48 };
@@ -516,7 +566,7 @@ const battle = {
     } else if (this.kind === 'regi') {
       yield* textBox.say(`${foe.name} heräsi kivijalustaltaan!`);
     } else {
-      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
+      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : this.from === 'space' ? `ULTRA PETO ${foe.name} ilmestyi tähtien keskeltä!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
     }
     if (foe.shiny) yield* textBox.say(`Vau! Se on KIILTÄVÄ ${foe.name}!`);
     yield* tween(18, k => { this.trainer.x = Math.round(36 - 110 * k); });
@@ -843,8 +893,19 @@ const battle = {
       textBox.hide();
       return;
     }
-    if (move.heal) {   // MIND HEAL: the user gets back half of its max HP
-      yield* this.animMindHeal(av);
+    if (move.poisonAll) {   // POISON POWDER: no damage, poisons the target
+      yield* this.animPowder(av, dv, ['#e39bff', '#8a2fb8']);
+      if (def.status) yield* textBox.say('Mutta se ei tehonnut!');
+      else {
+        def.status = 'psn';
+        yield* this.poisonFx(dv);
+        yield* textBox.say(`${target} myrkyttyi!`);
+      }
+      textBox.hide();
+      return;
+    }
+    if (move.heal) {   // MIND HEAL / SPARK HEAL: the user gets back half of its max HP
+      yield* this.animMindHeal(av, move.anim === 'sparkheal' ? ['#fff06a', '#ffd23a'] : undefined);
       if (att.hp >= att.maxHp) yield* textBox.say(`${who}n HP on jo täynnä!`);
       else {
         att.hp = Math.min(att.maxHp, att.hp + Math.ceil(att.maxHp * move.heal));
@@ -906,6 +967,15 @@ const battle = {
     else if (move.anim === 'blizzard') yield* this.animBlizzard(av, dv);
     else if (move.anim === 'twister') yield* this.animTwister(av, dv);
     else if (move.anim === 'icefang') yield* this.animCrunch(av, dv, mine ? 1 : -1, true);
+    else if (move.anim === 'virtualshot') yield* this.animVirtualShot(av, dv);
+    else if (move.anim === 'electropower') yield* this.animElectroPower(av, dv);
+    else if (move.anim === 'dragonbreath') yield* this.animDragonBreath(av, dv);
+    else if (move.anim === 'dragonclaw') yield* this.animShadowClaw(av, dv, ['#3a2a8e', '#7ab0ff'], '20,20,80');
+    else if (move.anim === 'swarm') yield* this.animSwarm(av, dv);
+    else if (move.anim === 'closecombat') yield* this.animCloseCombat(av, dv, mine ? 1 : -1);
+    else if (move.anim === 'lowkick') { yield* this.animTackle(av, dv, mine ? 1 : -1); this.addFx('hit', dv.x + 32, dv.y + 52, [0, 0, 1, 1]); }
+    else if (move.anim === 'spear') yield* this.animSpear(av, dv);
+    else if (move.anim === 'selfdestruct') yield* this.animSelfDestruct(av, dv);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
     def.hp = Math.max(0, def.hp - dmg);
@@ -943,6 +1013,11 @@ const battle = {
       att.hp = Math.min(att.maxHp, att.hp + Math.max(1, Math.floor(dmg * move.drain)));
       yield* this.drainHp(av, att);
       yield* textBox.say(`${who} imi voimaa kohteesta!`);
+    }
+    if (move.selfKO) {   // SELF DESTRUCTION: the user faints too
+      att.hp = 0;
+      yield* this.drainHp(av, att);
+      yield* textBox.say(`${who} räjähti ja uupui!`);
     }
     textBox.hide();
   },
@@ -1155,9 +1230,9 @@ const battle = {
   },
 
   // SHADOW CLAW: the sky darkens and three shadowy claw marks rip across the target
-  *animShadowClaw(av, dv) {
+  *animShadowClaw(av, dv, cols = ['#2a0a3a', '#9a4ad0'], tint = '30,0,50') {
     av.pose = 'attack';
-    this.tintRGB = '30,0,50';
+    this.tintRGB = tint;
     yield* tween(6, k => { this.tint = 0.4 * k; });
     const cx = dv.x + 32, cy = dv.y + 34;
     for (let i = 0; i < 22; i++) {
@@ -1168,7 +1243,7 @@ const battle = {
         const x0 = cx - 16 + c * 10, y0 = cy - 20;
         for (let t = 0; t <= len * 30; t += 1.5) {
           const x = x0 + t * 0.55, y = y0 + t;
-          this.parts.push({ x, y, c: t > len * 30 - 3 ? '#ffffff' : '#2a0a3a', s: 3 }, { x: x + 1, y, c: '#9a4ad0', s: 1 });
+          this.parts.push({ x, y, c: t > len * 30 - 3 ? '#ffffff' : cols[0], s: 3 }, { x: x + 1, y, c: cols[1], s: 1 });
         }
       }
       if (i === 8 || i === 14) { this.shake = 6; this.addFx('hit', cx + rnd(-6, 6), cy + rnd(-6, 6), [0, 0, 1, 1]); }
@@ -1379,7 +1454,7 @@ const battle = {
   },
 
   // MIND HEAL: pink light rises around the user
-  *animMindHeal(av) {
+  *animMindHeal(av, cols = ['#ffd6ff', '#ff9cf2']) {
     av.pose = 'attack';
     const cx = av.x + 32, base = av.y + 58;
     for (let i = 0; i < 40; i++) {
@@ -1387,7 +1462,7 @@ const battle = {
       for (let n = 0; n < 10; n++) {
         const k = ((i * 2 + n * 9) % 40) / 40;
         const x = cx + Math.sin(n * 1.7) * 22, y = base - k * 52;
-        this.parts.push({ x, y, c: n % 2 ? '#ffd6ff' : '#ff9cf2', s: 2 });
+        this.parts.push({ x, y, c: n % 2 ? cols[0] : cols[1], s: 2 });
         if (n % 3 === 0) { this.parts.push({ x: x - 2, y, c: '#ffffff', s: 1 }, { x: x + 2, y, c: '#ffffff', s: 1 }, { x, y: y - 2, c: '#ffffff', s: 1 }, { x, y: y + 2, c: '#ffffff', s: 1 }); }
       }
       yield;
@@ -1555,14 +1630,14 @@ const battle = {
   },
 
   // SLEEP POWDER: pale powder drifts down onto the target
-  *animPowder(av, dv) {
+  *animPowder(av, dv, cols = ['#cdeedd', '#a8c8ff']) {
     av.pose = 'attack';
     const cx = dv.x + 32, top = dv.y - 6;
     for (let i = 0; i < 46; i++) {
       this.parts = [];
       for (let n = 0; n < 16; n++) {
         const k = ((i * 1.5 + n * 9) % 60) / 60;
-        this.parts.push({ x: cx - 24 + n * 3 + Math.sin(i / 6 + n) * 4, y: top + k * 56, c: n % 3 ? '#cdeedd' : '#a8c8ff', s: 2 });
+        this.parts.push({ x: cx - 24 + n * 3 + Math.sin(i / 6 + n) * 4, y: top + k * 56, c: n % 3 ? cols[0] : cols[1], s: 2 });
       }
       yield;
     }
@@ -1643,6 +1718,115 @@ const battle = {
     av.pose = 'idle';
     yield* this.animParticles(dv, av, { count: 7, gap: 3, dur: 22, swirl: 6, colors: ['#8cff8c', '#d4ffd4'], size: 3 });
   },
+
+  // ----- ULTRA PETO moves -----
+  // VIRTUAL SHOT: a stream of glitchy green / cyan pixels, then the target flickers
+  *animVirtualShot(av, dv) {
+    av.pose = 'attack';
+    yield* this.animParticles(av, dv, { count: 14, gap: 1, dur: 14, colors: ['#2af08a', '#ffffff', '#1ab8ff', '#0a6a3a'], size: 3 });
+    av.pose = 'idle';
+    this.flash = 2;
+    for (let i = 0; i < 16; i++) {   // pixel glitch squares around the target
+      this.parts = [];
+      for (let n = 0; n < 10; n++) this.parts.push({ x: dv.x + 32 + rnd(-20, 20), y: dv.y + 34 + rnd(-20, 20), c: ['#2af08a', '#1ab8ff', '#ffffff'][n % 3], s: rnd(2, 4) });
+      dv.dx = i % 4 < 2 ? 2 : -2;
+      if (i % 5 === 0) this.shake = 3;
+      yield;
+    }
+    dv.dx = 0;
+    this.parts = null;
+  },
+
+  // ELECTRO POWER: the user charges up in sparks, then a big crackling yellow orb hits
+  *animElectroPower(av, dv) {
+    av.pose = 'attack';
+    for (let i = 0; i < 5; i++) { this.addFx('spark', av.x + 32 + rnd(-22, 22), av.y + 30 + rnd(-20, 16), [0, 0, 1, 1, 2, 2]); yield* wait(4); }
+    const sx = av.x + 32, sy = av.y + 28, tx = dv.x + 32, ty = dv.y + 34;
+    for (let i = 0; i <= 16; i++) {
+      const k = i / 16, x = sx + (tx - sx) * k, y = sy + (ty - sy) * k;
+      this.parts = [];
+      for (let a = 0; a < Math.PI * 2; a += 0.4) for (let r = 2; r <= 9; r += 2) this.parts.push({ x: x + Math.cos(a + i) * r, y: y + Math.sin(a + i) * r, c: r > 7 ? '#ffb43d' : (a * 10 + i) % 3 < 1 ? '#ffffff' : '#fff06a', s: 2 });
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    this.flash = 3; this.shake = 10;
+    for (let i = 0; i < 3; i++) { this.addFx('spark', tx + rnd(-12, 12), ty + rnd(-12, 12), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
+  },
+
+  // DRAGON BREATH: a swirling stream of blue-violet dragon fire
+  *animDragonBreath(av, dv) {
+    av.pose = 'attack';
+    yield* this.animParticles(av, dv, { count: 16, gap: 2, dur: 20, swirl: 8, colors: ['#7ab0ff', '#3a2a8e', '#b48aff', '#ffffff'], size: 3 });
+    av.pose = 'idle';
+    this.addFx('hit', dv.x + 32, dv.y + 34, [0, 0, 1, 1, 1]);
+    this.shake = 6;
+    yield* wait(6);
+  },
+
+  // SWARM: a buzzing cloud of little bugs flies over and around the target
+  *animSwarm(av, dv) {
+    av.pose = 'attack';
+    const sx = av.x + 32, sy = av.y + 30, tx = dv.x + 32, ty = dv.y + 34;
+    for (let i = 0; i < 44; i++) {
+      this.parts = [];
+      const k = Math.min(1, i / 20);
+      for (let n = 0; n < 14; n++) {
+        const a = n * 0.9 + i * 0.35, r = 6 + (n % 4) * 4;
+        const x = sx + (tx - sx) * k + Math.cos(a) * r, y = sy + (ty - sy) * k + Math.sin(a * 1.3) * r * 0.7;
+        this.parts.push({ x, y, c: '#202020', s: 2 }, { x: x + 1, y: y - 1, c: n % 2 ? '#f4df1a' : '#d8f4ff', s: 1 });
+      }
+      if (i > 20 && i % 6 === 0) this.shake = 3;
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+  },
+
+  // CLOSE COMBAT: three quick hits in a row
+  *animCloseCombat(av, dv, dir) {
+    av.pose = 'attack';
+    for (let h = 0; h < 3; h++) {
+      yield* tween(3, k => { av.dx = Math.round(18 * dir * k); });
+      this.addFx('hit', dv.x + 32 + rnd(-10, 10), dv.y + 34 + rnd(-12, 10), [0, 0, 1, 1]);
+      this.shake = 6;
+      yield* tween(4, k => { av.dx = Math.round(18 * dir * (1 - k)); });
+    }
+    av.dx = 0;
+    av.pose = 'idle';
+    yield* wait(4);
+  },
+
+  // SHARP SPEAR: a fast white-blue spear streak straight at the target
+  *animSpear(av, dv) {
+    av.pose = 'attack';
+    yield* this.animParticles(av, dv, { count: 8, gap: 1, dur: 9, colors: ['#ffffff', '#9fe3ff', '#38d8f0'], size: 3 });
+    av.pose = 'idle';
+    this.addFx('hit', dv.x + 32, dv.y + 34, [0, 0, 1, 1, 1]);
+    this.flash = 1; this.shake = 8;
+    yield* wait(6);
+  },
+
+  // SELF DESTRUCTION: the user glows white and blows up in a huge blast
+  *animSelfDestruct(av, dv) {
+    for (let i = 0; i < 18; i++) { av.white = i % 4 < 2; this.shake = 1 + (i >> 2); yield; }
+    av.white = false;
+    this.flash = 4;
+    const cx = av.x + 32, cy = av.y + 34;
+    for (let i = 0; i < 26; i++) {
+      this.parts = [];
+      for (let n = 0; n < 20; n++) {
+        const a = n * Math.PI / 10 + i * 0.03, r = 4 + i * 3.2;
+        this.parts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * 0.8, c: FIRE[(n + (i >> 2)) % FIRE.length], s: i < 10 ? 4 : 3 });
+      }
+      if (i % 4 === 0) this.addFx('hit', dv.x + 32 + rnd(-14, 14), dv.y + 34 + rnd(-14, 14), [0, 0, 1, 1]);
+      this.shake = 10;
+      yield;
+    }
+    this.parts = null;
+    yield* wait(6);
+  },
+
   *animTackle(av, dv, dir) {
     yield* tween(6, k => { av.dx = Math.round(-5 * dir * k); });
     yield* tween(5, k => { av.dx = Math.round(-5 * dir + 29 * dir * k); av.dy = Math.round(-8 * dir * k); });

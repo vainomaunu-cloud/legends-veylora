@@ -91,6 +91,13 @@ const SPRITES = {
   spark: 'sprites/spark.png',             // 3 frames 32x32
   hit: 'sprites/hit.png',                 // 2 frames 32x32
 };
+// ULTRA PEDOT: your "<name> ultra beast.png" files + sprites/<name>_blink.png ... _back_attack.png
+for (const k of ['virtuleast', 'droison', 'golbuzz', 'algishiod', 'amperitie']) {
+  SPRITES[k] = k + ' ultra beast.png';
+  for (const [suffix, name] of [['Blink', 'blink'], ['Hurt', 'hurt'], ['Attack', 'attack'], ['Back', 'back'], ['BackAttack', 'back_attack']]) {
+    SPRITES[k + suffix] = `sprites/${k}_${name}.png`;
+  }
+}
 // Creatures whose files follow the plain pattern: <name>.png + sprites/<name>_blink.png ... _back_attack.png
 for (const k of ['psistiel', 'algish', 'serpenalge', 'moonorg', 'binchulin', 'overchill', 'underchill', 'hummird', 'hummirding', 'psiduocipe', 'regiacid', 'regipsy', 'regismile', 'eyevil', 'eyebaldon', 'siniramen', 'poltearamen', 'quackobra', 'coril', 'cornechaun', 'corneliva', 'scarghost']) {
   SPRITES[k] = k + '.png';

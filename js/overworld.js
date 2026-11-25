@@ -284,10 +284,18 @@ const MAPS = {
       'TTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
-    encounters: [],   // ULTRA PETOJA tulossa myöhemmin
+    // no bushes here: ULTRA PEDOT jump out while you walk on the bare rock (. and ,), not on the star path; chance per step
+    encounterTiles: '.,',
+    encounters: [
+      { species: 'virtuleast', chance: 0.02 },
+      { species: 'droison', chance: 0.02 },
+      { species: 'golbuzz', chance: 0.025 },
+      { species: 'algishiod', chance: 0.025 },
+      { species: 'amperitie', chance: 0.025 },
+    ],
     wormholeTo: { to: 'temple', x: 18, y: 19, dir: 'left' },
     warps: {},
-    sign: 'AVARUUS\nMadonreiän toisella puolella leijuu kivinen asteroidi tähtien keskellä. Täällä on vielä hiljaista... mutta jostain kaukaa kuuluu outoja ääniä.',
+    sign: 'AVARUUS\nMadonreiän toisella puolella leijuu kivinen asteroidi tähtien keskellä. Kivellä vaeltavat ULTRA PEDOT: VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD ja AMPERITIE. Tähtipolulla on turvallista.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
@@ -656,12 +664,13 @@ const overworld = {
     if (warp) { warpTo(warp); return true; }
     if (this.shardHere(p.tx, p.ty)) { this.runner.run(this.pickShard()); return true; }
     this.stepsSinceBattle++;
-    if (this.tileAt(p.tx, p.ty) !== 'B') return false;
-    this.rustles.push({ x: p.tx, y: p.ty, t: 0 });
+    const tile = this.tileAt(p.tx, p.ty);
+    if (tile !== 'B' && !(this.map.encounterTiles || '').includes(tile)) return false;
+    if (tile === 'B') this.rustles.push({ x: p.tx, y: p.ty, t: 0 });
     const species = this.stepsSinceBattle > 2 && rollEncounter(this.map.encounters);
     if (species) {
       this.stepsSinceBattle = 0;
-      startEncounter(species);
+      startEncounter(species, this.map.encounterTiles ? 'space' : 'bush');
       return true;
     }
     return false;

@@ -35,6 +35,11 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | REGIACID | regi, ei kehity | `regiacid.png` + `sprites/regiacid_*.png` | REGI POWER, ACID PULSE, POISON JAB, FIRE PUNCH | REGI TEMPPELIN keskimmäinen jalusta, LV50 | – | erittäin vaikea (0,12) |
 | REGIPSY | regi, ei kehity | `regipsy.png` + `sprites/regipsy_*.png` | REGI POWER, PSYCHO CUT, PSYCHIC, MIND HEAL | REGI TEMPPELIN oikea jalusta, LV50 | – | erittäin vaikea (0,12) |
 | REGISMILE | regi, ei kehity | `regismile.png` + `sprites/regismile_*.png` | REGI POWER, HAPPINESS PULSE, BABYDOLL EYES, CHARM | REGI TEMPPELIN vasen jalusta, LV50 | – | erittäin vaikea (0,12) |
+| VIRTULEAST | ULTRA PETO, ei kehity | `virtuleast ultra beast.png` + `sprites/virtuleast_*.png` | POISON JAB, VIRTUAL SHOT, SLUDGE WAVE, ELECTRO POWER | AVARUUDEN kivellä 2 % | 50 kolikkoa | vaikea (0,2) |
+| DROISON | ULTRA PETO, ei kehity | `droison ultra beast.png` + `sprites/droison_*.png` | POISON JAB, DRAGON BREATH, DRAGON CLAW, POISON POWDER | AVARUUDEN kivellä 2 % | 50 kolikkoa | vaikea (0,2) |
+| GOLBUZZ | ULTRA PETO, ei kehity | `golbuzz ultra beast.png` + `sprites/golbuzz_*.png` | BUG BUZZ, SWARM, CLOSE COMBAT, LOW KICK | AVARUUDEN kivellä 2,5 % | 40 kolikkoa | vaikea (0,22) |
+| ALGISHIOD | ULTRA PETO, ei kehity | `algishiod ultra beast.png` + `sprites/algishiod_*.png` | SHARP SPEAR, ELECTROBALL, SLEEP POWDER, FLAMETHROWER | AVARUUDEN kivellä 2,5 % | 40 kolikkoa | vaikea (0,22) |
+| AMPERITIE | ULTRA PETO, ei kehity | `amperitie ultra beast.png` + `sprites/amperitie_*.png` | THUNDER, SELF DESTRUCTION, ELECTROBALL, SPARK HEAL | AVARUUDEN kivellä 2,5 % | 40 kolikkoa | vaikea (0,22) |
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
@@ -165,7 +170,9 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
      - Shardit ja niiden antaminen tallentuvat.
 4c. **AVARUUS** (26 × 18 ruutua, madonreiän takana)
    - Kivinen asteroidi leijuu tähtitaivaalla: kraatereita, hehkuva tähtipolku, sinisiä tähtikristalleja, leijuvia violetteja kristalleja ja tuikkivia tähtiä. Kartan reunoilla on avaruutta (`T`), jota ei pääse läpi.
-   - Täällä ei ole vielä otuksia: ULTRA PETOJA lisätään myöhemmin (kartan `encounters`).
+   - **ULTRA PEDOT:** täällä ei ole puskia. Kun kävelet paljaalla kivellä (ei tähtipolulla), voi tulla VIRTULEAST (2 %), DROISON (2 %), GOLBUZZ (2,5 %), ALGISHIOD (2,5 %) tai AMPERITIE (2,5 %) askelta kohden (kartan `encounterTiles` ja `encounters`). Ne ovat tasoilla 30–40, ja niitä vastaan taistellaan tähtitaivaan alla.
+   - ULTRA PEDOILLA ei vielä ole kiiltäviä muotoja, joten niitä ei tarvita SHINY CHARMiin (KOKOELMAAN ne lasketaan).
+   - Uusia liikkeitä: VIRTUAL SHOT (kriittinen osuma tulee helpommin), ELECTRO POWER (voi halvaannuttaa), DRAGON BREATH (voi halvaannuttaa), DRAGON CLAW, POISON POWDER (myrkyttää, ei vahinkoa), SWARM, CLOSE COMBAT (120), LOW KICK, SHARP SPEAR (kriittinen osuma tulee helpommin), THUNDER (110, osuu 70 %), SELF DESTRUCTION (200, mutta käyttäjä uupuu itsekin) ja SPARK HEAL (palauttaa puolet HP:sta).
    - Madonreikä vie takaisin REGI TEMPPELIIN.
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
