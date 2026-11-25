@@ -57,6 +57,10 @@ const SPRITES = {
   kiosk: 'sprites/kiosk.png',             // 48x32 beach kiosk
   greatBall: 'sprites/great_ball.png',    // 3 frames 16x16 GREAT PALLO
   ultraBall: 'sprites/ultra_ball.png',    // 3 frames 16x16 ULTRA PALLO
+  tilesSpace: 'sprites/tiles_space.png',  // AVARUUS tiles (11 rock edge over space, 12 open space)
+  wormhole: 'sprites/wormhole.png',      // 4 frames 32x32 swirling WORMHOLE
+  regiShard: 'sprites/regi_shard.png',   // 2 frames 16x16 REGI SHARD lying on the ground
+  wormkeeper: 'sprites/wormkeeper.png',  // MADONREIÄN VARTIJA (player sheet re-coloured)
   masterBall: 'sprites/master_ball.png',  // 3 frames 16x16 MASTER PALLO
   hummirdSmall: 'sprites/hummird_small.png', // 2 frames 16x16: HUMMIRD sitting on a palm
   center: 'sprites/center.png',          // 48x48 healing center building (HOITOLA)

@@ -161,6 +161,14 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
      - **Napattu regi ei palaa:** sen jalusta jää tyhjäksi ja hehkuu himmeästi.
      - **Regit eivät ole koskaan kiiltäviä** temppelissä.
    - Etelän ovesta pääsee takaisin SNOW MOUNTAINille. Kyltti on oven lähellä.
+   - **Madonreikä:** oven vieressä oikeassa alakulmassa pyörii violetti madonreikä (`WW`, 2 × 2 ruutua, `sprites/wormhole.png`). Sen edessä seisoo **MADONREIÄN VARTIJA** (tummansininen takki, `sprites/wormkeeper.png`).
+     - Vartija pyytää keräämään **5 REGI SHARDIA** (`sprites/regi_shard.png`). Ne kimaltelevat maassa: yksi PUSKAMETSÄSSÄ, HYUJAL METSÄSSÄ, SAARIMERELLÄ, SNOW MOUNTAINILLA ja MAATILALLA (kartan `shard`-kohta). Kävele shardin päälle, niin poimit sen. Reppu näyttää, montako sinulla on.
+     - Kun sinulla on kaikki viisi, puhu vartijalle ja anna shardit. Sen jälkeen madonreikä pyörii nopeammin, ja kun kosket sitä, pääset **AVARUUTEEN**. Ilman shardeja vartija ei päästä sisään.
+     - Shardit ja niiden antaminen tallentuvat.
+4c. **AVARUUS** (26 × 18 ruutua, madonreiän takana)
+   - Kivinen asteroidi leijuu tähtitaivaalla: kraatereita, hehkuva tähtipolku, sinisiä tähtikristalleja, leijuvia violetteja kristalleja ja tuikkivia tähtiä. Kartan reunoilla on avaruutta (`T`), jota ei pääse läpi.
+   - Täällä ei ole vielä otuksia: ULTRA PETOJA lisätään myöhemmin (kartan `encounters`).
+   - Madonreikä vie takaisin REGI TEMPPELIIN.
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
    - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Sitten joko jokin nappaa ja otus **nousee vedestä** taisteluun (ALGISH, MOONORG tai SERPENALGE), tai "Mikään ei näykkinyt". Merellä taistellaan meren taustalla (vesi ja hiekkasärkät). Lista on kartan `fishing`-kohdassa.
@@ -297,6 +305,10 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/tiles_town.png` | 320×16 | VEYLORAN KYLÄN ruudut: samat kuin `tiles.png` (0–12), lisäksi vesi (13–14) ja puuaidan palat (15–19) |
 | `sprites/houses.png` | 240×48 | Viisi 48×48 taloa: punainen, sininen, vihreä, oranssi ja violetti katto, savupiippu, ikkunat kukkalaatikoineen ja ovi alarivin keskellä |
 | `sprites/tiles_temple.png` | 208×16 | REGI TEMPPELIN ruudut: lattia (0–1, 5–6, 10), matto (2), hehkuva riimu (3–4), kivimalja pinkillä liekillä (7–8), kivitaulu (9), tiiliseinän etupuoli (11) ja seinän yläosa (12) |
+| `sprites/tiles_space.png` | 208×16 | AVARUUDEN ruudut: asteroidikivi (0–1, 5–6, 10), tähtipolku (2), tuikkiva tähtikristalli (3–4), leijuva violetti kristalli (7–8), kivitaulu (9), kiven reuna avaruuden yllä (11) ja avaruus (12) |
+| `sprites/wormhole.png` | 128×32 | MADONREIKÄ: 4 pyörivää kuvaa 32×32 |
+| `sprites/regi_shard.png` | 32×16 | REGI SHARD: kristalli ja kimaltava kuva |
+| `sprites/wormkeeper.png` | kuten `player.png` | MADONREIÄN VARTIJA: pelaajan kuva tummansinisellä takilla |
 | `sprites/tiles_snow.png` | 208×16 | SNOW MOUNTAINin ruudut samassa järjestyksessä kuin `tiles.png`: lumi, lumi 2, lumipolku, kimalteleva lumi (3–4), lumiset kuuset (5, 11–12), lumihuippuinen puska (6, 10), kyltti (9) |
 | `sprites/bush_rustle_snow.png` | 48×16 | Lumisen puskan heilunta (lunta tippuu), 3 kuvaa |
 | `sprites/thunderbolt.png` | 48×32 | Salaman palat, 3 kuvaa 16×32 (pinotaan pystyyn) |

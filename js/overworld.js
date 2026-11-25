@@ -9,6 +9,7 @@ const BALL_PRICE = 50;
 const MAPS = {
   forest: {
     name: 'PUSKAMETSÄ',
+    shard: { x: 24, y: 2 },   // one of the five REGI SHARDs lies here (picked up by walking onto it)
     tiles: 'tiles', rustle: 'bushRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
       'TTTTTTTTTTTTTTTTTTXTTTTTTTTT',
@@ -102,6 +103,7 @@ const MAPS = {
   // Y fence  K/O farmer's house and its door
   farm: {
     name: 'MAATILA',
+    shard: { x: 27, y: 3 },
     tiles: 'tilesFarm', rustle: 'cornRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
@@ -144,6 +146,7 @@ const MAPS = {
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
+    shard: { x: 21, y: 15 },
     tiles: 'tilesHyujal', rustle: 'bushRustleHyujal', shade: '#3a1d6e', glow: true, music: 'hyujal',
     rows: [
       'TTTTTTTTTTTTXTTTTTTTTTTT',
@@ -179,6 +182,7 @@ const MAPS = {
   // snowy forest north of PUSKAMETSÄ (no creatures yet)
   snow: {
     name: 'SNOW MOUNTAIN',
+    shard: { x: 23, y: 3 },
     tiles: 'tilesSnow', rustle: 'bushRustleSnow', shade: '#2f5a3a', music: 'overworld', snowfall: true,
     rows: [
       'TTTTTTTTTTTTXTTTTTTTTTTTTT',
@@ -245,19 +249,52 @@ const MAPS = {
       'TT...*.....==.....*...TT',
       'TT.........==.........TT',
       'TT..AA.....==.....AA..TT',
-      'TT.......S.==.........TT',
-      'TT.M.......==.......M.TT',
+      'TT.......S.==.......WWTT',   // WW: the WORMHOLE in the corner next to the door (2x2)
+      'TT.M.......==.......WWTT',
       'TTTTTTTTTTT==TTTTTTTTTTT',
       'TTTTTTTTTTTXTTTTTTTTTTTT',
     ],
     encounters: [],
+    npcs: ['wormkeeper'],   // stands in front of the wormhole and wants the five REGI SHARDs
+    wormholeTo: { to: 'space', x: 9, y: 14, dir: 'right' },
     warps: { '11,22': { to: 'snow', x: 12, y: 1, dir: 'down' } },
     sign: 'REGI TEMPPELI\nVanha violetti temppeli vuoren huipulla. Patsaat esittävät metsien, vuorten ja meren otuksia. Perällä kolme jalustaa odottaa yhä patsaitaan... Täällä on hiljaista: ei puskia eikä villejä otuksia.',
+  },
+  // AVARUUS behind the WORMHOLE: a rocky asteroid floating in space (T is open space, not trees)
+  // W the wormhole back to REGI TEMPPELI  M floating crystal  * star crystal
+  space: {
+    name: 'AVARUUS',
+    tiles: 'tilesSpace', rustle: 'bushRustle', shade: '#0a0818', music: 'hyujal', walls: 'space', stars: true, miniBg: '#0a0818',
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTT....TTTTTTTT...TTTTTT',
+      'TTTT..*...TTTTT..M...TTTTT',
+      'TTT...........=......TTTTT',
+      'TTT..M.....====....*..TTTT',
+      'TTTT......==.....,....TTTT',
+      'TTTTT....==...TTT.....TTTT',
+      'TTTTTT..==...TTTTT...TTTTT',
+      'TTTTT...=.....TTT...*.TTTT',
+      'TTTT....=..*.........TTTTT',
+      'TTTT..*.=.......S.M..TTTTT',
+      'TTTTT...=====......TTTTTTT',
+      'TTTTTT.WW...=.....TTTTTTTT',
+      'TTTTTT.WW...=...TTTTTTTTTT',
+      'TTTTTTT.....,..TTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+    ],
+    encounters: [],   // ULTRA PETOJA tulossa myöhemmin
+    wormholeTo: { to: 'temple', x: 18, y: 19, dir: 'left' },
+    warps: {},
+    sign: 'AVARUUS\nMadonreiän toisella puolella leijuu kivinen asteroidi tähtien keskellä. Täällä on vielä hiljaista... mutta jostain kaukaa kuuluu outoja ääniä.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
   sea: {
     name: 'SAARIMERI',
+    shard: { x: 25, y: 6 },
     tiles: 'tilesSea', rustle: 'bushRustle', shade: '#2f7cc4', music: 'overworld', treeGround: 2, exitTile: 17, miniBg: '#3e9be0',
     palmBirds: { species: 'hummird', chance: 0.5 },   // each palm has a HUMMIRD on top with this chance (new roll every visit)
     rows: [
@@ -307,6 +344,7 @@ for (const [id, m] of Object.entries(MAPS)) {
     if (ch === 'D') m.door = { x, y };
     if (ch === 'H') m.center = { x, y };   // ends at the top-left H
     if (ch === 'Q') m.kiosk = { x, y };    // ends at the top-left Q
+    if (ch === 'W') m.wormhole = { x, y }; // ends at the top-left W
   }
   // houses: the top-left K of each 3x3 house block; roof colour (red, blue, green, orange, purple) in reading order
   m.houses = [];
@@ -335,8 +373,11 @@ for (const [id, m] of Object.entries(MAPS)) {
   }
 }
 
-const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15, 'N': 0 };
+const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15, 'N': 0, 'W': 0 };
 const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) draw T as bricks
+// walls: 'space' (AVARUUS) draws T as open space, with the rock edge (WALL_FACE) right below the floor
+const SHARD_TOTAL = 5;                 // REGI SHARDs to find (one per map with `shard`)
+const KEEPER_NAME = 'MADONREIÄN VARTIJA';
 // wooden fence Y (tiles_farm.png / tiles_town.png): a post plus rails towards each neighbouring fence tile
 const FENCE_POST = 15, FENCE_LEFT = 16, FENCE_RIGHT = 17, FENCE_UP = 18, FENCE_DOWN = 19;
 const WATER = '~';
@@ -356,7 +397,7 @@ const BALL_TYPES = [
 const ballType = key => BALL_TYPES.find(b => b.key === key);
 const totalBalls = () => BALL_TYPES.reduce((n, b) => n + game[b.key], 0);
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
-const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E', 'K', 'O', 'Y', 'N']);
+const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E', 'K', 'O', 'Y', 'N', 'W']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
 const WALK_SPEED = 1.5;        // pixels per frame (16 px tile = about 11 frames)
 const TREE_LIFT = 6;           // trees are drawn this many px up so the rows overlap
@@ -376,7 +417,8 @@ const MINI_COLORS_MAP = {
   snow: { '.': '#eef4fb', ',': '#eef4fb', '*': '#ffffff', '=': '#b4c4d8', 'X': '#b4c4d8', 'T': '#2f5a3a', 'B': '#5f8a6a' },
   town: { 'K': '#d8483a', 'O': '#8a5a2c', 'Y': '#c68a4a', '~': '#3e9be0', 'B': '#3f9a44' },
   farm: { 'N': '#c8382e', 'B': '#d8c040', 'M': '#e8c860', 'Y': '#c68a4a', 'K': '#d8483a', 'O': '#8a5a2c' },
-  temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78' },
+  temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78', 'W': '#c050f0' },
+  space: { '.': '#4a4460', ',': '#4a4460', '*': '#38d8f0', '=': '#2a2440', 'T': '#0a0818', 'M': '#c050f0', 'S': '#7a7498', 'W': '#c050f0' },
 };
 
 function buildMinimap(m) {
@@ -476,6 +518,30 @@ const NPCS = {
           },
         },
       });
+    },
+  },
+  // stands in front of the WORMHOLE in REGI TEMPPELI; lets you through once you bring the five REGI SHARDs
+  wormkeeper: {
+    sprite: 'wormkeeper',
+    pos: () => (game.shardsGiven ? { x: 19, y: 20, dir: 'up' } : { x: 19, y: 20, dir: 'down' }),
+    *talk() {
+      const have = game.shards.length;
+      if (game.shardsGiven) {
+        yield* textBox.say(`${KEEPER_NAME}: Madonreikä on auki. Astu sisään, jos uskallat!`);
+        return;
+      }
+      if (have < SHARD_TOTAL) {
+        yield* textBox.say(`${KEEPER_NAME}: Tämä madonreikä vie AVARUUTEEN. Se aukeaa vain viidellä REGI SHARDILLA.`);
+        yield* textBox.say(`${KEEPER_NAME}: Shardit ovat hajallaan ympäri maailmaa: PUSKAMETSÄSSÄ, HYUJAL METSÄSSÄ, SAARIMERELLÄ, SNOW MOUNTAINILLA ja MAATILALLA.`);
+        yield* textBox.say(`${KEEPER_NAME}: Kerää ne kaikki ja tuo minulle. Sinulla on nyt ${have}/${SHARD_TOTAL}.`);
+        return;
+      }
+      yield* textBox.say(`${KEEPER_NAME}: Sinulla on kaikki viisi REGI SHARDIA! Anna ne minulle.`);
+      yield* textBox.say(`Annoit ${SHARD_TOTAL} REGI SHARDIA ${KEEPER_NAME}LLE.`);
+      game.shardsGiven = true;
+      yield* flashScreen(2);
+      yield* textBox.say(`${KEEPER_NAME}: Shardit loistavat... Madonreikä on nyt auki! Kosketa sitä, niin pääset AVARUUTEEN.`);
+      saveGame.save(true);
     },
   },
 };
@@ -601,6 +667,7 @@ const overworld = {
     if (this.cowAt(nx, ny)) { this.runner.run(this.cowTalk()); return; }   // bumped into a cow
     const regi = this.regiAt(nx, ny);
     if (regi) { this.runner.run(this.regiTouch(regi)); return; }    // touched a regi on its pedestal
+    if (this.tileAt(nx, ny) === 'W') { this.runner.run(this.wormholeTouch()); return; }   // touched the wormhole
     if (!SOLID.has(this.tileAt(nx, ny))) { p.moving = true; p.offset = 0; p.steps++; }
     else if (this.birds && this.birds.has(`${nx},${ny}`)) {   // walked into a palm with a HUMMIRD on it
       this.birds.delete(`${nx},${ny}`);
@@ -612,6 +679,7 @@ const overworld = {
     const p = this.player;
     const warp = this.map.warps[`${p.tx},${p.ty}`];
     if (warp) { warpTo(warp); return true; }
+    if (this.shardHere(p.tx, p.ty)) { this.runner.run(this.pickShard()); return true; }
     this.stepsSinceBattle++;
     if (this.tileAt(p.tx, p.ty) !== 'B') return false;
     this.rustles.push({ x: p.tx, y: p.ty, t: 0 });
@@ -645,6 +713,34 @@ const overworld = {
     startEncounter(regi, 'regi', { level: 50, regi: true });
   },
 
+  // ----- REGI SHARDs: one lies on each map with `shard`, until picked up -----
+  shardHere(x, y) {
+    const s = this.map.shard;
+    return !!s && s.x === x && s.y === y && !game.shards.includes(this.map.id);
+  },
+
+  *pickShard() {
+    game.shards.push(this.map.id);
+    const n = game.shards.length;
+    yield* textBox.say(`Löysit REGI SHARDIN! (${n}/${SHARD_TOTAL})`);
+    if (n >= SHARD_TOTAL && !game.shardsGiven) yield* textBox.say(`Sinulla on kaikki shardit! Vie ne ${KEEPER_NAME}LLE REGI TEMPPELIIN.`);
+    saveGame.save(true);
+  },
+
+  // ----- WORMHOLE: REGI TEMPPELI <-> AVARUUS -----
+  *wormholeTouch() {
+    const to = this.map.wormholeTo;
+    if (!to) return;
+    if (this.map.id === 'temple' && !game.shardsGiven) {
+      yield* textBox.say('Madonreikä pyörii ja vetää puoleensa...');
+      yield* textBox.say(`${KEEPER_NAME}: Hei! Sinne ei mennä ilman REGI SHARDEJA. (${game.shards.length}/${SHARD_TOTAL})`);
+      return;
+    }
+    yield* textBox.say(this.map.id === 'temple' ? 'Madonreikä imaisee sinut sisään!' : 'Madonreikä vie sinut takaisin REGI TEMPPELIIN!');
+    yield* flashScreen(1);
+    warpTo(to);
+  },
+
   interact() {
     const p = this.player;
     const fx = p.tx + DIRS[p.dir][0], fy = p.ty + DIRS[p.dir][1];
@@ -653,6 +749,7 @@ const overworld = {
     const regi = this.regiAt(fx, fy);
     if (regi) { this.runner.run(this.regiTouch(regi)); return; }
     const tile = this.tileAt(fx, fy);
+    if (tile === 'W') { this.runner.run(this.wormholeTouch()); return; }
     if (tile === 'S') this.say((this.map.signs && this.map.signs[`${fx},${fy}`]) || this.map.sign);
     if (tile === 'O') this.say((this.map.houseTexts && this.map.houseTexts[`${fx},${fy}`]) || 'Ovi on lukossa.');
     if (tile === 'N') this.say(this.map.barnText || 'Navetan ovi on kiinni.');
@@ -795,6 +892,11 @@ const overworld = {
       for (let tx = x0; tx <= x1; tx++) {
         const ch = this.tileAt(tx, ty);
         const sx = tx * TILE - camX, sy = ty * TILE - camY;
+        if (ch === 'T' && m.walls === 'space') {   // open space; the asteroid's rock edge right below the floor
+          const up = this.tileAt(tx, ty - 1);
+          drawFrame(tiles, ty > 0 && up !== 'T' ? WALL_FACE : WALL_TOP, 16, 16, sx, sy);
+          continue;
+        }
         if (ch === 'T' && m.walls) {   // brick face where a wall meets the floor, dark top elsewhere
           drawFrame(tiles, this.tileAt(tx, ty + 1) === 'T' ? WALL_TOP : WALL_FACE, 16, 16, sx, sy);
           continue;
@@ -843,6 +945,14 @@ const overworld = {
       }
       if (m.center && ty === m.center.y + 2) ctx.drawImage(IMG.center, m.center.x * TILE - camX, m.center.y * TILE - camY);
       if (m.kiosk && ty === m.kiosk.y + 1) ctx.drawImage(IMG.kiosk, m.kiosk.x * TILE - camX, m.kiosk.y * TILE - camY);
+      if (m.wormhole && ty === m.wormhole.y + 1) {   // swirling portal; spins faster once it is open
+        const open = m.id !== 'temple' || game.shardsGiven;
+        drawFrame(IMG.wormhole, Math.floor(this.t / (open ? 6 : 12)) % 4, 32, 32, m.wormhole.x * TILE - camX, m.wormhole.y * TILE - camY);
+      }
+      if (m.shard && ty === m.shard.y && !game.shards.includes(m.id)) {   // REGI SHARD glinting on the ground
+        const bob = Math.floor(this.t / 20) % 2;
+        drawFrame(IMG.regiShard, Math.floor(this.t / 30) % 3 === 0 ? 1 : 0, 16, 16, m.shard.x * TILE - camX, ty * TILE - camY - 2 - bob);
+      }
       for (const h of m.houses) if (ty === h.y + 2) drawFrame(IMG.houses, h.style, 48, 48, h.x * TILE - camX, h.y * TILE - camY);
       for (const b of m.barns) if (ty === b.y + 2) ctx.drawImage(IMG.barn, b.x * TILE - camX, (b.y - 1) * TILE - camY);   // roof reaches one row up
       for (const c of this.cows || []) {
@@ -864,6 +974,7 @@ const overworld = {
 
     if (m.glow) this.drawGlow();
     if (m.sparkle) this.drawGlow(['#ff9cf2', '#ffe0fa'], 0);
+    if (m.stars) this.drawGlow(['#ffffff', '#9fe3ff'], 0);
     if (m.snowfall) this.drawSnowfall();
     if (!menuBox.active) this.drawMinimap(px, py);
 

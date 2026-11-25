@@ -13,6 +13,8 @@ const game = {
   shinyCharm: false,
   guardianBeaten: false, // the TEMPLE GUARDIAN on SNOW MOUNTAIN has been beaten (REGI TEMPPELI is open)
   regisCaught: [],      // regis caught from their pedestals (they don't come back)
+  shards: [],           // REGI SHARDs picked up (ids of the maps they lay on)
+  shardsGiven: false,   // the shards were given to the WORMHOLE KEEPER: the wormhole is open
   runner: new Runner(), // transitions
   fade: 0, wipe: 0, white: 0, t: 0,
 };
@@ -78,7 +80,7 @@ function newGame(name = saveGame.defaultName()) {
   game.party = [starter];
   game.coins = 0; game.balls = 0; game.greatBalls = 0; game.ultraBalls = 0; game.masterBalls = 0;
   game.caught = []; game.shinyCharm = false; game.pc = [];
-  game.guardianBeaten = false; game.regisCaught = [];
+  game.guardianBeaten = false; game.regisCaught = []; game.shards = []; game.shardsGiven = false;
   overworld.init();
   startGame();
 }

@@ -84,6 +84,8 @@ const admin = {
       <h4>REGI TEMPPELI</h4>
       <div class="admRow">TEMPPELIN VARTIJA <b>${game.guardianBeaten ? 'voitettu' : 'ei voitettu'}</b>
         <button data-act="guardian">${game.guardianBeaten ? 'Palauta vartija' : 'Merkitse voitetuksi'}</button></div>
+      <div class="admRow">REGI SHARDIT <b>${game.shards.length}/${SHARD_TOTAL}${game.shardsGiven ? ', annettu' : ''}</b>
+        <button data-act="shards">Kaikki shardit</button><button data-act="shardsReset">Palauta shardit</button></div>
       <div class="admRow">Napatut regit <b>${game.regisCaught.map(id => SPECIES[id].name).join(', ') || '-'}</b>
         <button data-act="regis"${game.regisCaught.length ? '' : ' disabled'}>Palauta regit jalustoille</button></div>
 
@@ -126,7 +128,7 @@ const admin = {
       case 'warp': {
         if (!ow) return this.msg('Siirtyminen onnistuu vain kävellessä (ei taistelussa).');
         const id = this.el.querySelector('#admMap').value, m = MAPS[id];
-        const spot = { forest: m.spawn, hyujal: { x: 12, y: 2 }, sea: { x: 2, y: 10 }, snow: { x: 12, y: 17 }, temple: { x: 11, y: 20 }, town: { x: 27, y: 10 }, farm: { x: 27, y: 10 } }[id] || m.spawn || { x: 1, y: 1 };
+        const spot = { forest: m.spawn, hyujal: { x: 12, y: 2 }, sea: { x: 2, y: 10 }, snow: { x: 12, y: 17 }, temple: { x: 11, y: 20 }, space: { x: 9, y: 14 }, town: { x: 27, y: 10 }, farm: { x: 27, y: 10 } }[id] || m.spawn || { x: 1, y: 1 };
         overworld.enterMap(id, spot.x, spot.y, 'down');
         music.play(m.music);
         return this.changed(`Siirrytty: ${m.name}`);
@@ -147,6 +149,8 @@ const admin = {
       }
       case 'guardian': game.guardianBeaten = !game.guardianBeaten; return this.changed(`TEMPPELIN VARTIJA: ${game.guardianBeaten ? 'voitettu' : 'palautettu'}`);
       case 'regis': game.regisCaught = []; return this.changed('Regit palautettu jalustoille');
+      case 'shards': game.shards = Object.values(MAPS).filter(q => q.shard).map(q => q.id); return this.changed('Kaikki REGI SHARDIT kerätty');
+      case 'shardsReset': game.shards = []; game.shardsGiven = false; return this.changed('REGI SHARDIT palautettu kartoille');
     }
   },
 

@@ -54,6 +54,7 @@ const inventory = {
           <div class="invItem"><img src="sprites/great_ball.png" class="invBall" alt=""> GREAT PALLOT <b>${game.greatBalls}</b></div>
           <div class="invItem"><img src="sprites/ultra_ball.png" class="invBall" alt=""> ULTRA PALLOT <b>${game.ultraBalls}</b></div>
           <div class="invItem"><img src="sprites/master_ball.png" class="invBall" alt=""> MASTER PALLOT <b>${game.masterBalls}</b></div>
+          ${game.shards.length || game.shardsGiven ? `<div class="invItem"><img src="sprites/regi_shard.png" class="invBall" alt=""> REGI SHARDIT <b>${game.shardsGiven ? "annettu" : game.shards.length + "/" + SHARD_TOTAL}</b></div>` : ""}
           <div class="invItem">🪙 KOLIKOT <b>${game.coins}</b></div>
         </div>
         <h4>Tiimi (${game.party.length}/6)</h4>
