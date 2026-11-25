@@ -9,6 +9,7 @@ const BALL_PRICE = 50;
 const MAPS = {
   forest: {
     name: 'PUSKAMETSÄ',
+    wanderCount: 8,   // wild creatures walking around at once
     shard: { x: 24, y: 2 },   // one of the five REGI SHARDs lies here (picked up by walking onto it)
     tiles: 'tiles', rustle: 'bushRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
@@ -103,6 +104,7 @@ const MAPS = {
   // Y fence  K/O farmer's house and its door
   farm: {
     name: 'MAATILA',
+    wanderCount: 8,
     shard: { x: 27, y: 3 },
     tiles: 'tilesFarm', rustle: 'cornRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
@@ -146,6 +148,7 @@ const MAPS = {
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
+    wanderCount: 8,
     shard: { x: 21, y: 15 },
     tiles: 'tilesHyujal', rustle: 'bushRustleHyujal', shade: '#3a1d6e', glow: true, music: 'hyujal',
     rows: [
@@ -182,6 +185,7 @@ const MAPS = {
   // snowy forest north of PUSKAMETSÄ (no creatures yet)
   snow: {
     name: 'SNOW MOUNTAIN',
+    wanderCount: 8,
     shard: { x: 23, y: 3 },
     tiles: 'tilesSnow', rustle: 'bushRustleSnow', shade: '#2f5a3a', music: 'overworld', snowfall: true,
     rows: [
@@ -356,6 +360,12 @@ const MAPS = {
 
 for (const [id, m] of Object.entries(MAPS)) {
   m.id = id;
+  // creatures walk around in plain sight instead of hiding in bushes: the old bush list becomes the map's wanderers
+  // (each species' chance is its weight when one is picked; wanderCount sets how many walk around at once)
+  if (!m.wanderers && m.encounters && m.encounters.length) {
+    m.wanderers = { count: m.wanderCount || 7, species: m.encounters.map(e => ({ species: e.species, weight: e.chance })) };
+    m.encounters = [];
+  }
   m.w = m.rows[0].length; m.h = m.rows.length;
   m.rows.forEach((row, i) => { if (row.length !== m.w) throw new Error(`Kartan ${id} rivi ${i} on väärän pituinen`); });
   m.treeRows = buildTreeRows(m);
@@ -398,6 +408,8 @@ const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M'
 const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) draw T as bricks
 // walls: 'space' (MADONREIKÄ) draws T as open space, with the rock edge (WALL_FACE) right below the floor
 const SHARD_TOTAL = 5;                 // REGI SHARDs to find (one per map with `shard`)
+const WANDER_GROUND = '.,*';         // wild creatures walk on open ground only (not in bushes, not on paths)
+const WANDER_RESPAWN = 600;          // frames (about 10 s) between new creatures coming in, while a map has fewer than its count
 const KEEPER_NAME = 'MADONREIÄN VARTIJA';
 // wooden fence Y (tiles_farm.png / tiles_town.png): a post plus rails towards each neighbouring fence tile
 const FENCE_POST = 15, FENCE_LEFT = 16, FENCE_RIGHT = 17, FENCE_UP = 18, FENCE_DOWN = 19;
@@ -579,31 +591,67 @@ const overworld = {
 
   cowAt(x, y) { return (this.cows || []).find(c => (c.x === x && c.y === y) || (c.tx === x && c.ty === y)); },
 
-  // ----- wild creatures you can see walking around (MAPS[...].wanderers, the ULTRA PEDOT in MADONREIKÄ) -----
-  // placed on free rock tiles away from the player every time you arrive; walk into one to battle it
+  // ----- wild creatures you can see walking around outside (MAPS[...].wanderers) -----
+  // Every map with creatures has them walking on the open ground (grass, snow, rock), never hidden in bushes.
+  // They are placed away from the player when you arrive, more come by now and then, and you battle one by walking into it.
   spawnWanderers() {
+    this.wanderMap = this.map;
     this.wanderers = [];
-    const w = this.map.wanderers, p = this.player;
+    this.wanderRespawn = WANDER_RESPAWN;
+    const w = this.map.wanderers;
     if (!w) return;
-    const free = [];
+    this.wanderReach = this.reachableFrom(this.player.tx, this.player.ty);
+    for (let i = 0; i < w.count; i++) this.addWanderer(5);
+  },
+
+  // tiles a creature may stand on: open ground, not in the cow pen, not on someone
+  wanderTile(x, y) {
+    const m = this.map, pen = m.cowPen;
+    if (!WANDER_GROUND.includes(this.tileAt(x, y))) return false;
+    if (pen && x >= pen.x0 && x <= pen.x1 && y >= pen.y0 && y <= pen.y1) return false;
+    return !this.npcAt(x, y) && !this.cowAt(x, y);
+  },
+
+  // every tile the player can walk to from (sx, sy), so no creature appears somewhere you can't reach
+  reachableFrom(sx, sy) {
+    const seen = new Set([`${sx},${sy}`]), todo = [[sx, sy]];
+    while (todo.length) {
+      const [x, y] = todo.pop();
+      for (const [dx, dy] of Object.values(DIRS)) {
+        const nx = x + dx, ny = y + dy, k = `${nx},${ny}`;
+        if (seen.has(k) || nx < 0 || ny < 0 || nx >= this.map.w || ny >= this.map.h || SOLID.has(this.tileAt(nx, ny))) continue;
+        seen.add(k); todo.push([nx, ny]);
+      }
+    }
+    return seen;
+  },
+
+  // put one more creature on a free tile at least `away` tiles from the player
+  addWanderer(away) {
+    const w = this.map.wanderers, p = this.player, free = [];
     for (let y = 0; y < this.map.h; y++) for (let x = 0; x < this.map.w; x++) {
-      if ('.,'.includes(this.map.rows[y][x]) && Math.abs(x - p.tx) + Math.abs(y - p.ty) > 5) free.push({ x, y });
+      if (this.wanderReach.has(`${x},${y}`) && this.wanderTile(x, y) && !this.wandererAt(x, y)
+        && Math.max(Math.abs(x - p.tx), Math.abs(y - p.ty)) > away) free.push({ x, y });
     }
+    if (!free.length) return;
+    const at = free[rnd(0, free.length - 1)];
     const total = w.species.reduce((n, s) => n + s.weight, 0);
-    for (let i = 0; i < w.count && free.length; i++) {
-      const at = free.splice(rnd(0, free.length - 1), 1)[0];
-      let r = Math.random() * total, species = w.species[0].species;
-      for (const s of w.species) { if (r < s.weight) { species = s.species; break; } r -= s.weight; }
-      const shiny = hasShinyArt(species) && Math.random() < shinyChance(species);   // you can spot a shiny one from afar
-      this.wanderers.push({ species, shiny, x: at.x, y: at.y, px: at.x * TILE, py: at.y * TILE, tx: at.x, ty: at.y, dir: Math.random() < 0.5 ? 'left' : 'right', wait: rnd(20, 120), phase: rnd(0, 99) });
-    }
+    let r = Math.random() * total, species = w.species[0].species;
+    for (const s of w.species) { if (r < s.weight) { species = s.species; break; } r -= s.weight; }
+    const shiny = hasShinyArt(species) && Math.random() < shinyChance(species);   // you can spot a shiny one from afar
+    this.wanderers.push({ species, shiny, x: at.x, y: at.y, px: at.x * TILE, py: at.y * TILE, tx: at.x, ty: at.y, dir: Math.random() < 0.5 ? 'left' : 'right', wait: rnd(20, 120), phase: rnd(0, 99) });
   },
 
   wandererAt(x, y) { return (this.wanderers || []).find(c => (c.x === x && c.y === y) || (c.tx === x && c.ty === y)); },
 
-  // they float from tile to tile now and then (never onto the star path, the wormhole or the player)
+  // they wander from tile to tile now and then (never into bushes, onto paths, into the pen or onto the player)
   updateWanderers() {
-    const p = this.player;
+    if (this.wanderMap !== this.map) this.spawnWanderers();   // a new game or a loaded save starts without enterMap
+    const p = this.player, w = this.map.wanderers;
+    if (w && this.wanderers.length < w.count && --this.wanderRespawn <= 0) {   // a new one comes in, out of sight
+      this.wanderRespawn = WANDER_RESPAWN;
+      this.addWanderer(8);
+    }
     for (const c of this.wanderers || []) {
       if (c.px !== c.tx * TILE || c.py !== c.ty * TILE) {
         c.px += Math.sign(c.tx * TILE - c.px) * 0.5; c.py += Math.sign(c.ty * TILE - c.py) * 0.5;
@@ -615,16 +663,16 @@ const overworld = {
       const dir = ['up', 'down', 'left', 'right'][rnd(0, 3)];
       const nx = c.x + DIRS[dir][0], ny = c.y + DIRS[dir][1];
       if (dir === 'left' || dir === 'right') c.dir = dir;
-      const blocked = !'.,*'.includes(this.tileAt(nx, ny)) || this.wandererAt(nx, ny) || (p.tx === nx && p.ty === ny)
+      const blocked = !this.wanderTile(nx, ny) || this.wandererAt(nx, ny) || (p.tx === nx && p.ty === ny)
         || (p.moving && p.tx + DIRS[p.dir][0] === nx && p.ty + DIRS[p.dir][1] === ny);
       if (!blocked) { c.tx = nx; c.ty = ny; }
     }
   },
 
-  // walked into an ULTRA PETO: it is gone from the map once the battle starts (caught, beaten or fled)
+  // walked into a wild creature: it is gone from the map once the battle starts (caught, beaten or fled)
   *wandererTouch(c) {
     this.wanderers = this.wanderers.filter(q => q !== c);
-    startEncounter(c.species, 'space', { shiny: c.shiny });
+    startEncounter(c.species, this.map.id === 'space' ? 'space' : 'walk', { shiny: c.shiny });
   },
 
   // cows amble around inside their pen now and then, and sometimes put their heads down to eat
@@ -1024,11 +1072,11 @@ const overworld = {
         const bob = walking ? Math.floor(this.t / 8) % 2 : 0;
         drawFrame(IMG.cow, frame, 16, 16, Math.round(c.px) - camX, Math.round(c.py) - camY - 2 - bob);
       }
-      for (const c of this.wanderers || []) {   // ULTRA PETO floating over the rock, with a violet shadow
+      for (const c of this.wanderers || []) {   // wild creature walking around, with a soft shadow (violet in MADONREIKÄ)
         if (Math.floor((c.py + 8) / TILE) !== ty) continue;
         const bob = Math.round(Math.sin((this.t + c.phase * 7) / 14) * 2);
         const sx = Math.round(c.px) - camX - 8, sy = Math.round(c.py) - camY - 18;
-        ctx.fillStyle = 'rgba(20,0,40,0.45)'; ctx.fillRect(sx + 9, sy + 30, 14, 3); ctx.fillRect(sx + 11, sy + 29, 10, 5);
+        ctx.fillStyle = m.id === 'space' ? 'rgba(20,0,40,0.45)' : 'rgba(0,0,0,0.22)'; ctx.fillRect(sx + 9, sy + 30, 14, 3); ctx.fillRect(sx + 11, sy + 29, 10, 5);
         const key = SPECIES[c.species].sprites[Math.floor((this.t + c.phase * 13) / 8) % 30 === 0 ? 'blink' : 'front'];
         const img = IMG[c.shiny && IMG['shiny_' + key] ? 'shiny_' + key : key];
         if (c.dir === 'right') { ctx.save(); ctx.translate(sx + 32, 0); ctx.scale(-1, 1); ctx.drawImage(img, 0, sy - bob); ctx.restore(); }

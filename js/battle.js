@@ -578,7 +578,7 @@ const battle = {
     } else if (this.kind === 'regi') {
       yield* textBox.say(`${foe.name} heräsi kivijalustaltaan!`);
     } else {
-      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : this.from === 'space' ? `ULTRA PETO ${foe.name} hyökkäsi kimppuusi!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
+      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : this.from === 'space' ? `ULTRA PETO ${foe.name} hyökkäsi kimppuusi!` : this.from === 'walk' ? `Villi ${foe.name} hyökkäsi kimppuusi!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
     }
     if (foe.shiny) yield* textBox.say(`Vau! Se on KIILTÄVÄ ${foe.name}!`);
     yield* tween(18, k => { this.trainer.x = Math.round(36 - 110 * k); });
