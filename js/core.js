@@ -96,6 +96,18 @@ const SPRITES = {
   spark: 'sprites/spark.png',             // 3 frames 32x32
   hit: 'sprites/hit.png',                 // 2 frames 32x32
 };
+// DOSOLO family: your files (some have their own names) + sprites/<key>_blink.png ... _back_attack.png
+const DUO_FILES = {
+  dosolo: 'dosolo.png', psyduo: 'psyduo.png', candyo: 'candyo.png',
+  balduo: 'balduo.png', greatbalduo: 'great bolduo.png', ultrabalduo: 'ultra bolduo.png', masterbalduo: 'master balduo.png',
+  moonbalduo: 'moon balduo.png', safaribalduo: 'safari balduo.png', luxurybalduo: 'luxury balduo.png',
+};
+for (const [k, file] of Object.entries(DUO_FILES)) {
+  SPRITES[k] = file;
+  for (const [suffix, name] of [['Blink', 'blink'], ['Hurt', 'hurt'], ['Attack', 'attack'], ['Back', 'back'], ['BackAttack', 'back_attack']]) {
+    SPRITES[k + suffix] = `sprites/${k}_${name}.png`;
+  }
+}
 // ULTRA PEDOT: your "<name> ultra beast.png" files + sprites/<name>_blink.png ... _back_attack.png
 for (const k of ['virtuleast', 'droison', 'golbuzz', 'algishiod', 'amperitie', 'dristiel']) {
   SPRITES[k] = k + ' ultra beast.png';
@@ -124,6 +136,11 @@ const SHINY_FILES = {
   duckonda: 'duckonda kiiltävä.png',
   virtuleast: 'virtuleast kiiltävä.png', droison: 'droison kiiltävä.png', golbuzz: 'golbuzz kiiltävä.png',
   algishiod: 'algishiod kiiltävä.png', amperitie: 'amperitie kiiltävä.png', dristiel: 'dristiel kiiltävä.png',
+  dosolo: 'kiiltävä dosolo.png', psyduo: 'kiiltävä psyduo.png', candyo: 'kiiltävä candyo.png',
+  // the BALDUO shinies are made by the game's sprite script (each ball form its own colours)
+  balduo: 'sprites/shiny_balduo.png', greatbalduo: 'sprites/shiny_greatbalduo.png', ultrabalduo: 'sprites/shiny_ultrabalduo.png',
+  masterbalduo: 'sprites/shiny_masterbalduo.png', moonbalduo: 'sprites/shiny_moonbalduo.png', safaribalduo: 'sprites/shiny_safaribalduo.png',
+  luxurybalduo: 'sprites/shiny_luxurybalduo.png',
 };
 for (const [k, file] of Object.entries(SHINY_FILES)) {
   SPRITES['shiny_' + k] = file;

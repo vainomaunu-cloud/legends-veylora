@@ -58,9 +58,13 @@ const dexScreen = {
 
   evolution(id) {
     const sp = SPECIES[id], parts = [];
-    const from = Object.keys(SPECIES).find(k => SPECIES[k].evolveTo === id);
+    const from = Object.keys(SPECIES).find(k => SPECIES[k].evolveTo === id || (SPECIES[k].evolveOptions || []).some(g => g.includes(id)));
     if (from) parts.push(`Kehittyy ${SPECIES[from].name}ista tasolla ${SPECIES[from].evolveAt}`);
     if (sp.evolveTo) parts.push(`Kehittyy ${SPECIES[sp.evolveTo].name}iksi tasolla ${sp.evolveAt}`);
+    if (sp.evolveOptions) {   // DOSOLO: one of the groups at random
+      const names = sp.evolveOptions.map(g => (g.length > 1 ? `joksikin ${g.length} BALDUOsta` : SPECIES[g[0]].name + 'ksi'));
+      parts.push(`Kehittyy tasolla ${sp.evolveAt} sattumanvaraisesti: ${names.slice(0, -1).join(', ')} tai ${names[names.length - 1]}`);
+    }
     return parts;
   },
 

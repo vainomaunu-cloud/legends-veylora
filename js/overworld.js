@@ -341,9 +341,15 @@ const MAPS = {
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
-    encounters: [],   // bushes, but no creatures in them yet
+    // chance per step in a bush: DOSOLO 40 %, and its evolved forms 20 % each (the 20 % of BALDUO is shared by its 7 ball forms)
+    encounters: [
+      { species: 'dosolo', chance: 0.40 },
+      { species: 'psyduo', chance: 0.20 },
+      { species: 'candyo', chance: 0.20 },
+      ...['balduo', 'greatbalduo', 'ultrabalduo', 'masterbalduo', 'moonbalduo', 'safaribalduo', 'luxurybalduo'].map(species => ({ species, chance: 0.20 / 7 })),
+    ],
     warps: { '0,11': { to: 'space', x: 38, y: 16, dir: 'left' } },
-    sign: 'DUO LANDS\nKirkas niitty puskineen tähtitaivaan alla. Tähdenlentoja näkee täällä usein. Länteen: MADONREIKÄ.',
+    sign: 'DUO LANDS\nKirkas niitty puskineen tähtitaivaan alla. Puskissa asuu DOSOLOja, ja harvemmin PSYDUOja, CANDYOja ja eri pallomuotoisia BALDUOja. Tähdenlentoja näkee täällä usein. Länteen: MADONREIKÄ.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)

@@ -238,6 +238,79 @@ const SPECIES = {
     xpYield: 170, coins: 40, catchRate: 0.22, feetY: 0,
     sprites: { front: 'dristiel', blink: 'dristielBlink', hurt: 'dristielHurt', attack: 'dristielAttack', back: 'dristielBack', backAttack: 'dristielBackAttack' },
   },
+  // DUO LANDS: DOSOLO evolves at level 14 into one of three, picked at random: PSYDUO, CANDYO or a BALDUO (any of its 7 ball forms)
+  dosolo: {
+    name: 'DOSOLO',
+    base: { hp: 50, atk: 60, def: 50, spa: 45, spd: 45, spe: 60 },
+    moves: ['airslash', 'tackle', 'closecombat'],
+    xpYield: 60, coins: 25, catchRate: 0.6, feetY: 0,
+    evolveAt: 14,
+    evolveOptions: [['psyduo'], ['candyo'], ['balduo', 'greatbalduo', 'ultrabalduo', 'masterbalduo', 'moonbalduo', 'safaribalduo', 'luxurybalduo']],
+    sprites: { front: 'dosolo', blink: 'dosoloBlink', hurt: 'dosoloHurt', attack: 'dosoloAttack', back: 'dosoloBack', backAttack: 'dosoloBackAttack' },
+  },
+  psyduo: {
+    name: 'PSYDUO',
+    base: { hp: 70, atk: 65, def: 65, spa: 105, spd: 85, spe: 85 },
+    moves: ['psistrike', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'psyduo', blink: 'psyduoBlink', hurt: 'psyduoHurt', attack: 'psyduoAttack', back: 'psyduoBack', backAttack: 'psyduoBackAttack' },
+  },
+  candyo: {
+    name: 'CANDYO',
+    base: { hp: 85, atk: 75, def: 80, spa: 95, spd: 80, spe: 70 },
+    moves: ['candyblast', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'candyo', blink: 'candyoBlink', hurt: 'candyoHurt', attack: 'candyoAttack', back: 'candyoBack', backAttack: 'candyoBackAttack' },
+  },
+  balduo: {
+    name: 'BALDUO', ballForm: true,
+    base: { hp: 75, atk: 95, def: 80, spa: 70, spd: 70, spe: 90 },
+    moves: ['ballrain', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'balduo', blink: 'balduoBlink', hurt: 'balduoHurt', attack: 'balduoAttack', back: 'balduoBack', backAttack: 'balduoBackAttack' },
+  },
+  greatbalduo: {
+    name: 'GREAT BALDUO', ballForm: true,
+    base: { hp: 75, atk: 95, def: 80, spa: 70, spd: 70, spe: 90 },
+    moves: ['ballrain', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'greatbalduo', blink: 'greatbalduoBlink', hurt: 'greatbalduoHurt', attack: 'greatbalduoAttack', back: 'greatbalduoBack', backAttack: 'greatbalduoBackAttack' },
+  },
+  ultrabalduo: {
+    name: 'ULTRA BALDUO', ballForm: true,
+    base: { hp: 75, atk: 95, def: 80, spa: 70, spd: 70, spe: 90 },
+    moves: ['ballrain', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'ultrabalduo', blink: 'ultrabalduoBlink', hurt: 'ultrabalduoHurt', attack: 'ultrabalduoAttack', back: 'ultrabalduoBack', backAttack: 'ultrabalduoBackAttack' },
+  },
+  masterbalduo: {
+    name: 'MASTER BALDUO', ballForm: true,
+    base: { hp: 75, atk: 95, def: 80, spa: 70, spd: 70, spe: 90 },
+    moves: ['ballrain', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'masterbalduo', blink: 'masterbalduoBlink', hurt: 'masterbalduoHurt', attack: 'masterbalduoAttack', back: 'masterbalduoBack', backAttack: 'masterbalduoBackAttack' },
+  },
+  moonbalduo: {
+    name: 'MOON BALDUO', ballForm: true,
+    base: { hp: 75, atk: 95, def: 80, spa: 70, spd: 70, spe: 90 },
+    moves: ['ballrain', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'moonbalduo', blink: 'moonbalduoBlink', hurt: 'moonbalduoHurt', attack: 'moonbalduoAttack', back: 'moonbalduoBack', backAttack: 'moonbalduoBackAttack' },
+  },
+  safaribalduo: {
+    name: 'SAFARI BALDUO', ballForm: true,
+    base: { hp: 75, atk: 95, def: 80, spa: 70, spd: 70, spe: 90 },
+    moves: ['ballrain', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'safaribalduo', blink: 'safaribalduoBlink', hurt: 'safaribalduoHurt', attack: 'safaribalduoAttack', back: 'safaribalduoBack', backAttack: 'safaribalduoBackAttack' },
+  },
+  luxurybalduo: {
+    name: 'LUXURY BALDUO', ballForm: true,
+    base: { hp: 75, atk: 95, def: 80, spa: 70, spd: 70, spe: 90 },
+    moves: ['ballrain', 'airslash', 'tackle', 'closecombat'],
+    xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
+    sprites: { front: 'luxurybalduo', blink: 'luxurybalduoBlink', hurt: 'luxurybalduoHurt', attack: 'luxurybalduoAttack', back: 'luxurybalduoBack', backAttack: 'luxurybalduoBackAttack' },
+  },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
     name: 'HUMMIRD',
@@ -363,6 +436,9 @@ const MOVES = {
   rest: { id: 'rest', name: 'REST', power: 0, powerText: '-', acc: 100, pp: 10, special: true, rest: true, anim: 'rest' },
   // FALSE SWIPE (TM from the TM-KERÄILIJÄ): never knocks the target out, it always keeps at least 1 HP
   falseswipe: { id: 'falseswipe', name: 'FALSE SWIPE', power: 40, acc: 100, pp: 40, special: false, keepOne: true, anim: 'slash' },
+  // DOSOLO evolutions
+  candyblast: { id: 'candyblast', name: 'CANDY BLAST', power: 90, acc: 100, pp: 10, special: true, anim: 'candyblast' },
+  ballrain: { id: 'ballrain', name: 'BALL RAIN', power: 90, acc: 95, pp: 10, special: false, anim: 'ballrain' },
 };
 // used automatically when every move is out of PP
 const STRUGGLE = { name: 'RIMPUILU', power: 35, acc: 100, pp: 0, left: 0, special: false, anim: 'tackle', struggle: true };
@@ -419,6 +495,12 @@ const SHINY_CHANCE_CHARM = 1 / 100;  // with the SHINY CHARM (or the BEAST CHARM
 // SHINY CHARM raises the odds for ordinary creatures, BEAST CHARM for the ULTRA PEDOT (each charm only works on its own kind)
 const shinyChance = species => ((SPECIES[species] && SPECIES[species].ultra ? game.beastCharm : game.shinyCharm) ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
 // every species that can be caught (the starter can only be chosen, not caught)
+// what a creature evolves into: evolveTo, or for DOSOLO one of its evolveOptions groups at random (then a random member of it)
+function pickEvolution(sp) {
+  if (!sp.evolveOptions) return sp.evolveTo;
+  const group = sp.evolveOptions[rnd(0, sp.evolveOptions.length - 1)];
+  return group[rnd(0, group.length - 1)];
+}
 const catchableSpecies = () => Object.keys(SPECIES).filter(id => id !== 'duckonda' && !SPECIES[id].evolveOnly);
 // the SHINY CHARM needs every catchable species except the regis (never shiny) and the ULTRA PEDOT (they have the BEAST CHARM)
 const charmSpecies = () => catchableSpecies().filter(id => !SPECIES[id].legendary && !SPECIES[id].ultra);
@@ -441,6 +523,7 @@ const BATTLE_BG = {
   sea: { sky: '#d6efff', far: '#a6d6f2', near: '#86c4ec', ground: '#62b2e8', speck: '#8ccaf2', platDark: '#cbaa5e', plat: '#f2db9a' },
   hyujal: { sky: '#d8c6f2', far: '#b08ee0', near: '#9470d0', ground: '#b39ae2', speck: '#9f82d6', platDark: '#7a52b8', plat: '#9a78da', glow: true },
   space: { sky: '#100c24', far: '#2a2048', near: '#3a3060', ground: '#4a4460', speck: '#5e5878', platDark: '#2a2440', plat: '#7a7498', glow: true },
+  duo: { sky: '#1c2460', far: '#2c3c88', near: '#3c58a8', ground: '#8ee06a', speck: '#b4f08e', platDark: '#5cb048', plat: '#a8ec84', glow: true },
 };
 const FOE_POS = { x: 150, y: 4 };
 const ME_POS = { x: 28, y: 48 };
@@ -1010,6 +1093,8 @@ const battle = {
     else if (move.anim === 'spear') yield* this.animSpear(av, dv);
     else if (move.anim === 'selfdestruct') yield* this.animSelfDestruct(av, dv);
     else if (move.anim === 'mindcontrol') yield* this.animMindControl(av, dv);
+    else if (move.anim === 'candyblast') yield* this.animCandyBlast(av, dv);
+    else if (move.anim === 'ballrain') yield* this.animBallRain(dv);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
     if (move.keepOne && dmg >= def.hp) dmg = Math.max(0, def.hp - 1);   // FALSE SWIPE leaves the target 1 HP
@@ -1866,6 +1951,42 @@ const battle = {
     yield* wait(6);
   },
 
+  // CANDY BLAST: a swirl of wrapped sweets flies over and bursts into pink and white sprinkles
+  *animCandyBlast(av, dv) {
+    av.pose = 'attack';
+    yield* this.animParticles(av, dv, { count: 10, gap: 2, dur: 18, swirl: 7, arc: 10, colors: ['#ff9cf2', '#ffffff', '#b8f6ff', '#ffe070'], size: 4 });
+    av.pose = 'idle';
+    this.flash = 2; this.shake = 6;
+    for (let i = 0; i < 18; i++) {   // sprinkles burst outwards
+      this.parts = [];
+      for (let n = 0; n < 14; n++) {
+        const a = n * Math.PI / 7 + 0.2, r = 4 + i * 2;
+        this.parts.push({ x: dv.x + 32 + Math.cos(a) * r, y: dv.y + 34 + Math.sin(a) * r, c: ['#ff9cf2', '#ffffff', '#7ad8ff', '#ffe070'][n % 4], s: n % 3 ? 2 : 3 });
+      }
+      yield;
+    }
+    this.parts = null;
+  },
+
+  // BALL RAIN: little red-and-white balls rain down on the target
+  *animBallRain(dv) {
+    const cx = dv.x + 32, ground = dv.y + 52;
+    for (let i = 0; i < 46; i++) {
+      this.parts = [];
+      for (let n = 0; n < 9; n++) {
+        const start = n * 4, k = (i - start) / 14;
+        if (k < 0 || k > 1) continue;
+        const x = cx - 24 + ((n * 13) % 48), y = dv.y - 20 + k * (ground - dv.y + 20);
+        this.parts.push({ x, y, c: '#e04838', s: 4 }, { x, y: y + 2, c: '#f4f4f4', s: 4 }, { x: x + 1, y: y + 1, c: '#202020', s: 2 });
+        if (Math.abs(k - 1) < 0.08) this.shake = 3;
+      }
+      yield;
+    }
+    this.parts = null;
+    this.addFx('hit', cx, dv.y + 34, [0, 0, 1, 1]);
+    yield* wait(4);
+  },
+
   // MIND CONTROL: pink-violet rings spiral into the target's head, which sways from side to side
   *animMindControl(av, dv) {
     av.pose = 'attack';
@@ -1978,7 +2099,7 @@ const battle = {
   },
 
   *evolve(me) {
-    const from = SPECIES[me.species], to = SPECIES[from.evolveTo];
+    const from = SPECIES[me.species], toId = pickEvolution(from), to = SPECIES[toId];
     yield* textBox.say(`Mitä? ${from.name} kehittyy!`);
     this.showMeInfo = false;
     this.meV.show = false;
@@ -1992,7 +2113,7 @@ const battle = {
       yield* wait(gap);
       gap = Math.max(3, Math.floor(gap * 0.8));
     }
-    me.species = from.evolveTo;
+    me.species = toId;
     me.name = to.name;
     const oldMax = me.maxHp;
     calcStats(me);
@@ -2089,7 +2210,7 @@ const battle = {
       yield* textBox.say(`Sait ${coins} kolikkoa! Kolikoita yhteensä: ${game.coins}.`);
     }
     const sp = SPECIES[me.species];
-    if (sp.evolveTo && me.level >= sp.evolveAt) yield* this.evolve(me);
+    if ((sp.evolveTo || sp.evolveOptions) && me.level >= sp.evolveAt) yield* this.evolve(me);
     this.result = 'win';
     return false;
   },
@@ -2153,28 +2274,28 @@ const battle = {
   drawInfo() {
     const me = this.me, foe = this.foe;
     if (this.showFoeInfo) {
-      drawBox(6, 6, 104, 30);
+      drawBox(6, 6, 122, 30);   // wide enough for long names like "LUXURY BALDUO LV20"
       const fx = drawText(ctx, foe.name, 12, 11);
       if (foe.shiny) drawText(ctx, '★', fx + 3, 11, '#e8b830');
       if (foe.status) drawTag(8, 38, foe.status);   // under the box (long names leave no room inside)
-      drawTextRight(ctx, 'LV' + foe.level, 104, 11);
+      drawTextRight(ctx, 'LV' + foe.level, 122, 11);
       drawText(ctx, 'HP', 12, 24, '#c07020');
       const f = this.foeV.hpShown / foe.maxHp;
-      drawBar(26, 26, 76, f, hpColor(f));
+      drawBar(26, 26, 94, f, hpColor(f));
     }
     if (this.showMeInfo) {
-      drawBox(126, 70, 110, 41);
-      const mx = drawText(ctx, me.name, 132, 75);
+      drawBox(112, 70, 124, 41);   // wide enough for long names like "MASTER BALDUO★ LV20"
+      const mx = drawText(ctx, me.name, 118, 75);
       if (me.shiny) drawText(ctx, '★', mx + 3, 75, '#e8b830');
-      if (me.status) drawTag(128, 59, me.status);   // above the box
+      if (me.status) drawTag(114, 59, me.status);   // above the box
       drawTextRight(ctx, 'LV' + me.level, 230, 75);
-      drawText(ctx, 'HP', 132, 86, '#c07020');
+      drawText(ctx, 'HP', 118, 86, '#c07020');
       const f = this.meV.hpShown / me.maxHp;
-      drawBar(146, 88, 84, f, hpColor(f));
+      drawBar(132, 88, 98, f, hpColor(f));
       drawTextRight(ctx, `${Math.ceil(this.meV.hpShown)}/${me.maxHp}`, 230, 94);
-      drawText(ctx, 'XP', 132, 102, '#3878c8');
+      drawText(ctx, 'XP', 118, 102, '#3878c8');
       const lo = xpForLevel(me.level), hi = xpForLevel(me.level + 1);
-      drawBar(146, 104, 84, (this.xpShown - lo) / (hi - lo), '#48a0f0');
+      drawBar(132, 104, 98, (this.xpShown - lo) / (hi - lo), '#48a0f0');
     }
   },
 

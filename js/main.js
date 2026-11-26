@@ -34,6 +34,7 @@ const WILD_LEVELS = {
   town: [3, 10],      // VEYLORAN KYLÄ
   farm: [4, 12],      // MAATILA (corn field)
   space: [30, 40],    // MADONREIKÄ (ULTRA PEDOT)
+  duo: [10, 20],      // DUO LANDS (DOSOLO evolves at 14)
 };
 
 function wildLevel() {
