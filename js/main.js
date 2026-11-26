@@ -114,7 +114,7 @@ function startGame() {
     const starter = game.party[0];
     overworld.say(`Tervetuloa Puskametsään! Kumppanisi on DUCKONDA.` +
       (starter.shiny ? ' Vau, se on KIILTÄVÄ! Sellainen on vain joka kymmenennellä.' : '') +
-      ` Villejä otuksia kävelee ruohikolla: kävele otuksen luo, niin taistelu alkaa. Voitoista saa kolikoita, ja ${CENTER_NAME}sta voi ostaa palloja otusten nappaamiseen.`);
+      ` Kävele puskissa, niin villejä otuksia hyppää esiin. Voitoista saa kolikoita, ja ${CENTER_NAME}sta voi ostaa palloja otusten nappaamiseen.`);
     yield* tween(20, k => { game.fade = 1 - k; });
     game.fade = 0;
   })());

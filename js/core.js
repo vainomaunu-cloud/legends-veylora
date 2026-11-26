@@ -58,6 +58,8 @@ const SPRITES = {
   greatBall: 'sprites/great_ball.png',    // 3 frames 16x16 GREAT PALLO
   ultraBall: 'sprites/ultra_ball.png',    // 3 frames 16x16 ULTRA PALLO
   tilesSpace: 'sprites/tiles_space.png',  // MADONREIKÄ tiles (11 rock edge over space, 12 open space)
+  tilesDuo: 'sprites/tiles_duo.png',      // DUO LANDS tiles (1 plowed soil, 6 wheat, 10 wheat front, 11 field edge, 12 night sky)
+  duoRustle: 'sprites/duo_rustle.png',    // 3 frames: wheat swaying
   wormhole: 'sprites/wormhole.png',      // 4 frames 32x32 swirling WORMHOLE
   regiShard: 'sprites/regi_shard.png',   // 2 frames 16x16 REGI SHARD lying on the ground
   wormkeeper: 'sprites/wormkeeper.png',  // MADONREIÄN VARTIJA (player sheet re-coloured)

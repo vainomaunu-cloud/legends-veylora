@@ -129,7 +129,7 @@ const admin = {
       case 'warp': {
         if (!ow) return this.msg('Siirtyminen onnistuu vain kävellessä (ei taistelussa).');
         const id = this.el.querySelector('#admMap').value, m = MAPS[id];
-        const spot = { forest: m.spawn, hyujal: { x: 12, y: 2 }, sea: { x: 2, y: 10 }, snow: { x: 12, y: 17 }, temple: { x: 11, y: 20 }, space: { x: 9, y: 21 }, town: { x: 27, y: 10 }, farm: { x: 27, y: 10 } }[id] || m.spawn || { x: 1, y: 1 };
+        const spot = { forest: m.spawn, hyujal: { x: 12, y: 2 }, sea: { x: 2, y: 10 }, snow: { x: 12, y: 17 }, temple: { x: 11, y: 20 }, space: { x: 9, y: 21 }, duo: { x: 2, y: 11 }, town: { x: 27, y: 10 }, farm: { x: 27, y: 10 } }[id] || m.spawn || { x: 1, y: 1 };
         overworld.enterMap(id, spot.x, spot.y, 'down');
         music.play(m.music);
         return this.changed(`Siirrytty: ${m.name}`);

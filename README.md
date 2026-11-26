@@ -1,17 +1,17 @@
 # Legends Veylora – selainpelin suunnitelma
 
-Pieni vanhan ajan otuspeli. Kävelet metsässä, ja villit otukset kävelevät näkyvissä kartalla: kävele otuksen luo, niin taistelu alkaa. Aloitat tuliotus **DUCKONDAlla**, jota ei saa mistään muualta. Taistelut ovat vuoropohjaisia. Voitoista saa kolikoita, joilla **HOITOLASTA** ostetaan **PYYDYSPALLOJA** otusten nappaamiseen.
+Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi otus. Aloitat tuliotus **DUCKONDAlla**, jota ei saa mistään muualta. Taistelut ovat vuoropohjaisia. Voitoista saa kolikoita, joilla **HOITOLASTA** ostetaan **PYYDYSPALLOJA** otusten nappaamiseen.
 
 ## Otukset
 
-| Laji | Vaihe | Sprite | Liikkeet | Missä (paino arvonnassa) | Voitosta | Nappausvaikeus |
+| Laji | Vaihe | Sprite | Liikkeet | Puskasta / askel | Voitosta | Nappausvaikeus |
 |---|---|---|---|---|---|---|
 | DUCKONDA | aloitusotus, 1. vaihe | `duckonda.png` + `sprites/duckonda_*.png` | FIRE SPIN, FLAMETHROWER, FLAME TORNADO | ei koskaan (vain aloitusotuksena) | – | – |
 | QUACKOBRA | 2. vaihe (DUCKONDA kehittyy tasolla 17, oppii POISON JABin) | `quackobra.png` + `sprites/quackobra_*.png` | POISON JAB, FIRE SPIN, FLAMETHROWER, FLAME TORNADO | ei koskaan (vain kehittämällä) | – | – |
-| CORIL | 1. vaihe | `coril.png` + `sprites/coril_*.png` | TACKLE, ELECTROBALL, ENERGY BALL | MAATILA (30) | 20 kolikkoa | helppo (0,65) |
-| CORNECHAUN | 2. vaihe (kehittyy tasolla 7, oppii CORN GUNin) | `cornechaun.png` + `sprites/cornechaun_*.png` | CORN GUN, TACKLE, ELECTROBALL, ENERGY BALL | MAATILA (10) | 35 kolikkoa | keskitaso (0,4) |
-| CORNELIVA | 3. vaihe (kehittyy tasolla 16) | `corneliva.png` + `sprites/corneliva_*.png` | CORN GUN, TACKLE, ELECTROBALL, ENERGY BALL | MAATILA (5) | 55 kolikkoa | hyvin vaikea (0,25) |
-| SCARGHOST | ei kehity | `scarghost.png` + `sprites/scarghost_*.png` | SHADOW CLAW, SHADOW BALL, HAY HIDE | MAATILA (10) | 40 kolikkoa | keskitaso (0,4) |
+| CORIL | 1. vaihe | `coril.png` + `sprites/coril_*.png` | TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 30 % | 20 kolikkoa | helppo (0,65) |
+| CORNECHAUN | 2. vaihe (kehittyy tasolla 7, oppii CORN GUNin) | `cornechaun.png` + `sprites/cornechaun_*.png` | CORN GUN, TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 10 % | 35 kolikkoa | keskitaso (0,4) |
+| CORNELIVA | 3. vaihe (kehittyy tasolla 16) | `corneliva.png` + `sprites/corneliva_*.png` | CORN GUN, TACKLE, ELECTROBALL, ENERGY BALL | MAATILAN maissipelto 5 % | 55 kolikkoa | hyvin vaikea (0,25) |
+| SCARGHOST | ei kehity | `scarghost.png` + `sprites/scarghost_*.png` | SHADOW CLAW, SHADOW BALL, HAY HIDE | MAATILAN maissipelto 10 % | 40 kolikkoa | keskitaso (0,4) |
 | AMPERITE | 1. vaihe | `moi 1st evo.png` + `sprites/amperite_*.png` | ELECTROBALL, TACKLE | 15 % | 25 kolikkoa | helppo (0,7) |
 | AMPEREEM | 2. vaihe (kehittyy tasolla 8) | `moi.png` + `sprites/moi_*.png` | THUNDERBOLT, ELECTROBALL, TACKLE | 5 % | 50 kolikkoa | vaikea (0,35) |
 | ZUBUG | 1. vaihe | `zubug.png` + `sprites/zubug_*.png` | BUG BUZZ, STICKY WEB | 15 % | 25 kolikkoa | helppo (0,7) |
@@ -30,8 +30,8 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja villit otukset kävelevät n
 | UNDERCHILL | 3. vaihe (kehittyy tasolla 16) | `underchill.png` + `sprites/underchill_*.png` | IRON HEAD, ICE FANG, ICE CREAM THROW, BLIZZARD | 3 % (SNOW MOUNTAIN) | 55 kolikkoa | hyvin vaikea (0,25) |
 | SINIRAMEN | 1. vaihe | `siniramen.png` + `sprites/siniramen_*.png` | TACKLE, FIRE SPIN, MUD SHOT | 15 % (SNOW MOUNTAIN) | 20 kolikkoa | helppo (0,6) |
 | POLTEARAMEN | 2. vaihe (kehittyy tasolla 16, oppii FLAMETHROWERin) | `poltearamen.png` + `sprites/poltearamen_*.png` | FLAMETHROWER, FIRE SPIN, MUD SHOT, TACKLE | 5 % (SNOW MOUNTAIN) | 55 kolikkoa | vaikea (0,3) |
-| HUMMIRD | 1. vaihe | `hummird.png` + `sprites/hummird_*.png` | AIR SLASH, TACKLE | SAARIMEREN palmujen päällä (kävele palmua päin) ja VEYLORAN KYLÄSSÄ | 20 kolikkoa | keskitaso (0,6) |
-| HUMMIRDING | 2. vaihe (kehittyy tasolla 14) | `hummirding.png` + `sprites/hummirding_*.png` | TWISTER, AIR SLASH, TACKLE | VEYLORAN KYLÄSSÄ (tai kehittämällä) | 45 kolikkoa | vaikea (0,3) |
+| HUMMIRD | 1. vaihe | `hummird.png` + `sprites/hummird_*.png` | AIR SLASH, TACKLE | SAARIMEREN palmujen päällä (kävele palmua päin) ja VEYLORAN KYLÄN puskissa 15 % | 20 kolikkoa | keskitaso (0,6) |
+| HUMMIRDING | 2. vaihe (kehittyy tasolla 14) | `hummirding.png` + `sprites/hummirding_*.png` | TWISTER, AIR SLASH, TACKLE | VEYLORAN KYLÄN puskissa 5 % (tai kehittämällä) | 45 kolikkoa | vaikea (0,3) |
 | REGIACID | regi, ei kehity | `regiacid.png` + `sprites/regiacid_*.png` | REGI POWER, ACID PULSE, POISON JAB, FIRE PUNCH | REGI TEMPPELIN keskimmäinen jalusta, LV50 | – | erittäin vaikea (0,12) |
 | REGIPSY | regi, ei kehity | `regipsy.png` + `sprites/regipsy_*.png` | REGI POWER, PSYCHO CUT, PSYCHIC, MIND HEAL | REGI TEMPPELIN oikea jalusta, LV50 | – | erittäin vaikea (0,12) |
 | REGISMILE | regi, ei kehity | `regismile.png` + `sprites/regismile_*.png` | REGI POWER, HAPPINESS PULSE, BABYDOLL EYES, CHARM | REGI TEMPPELIN vasen jalusta, LV50 | – | erittäin vaikea (0,12) |
@@ -44,7 +44,7 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja villit otukset kävelevät n
 
 Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUNDERBOLTin ja ZUBUG AIR SLASHin. Toisen vaiheen otuksilla on paremmat perusarvot (HP, hyökkäys, nopeus…), ja niistä saa enemmän kokemuspisteitä. Pelaaja aloittaa pelkällä DUCKONDAlla. Kaikki muut otukset saa vain nappaamalla.
 
-**Villit otukset kävelevät kartalla** (ei enää puskissa): jokaisella alueella kävelee näkyvissä 7–9 otusta. Laji arvotaan alueen listan painoilla (`encounters` tai `wanderers` tiedostossa `js/overworld.js`), eli mitä isompi taulukon luku, sitä useammin otus on se, joka kävelee alueella. KOKOELMA näyttää, montako prosenttia alueen otuksista on kutakin lajia. SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %), ja palmujen päällä istuu HUMMIRDeja.
+PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden, HYUJAL METSÄSSÄ 90 % (EYEVIL 30 %, EYEBALDON 10 %, SQUISHROOM 20 %, SHROOCID 15 %, PSISTIEL 10 %, PSIDUOCIPE 5 %). SAARIMERELLÄ kalastus nappaa 65 % heitoista (ALGISH 40 %, MOONORG 15 %, SERPENALGE 10 %). Kehittyessään ALGISH oppii CRUNCHin ja FLAMETHROWERin. SNOW MOUNTAINilla puskissa on 63 % (BINCHULCIN 30 %, SINIRAMEN 15 %, OVERCHILL 10 %, POLTEARAMEN 5 %, UNDERCHILL 3 %). BINCHULCIN oppii ICE FANGin kehittyessään OVERCHILLiksi, ja OVERCHILL oppii IRON HEADin kehittyessään UNDERCHILLiksi.
 
 ### Kiiltävät muodot
 
@@ -61,8 +61,6 @@ Kehittyessään otus oppii uuden liikkeen ja pitää vanhat: AMPERITE oppii THUN
 ## Pelaaminen
 
 Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuksia ei tarvita.
-
-**Villit otukset näkyvät kartalla.** Kartalla ne ovat pienempiä kuin taistelussa (20 px, `WANDER_SIZE`), suunnilleen pelaajan kokoisia. Ne kävelevät hitaasti ruohikolla, lumella ja kivellä, mutta eivät mene puskiin, maissiin, poluille eivätkä lehmäaitaukseen. Kävele otuksen luo (tai paina Z sen edessä), niin taistelu alkaa: "Villi … hyökkäsi kimppuusi!". Otus katoaa kartalta, kun taistelu alkaa, ja noin 10 sekunnin välein uusi otus tulee näkyvistä poissa olevaan paikkaan, kunnes alueella on taas täysi määrä. Kiiltävän otuksen näkee jo kartalla: se on kiiltävän värinen, ja sen päällä tuikkii tähti. Pikkukartalla otukset näkyvät pinkkeinä pisteinä.
 
 | Näppäin | Toiminto |
 |---|---|
@@ -113,7 +111,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **Minikartta** oikeassa yläkulmassa: pyöreä kartta, jonka keskellä on pelaaja (punainen piste). Siinä näkyvät polut, puskat, puut, vesi, sillat, HOITOLA, kioski ja vilkkuvina keltaisina pisteinä uloskäynnit. Kartta seuraa pelaajaa ja on piilossa valikoiden ajan (värit: `MINI_COLORS`, koko: `MINI_R` ja tarkkuus: `MINI_SCALE` tiedostossa `js/overworld.js`; pienempi `MINI_SCALE` näyttää isomman alueen).
    - Ruudukkoliike niin kuin vanhoissa peleissä. Lyhyt napautus vain kääntää hahmoa. Yksi ruutu kestää noin 11 kuvaa (`WALK_SPEED` tiedostossa `js/overworld.js`).
    - Metsän puut ovat lomittain: joka toinen puurivi on siirretty puoli ruutua sivulle, ja rivit menevät hieman päällekkäin.
-   - **Villit otukset kävelevät ruohikolla:** AMPERITE (paino 15), ZUBUG (15), GOLBUG (8) ja AMPEREEM (5). Puskissa ei enää ole otuksia, mutta puska heiluu yhä, ja pelaajan jalat jäävät lehtien taakse.
+   - **Puskat:** joka askeleella puskassa voi tulla vastaan AMPERITE (15 %), ZUBUG (15 %), GOLBUG (8 %) tai AMPEREEM (5 %). Puska heiluu, ja pelaajan jalat jäävät lehtien taakse.
    - **HOITOLA** (keskellä metsää, ovi alareunassa):
      - PARANNA: koko tiimin HP, PP ja halvaantuminen.
      - OSTA: **TYHJÄ TM** maksaa 25 kolikkoa (`EMPTY_TM`), PYYDYSPALLO 50 kolikkoa (`BALL_PRICE` tiedostossa `js/overworld.js`), **ULTRA PALLO 200 kolikkoa** (`ULTRA_PRICE`) ja **MASTER PALLO 1000 kolikkoa** (`MASTER_PRICE`). Kauppa pysyy auki, kunnes valitset POISTU.
@@ -136,7 +134,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Aloituspaikan vierestä polku kulkee länteen metsän vasemman reunan läpi **VEYLORAN KYLÄÄN**.
 2b. **VEYLORAN KYLÄ** (30 × 20 ruutua, PUSKAMETSÄN länsipuolella)
    - Pieni kylä: viisi taloa (punainen, sininen, vihreä, oranssi ja violetti katto, ikkunoissa kukkalaatikot), hiekkakadut, kukkia, puskarivejä, kyltti ja avoin lampi. Soi PUSKAMETSÄN musiikki.
-   - **Kylässä kävelevät** **HUMMIRD**, **SQUISHROOM** ja **SINIRAMEN** (paino 15 kukin) sekä **HUMMIRDING** ja **POLTEARAMEN** (5 kumpikin), tasoilla 3–10. Lampeen ei pääse, eikä siinä voi kalastaa otuksia.
+   - **Kylän puskista voi tulla** **HUMMIRD** (15 %), **SQUISHROOM** (15 %), **SINIRAMEN** (15 %), **HUMMIRDING** (5 %) tai **POLTEARAMEN** (5 %) askelta kohden, tasoilla 3–10. Lampeen ei pääse, eikä siinä voi kalastaa otuksia.
    - **Sivutehtävä: TM-KERÄILIJÄ** (vihreä lakki ja takki, `sprites/tmcollector.png`) seisoo kylän keskellä kyltin lähellä. Hän kerää TYHJIÄ TM-levyjä: tuo hänelle **5 TYHJÄÄ TM:ää** (25 kolikkoa kappale HOITOLAN kaupasta, `TM_QUEST_COUNT`), niin saat palkinnoksi **FALSE SWIPE TM:n**.
      - **FALSE SWIPE TM** on REPUSSA. Paina **Opeta** ja valitse tiimistä otus, joka oppii **FALSE SWIPEn**. Jos otus osaa jo 4 hyökkäystä, valitse, minkä se unohtaa. TM ei kulu, joten saman TM:n voi opettaa monelle otukselle. Taistelun aikana TM:ää ei voi käyttää.
      - **FALSE SWIPE** (voima 40, tarkkuus 100, 40 PP): jättää vastustajalle aina vähintään **1 HP:n**, joten otus ei uuvu ja sen voi napata.
@@ -146,18 +144,18 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 2c. **MAATILA** (30 × 20 ruutua, VEYLORAN KYLÄN länsipuolella)
    - Iso punainen **navetta** (ovi keskellä, paina Z ovella), heinäpaaleja, **maissipelto** ja **lehmäaitaus**, jossa kolme lehmää kävelee rauhassa ja välillä laiduntaa pää alhaalla. Lisäksi maanviljelijän talo ja kyltti.
    - Aitaukseen pääsee alareunan portista. Kun kävelet lehmää päin tai painat Z sen vieressä, se ammuu.
-   - **MAATILALLA kävelevät** **CORIL** (paino 30), **CORNECHAUN** (10), **SCARGHOST** (10) ja **CORNELIVA** (5), tasoilla 4–12. Ne kävelevät ruohikolla, eivät maississa eivätkä lehmäaitauksessa. Maissi heiluu edelleen, kun sen läpi kävelee.
+   - **Maissipellosta voi tulla** **CORIL** (30 %), **CORNECHAUN** (10 %), **SCARGHOST** (10 %) tai **CORNELIVA** (5 %) askelta kohden, tasoilla 4–12. Maissi heiluu, kun sen läpi kävelee.
    - Kartassa navetta on `NNNN`-lohko (4 × 3, katto ulottuu rivin ylemmäs), maissi `B`, heinäpaali `M` ja aita `Y`. Lehmien paikat ja aitauksen rajat ovat kartan `cows`- ja `cowPen`-kohdissa.
    - Itäreunan polku vie takaisin VEYLORAN KYLÄÄN.
 3. **HYUJAL METSÄ** (24 × 18 ruutua)
    - Hohtava metsä: liilat puut, ruoho ja puskat, hohtavat siniset ja liilat sienet (pienet sienet ja isot, kiinteät sienet sykkivät) sekä leijuvat valopisteet.
-   - **HYUJAL METSÄSSÄ kävelevät** **EYEVIL** (paino 30), **EYEBALDON** (10), **SQUISHROOM** (20), **SHROOCID** (15), **PSISTIEL** (10) ja **PSIDUOCIPE** (5).
+   - Liiloista puskista voi tulla **EYEVIL** (30 %), **EYEBALDON** (10 %), **SQUISHROOM** (20 %), **SHROOCID** (15 %), **PSISTIEL** (10 %) tai **PSIDUOCIPE** (5 %) askelta kohden.
    - Täällä taistellessa taustakin on liila, ja taivaalla tuikkii sinisiä ja liiloja valoja.
    - Kun menet alueelle, sen nimi liukuu hetkeksi ruudun yläreunaan. Sama tapahtuu palatessa PUSKAMETSÄÄN.
    - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
 4. **SNOW MOUNTAIN** (26 × 20 ruutua)
    - Luminen metsä PUSKAMETSÄN pohjoispuolella: lumiset kuuset, lumihuippuiset puskat, kimaltelevaa lunta ja tallattu lumipolku keskellä. Lunta sataa koko ajan.
-   - **SNOW MOUNTAINilla kävelevät** **BINCHULCIN** (paino 30), **SINIRAMEN** (15), **OVERCHILL** (10), **POLTEARAMEN** (5) ja **UNDERCHILL** (3). Kyltti on polun varrella.
+   - Lumisista puskista voi tulla **BINCHULCIN** (30 %), **SINIRAMEN** (15 %), **OVERCHILL** (10 %), **POLTEARAMEN** (5 %) tai **UNDERCHILL** (3 %). Kyltti on polun varrella.
    - Täällä taistellaan lumisella taustalla.
    - Polku jatkuu pohjoisreunan läpi suoraan **REGI TEMPPELIIN**.
 4b. **REGI TEMPPELI** (24 × 23 ruutua, SNOW MOUNTAINin yläpuolella)
@@ -180,7 +178,11 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - **ULTRA PEDOT näkyvät kartalla:** puskia eikä piilotettuja kohtaamisia ole. Kun tulet madonreiästä, kivelle ilmestyy 9 petoa (VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL, kartan `wanderers`). Ne leijuvat ja liikkuvat hitaasti ruudusta toiseen, ja pikkukartalla ne näkyvät pinkkeinä pisteinä. Kävele pedon luo (tai paina Z sen edessä), niin taistelu alkaa. Peto katoaa kartalta, kun taistelu alkaa, ja uudet tulevat, kun palaat madonreiästä uudelleen. Ne ovat tasoilla 30–40, ja niitä vastaan taistellaan tähtitaivaan alla.
    - **Kiiltävät ULTRA PEDOT:** jokainen kartalle ilmestyvä peto on 1/500 (BEAST CHARMilla 1/400, SHINY CHARM ei auta) todennäköisyydellä kiiltävä (`virtuleast kiiltävä.png` ym. + `sprites/shiny_<nimi>_*.png`). Kiiltävän pedon näkee jo kartalla: se on kiiltävän värinen, ja sen päällä tuikkii pieni tähti. SHINY CHARMiin ULTRA PETOJA ei tarvita: niille on oma BEAST CHARM.
    - Uusia liikkeitä: VIRTUAL SHOT (kriittinen osuma tulee helpommin), ELECTRO POWER (voi halvaannuttaa), DRAGON BREATH (voi halvaannuttaa), DRAGON CLAW, POISON POWDER (myrkyttää, ei vahinkoa), SWARM, CLOSE COMBAT (120), LOW KICK, SHARP SPEAR (kriittinen osuma tulee helpommin), THUNDER (110, osuu 70 %), SELF DESTRUCTION (200, mutta käyttäjä uupuu itsekin), SPARK HEAL (palauttaa puolet HP:sta), MIND CONTROL (75, voi laskea kohteen hyökkäystä) ja REST (koko HP takaisin ja tila pois, mutta käyttäjä nukkuu 2 vuoroa).
-   - Madonreikä vie takaisin REGI TEMPPELIIN.
+   - Madonreikä vie takaisin REGI TEMPPELIIN. Itäreunan tähtipolku vie **DUO LANDSIIN**.
+4d. **DUO LANDS** (32 × 22 ruutua, MADONREIÄN itäpuolella)
+   - Hiljaisia peltoja, jotka leijuvat tähtitaivaalla: kynnettyä maata oraineen, kultaista vehnää (sen läpi voi kävellä, ja se heiluu), heinäpaaleja, hiekkapolku ja sinisinä tuikkivia tähtikukkia. Pellon reunojen ulkopuolella on yötaivas, jota ei pääse läpi.
+   - Koko alueella on yö: taivaalla tuikkii tähtiä, ja muutaman sekunnin välein **tähdenlento** viuhahtaa taivaan poikki (`night`, `stars` ja `shootingStars` kartan tiedoissa).
+   - Täällä ei ole otuksia, vain peltoa. Kyltti on keskellä. Länsireunan polku vie takaisin MADONREIKÄÄN.
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
    - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Sitten joko jokin nappaa ja otus **nousee vedestä** taisteluun (ALGISH, MOONORG tai SERPENALGE), tai "Mikään ei näykkinyt". Merellä taistellaan meren taustalla (vesi ja hiekkasärkät). Lista on kartan `fishing`-kohdassa.
@@ -318,6 +320,8 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/houses.png` | 240×48 | Viisi 48×48 taloa: punainen, sininen, vihreä, oranssi ja violetti katto, savupiippu, ikkunat kukkalaatikoineen ja ovi alarivin keskellä |
 | `sprites/tiles_temple.png` | 208×16 | REGI TEMPPELIN ruudut: lattia (0–1, 5–6, 10), matto (2), hehkuva riimu (3–4), kivimalja pinkillä liekillä (7–8), kivitaulu (9), tiiliseinän etupuoli (11) ja seinän yläosa (12) |
 | `sprites/tiles_space.png` | 208×16 | MADONREIÄN ruudut: asteroidikivi (0–1, 5–6, 10), tähtipolku (2), tuikkiva tähtikristalli (3–4), leijuva violetti kristalli (7–8), kivitaulu (9), kiven reuna avaruuden yllä (11) ja avaruus (12) |
+| `sprites/tiles_duo.png` | 208×16 | DUO LANDSIN ruudut: ruoho (0, 5), kynnetty maa (1), polku (2), tuikkivat tähtikukat (3–4), vehnä (6), heinäpaali (7–8), kyltti (9), vehnän etuosa (10), pellon reuna taivaan yllä (11) ja tähtitaivas (12) |
+| `sprites/duo_rustle.png` | 48×16 | Vehnän heilunta, 3 kuvaa |
 | `sprites/wormhole.png` | 128×32 | MADONREIKÄ: 4 pyörivää kuvaa 32×32 |
 | `sprites/regi_shard.png` | 32×16 | REGI SHARD: kristalli ja kimaltava kuva |
 | `sprites/wormkeeper.png` | kuten `player.png` | MADONREIÄN VARTIJA: pelaajan kuva tummansinisellä takilla |

@@ -9,7 +9,6 @@ const BALL_PRICE = 50;
 const MAPS = {
   forest: {
     name: 'PUSKAMETSÄ',
-    wanderCount: 8,   // wild creatures walking around at once
     shard: { x: 24, y: 2 },   // one of the five REGI SHARDs lies here (picked up by walking onto it)
     tiles: 'tiles', rustle: 'bushRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
@@ -105,7 +104,6 @@ const MAPS = {
   // Y fence  K/O farmer's house and its door
   farm: {
     name: 'MAATILA',
-    wanderCount: 8,
     shard: { x: 27, y: 3 },
     tiles: 'tilesFarm', rustle: 'cornRustle', shade: '#2a6a30', music: 'overworld',
     rows: [
@@ -149,7 +147,6 @@ const MAPS = {
   },
   hyujal: {
     name: 'HYUJAL METSÄ',
-    wanderCount: 8,
     shard: { x: 21, y: 15 },
     tiles: 'tilesHyujal', rustle: 'bushRustleHyujal', shade: '#3a1d6e', glow: true, music: 'hyujal',
     rows: [
@@ -186,7 +183,6 @@ const MAPS = {
   // snowy forest north of PUSKAMETSÄ (no creatures yet)
   snow: {
     name: 'SNOW MOUNTAIN',
-    wanderCount: 8,
     shard: { x: 23, y: 3 },
     tiles: 'tilesSnow', rustle: 'bushRustleSnow', shade: '#2f5a3a', music: 'overworld', snowfall: true,
     rows: [
@@ -286,7 +282,7 @@ const MAPS = {
       'TTTTTT....=......S.....=...TTT......TTTT',
       'TTTTT.....=..M.........=..........*..TTT',
       'TTTT..,...=.......TTT..=.....M........TT',
-      'TTTT......=......TTTTT.===========....TT',
+      'TTTT......=......TTTTT.================X',   // star path east to DUO LANDS
       'TTTTT..*..=.......TTT.......,....=...TTT',
       'TTTTTT....=..................*...=..TTTT',
       'TTTTTTT...=....TTTTT.............=.TTTTT',
@@ -313,8 +309,41 @@ const MAPS = {
     },
     encounters: [],
     wormholeTo: { to: 'temple', x: 18, y: 19, dir: 'left' },
-    warps: {},
+    warps: { '39,16': { to: 'duo', x: 1, y: 11, dir: 'right' } },
     sign: 'MADONREIKÄ\nMadonreiän toisella puolella leijuu kivisiä asteroideja tähtien keskellä. Niillä vaeltavat ULTRA PEDOT: VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL. Kävele pedon luo, niin taistelu alkaa.',
+  },
+  // DUO LANDS: quiet fields floating under a starry night sky (T is the sky, like in MADONREIKÄ); reached along the
+  // star path east out of MADONREIKÄ.  , plowed soil  B golden wheat (walk through it)  M hay bale  * glowing star flowers
+  duo: {
+    name: 'DUO LANDS',
+    tiles: 'tilesDuo', rustle: 'duoRustle', shade: '#0a0a26', music: 'hyujal', walls: 'space', stars: true, night: true, shootingStars: true, miniBg: '#0a0a26',
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTT.....*.......*......TTTTTT',
+      'TTTT..,,,,,,,,,..BBBBBBBBB..TTTT',
+      'TTT...,,,,,,,,,..BBBBBBBBB...TTT',
+      'TTT...,,,,,,,,,..BBBBBBBBB.*.TTT',
+      'TTT...,,,,,,,,,..BBBBBBBBB...TTT',
+      'TTT..........=.........M.....TTT',
+      'TTT.*........=....S.....*....TTT',
+      'TTT..BBBBBB..=..,,,,,,,,,....TTT',
+      'TTT..BBBBBB..=..,,,,,,,,,....TTT',
+      'X============...,,,,,,,,,..*.TTT',
+      'TTT..BBBBBB..=..,,,,,,,,,....TTT',
+      'TTT..BBBBBB..=..,,,,,,,,,....TTT',
+      'TTT.*........=...............TTT',
+      'TTT..........=.....M..M......TTT',
+      'TTT...,,,,,,,=,,,,,,..BBBBBB.TTT',
+      'TTTT..,,,,,,,=,,,,,,..BBBBBB.TTT',
+      'TTTTT.,,,,,,,=,,,,,,..BBBBBBTTTT',
+      'TTTTTT.......=.......*.....TTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
+    ],
+    encounters: [],   // only fields here: no creatures
+    warps: { '0,11': { to: 'space', x: 38, y: 16, dir: 'left' } },
+    sign: 'DUO LANDS\nHiljaisia peltoja tähtitaivaan alla: kynnettyä maata, kultaista vehnää ja heinäpaaleja. Tähdenlentoja näkee täällä usein. Länteen: MADONREIKÄ.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
@@ -361,12 +390,6 @@ const MAPS = {
 
 for (const [id, m] of Object.entries(MAPS)) {
   m.id = id;
-  // creatures walk around in plain sight instead of hiding in bushes: the old bush list becomes the map's wanderers
-  // (each species' chance is its weight when one is picked; wanderCount sets how many walk around at once)
-  if (!m.wanderers && m.encounters && m.encounters.length) {
-    m.wanderers = { count: m.wanderCount || 7, species: m.encounters.map(e => ({ species: e.species, weight: e.chance })) };
-    m.encounters = [];
-  }
   m.w = m.rows[0].length; m.h = m.rows.length;
   m.rows.forEach((row, i) => { if (row.length !== m.w) throw new Error(`Kartan ${id} rivi ${i} on väärän pituinen`); });
   m.treeRows = buildTreeRows(m);
@@ -458,6 +481,7 @@ const MINI_COLORS_MAP = {
   farm: { 'N': '#c8382e', 'B': '#d8c040', 'M': '#e8c860', 'Y': '#c68a4a', 'K': '#d8483a', 'O': '#8a5a2c' },
   temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78', 'W': '#c050f0' },
   space: { '.': '#4a4460', ',': '#4a4460', '*': '#38d8f0', '=': '#2a2440', 'T': '#0a0818', 'M': '#c050f0', 'S': '#7a7498', 'W': '#c050f0' },
+  duo: { '.': '#3e9a44', ',': '#7a4e28', '*': '#7ad8ff', '=': '#e2c489', 'X': '#e2c489', 'T': '#0a0a26', 'B': '#e8c860', 'M': '#c8a040', 'S': '#8a5a2c' },
 };
 
 function buildMinimap(m) {
@@ -627,8 +651,8 @@ const overworld = {
 
   cowAt(x, y) { return (this.cows || []).find(c => (c.x === x && c.y === y) || (c.tx === x && c.ty === y)); },
 
-  // ----- wild creatures you can see walking around outside (MAPS[...].wanderers) -----
-  // Every map with creatures has them walking on the open ground (grass, snow, rock), never hidden in bushes.
+  // ----- wild creatures you can see walking around (MAPS[...].wanderers: the ULTRA PEDOT in MADONREIKÄ) -----
+  // Other maps hide their creatures in bushes (`encounters`); a map with `wanderers` has them walking on open ground.
   // They are placed away from the player when you arrive, more come by now and then, and you battle one by walking into it.
   spawnWanderers() {
     this.wanderMap = this.map;
@@ -1138,7 +1162,9 @@ const overworld = {
 
     if (m.glow) this.drawGlow();
     if (m.sparkle) this.drawGlow(['#ff9cf2', '#ffe0fa'], 0);
+    if (m.night) { ctx.fillStyle = 'rgba(12,10,60,0.32)'; ctx.fillRect(0, 0, W, H); }   // DUO LANDS: night over the fields
     if (m.stars) this.drawGlow(['#ffffff', '#9fe3ff'], 0);
+    if (m.shootingStars) this.drawShootingStars();
     if (m.snowfall) this.drawSnowfall();
     if (!menuBox.active) this.drawMinimap(px, py);
 
@@ -1278,6 +1304,23 @@ const overworld = {
       ctx.fillStyle = colors[i % 2];
       ctx.fillRect(Math.round(x), Math.round(y), 1, 1);
       if (i % 5 === 0) { ctx.globalAlpha *= 0.4; ctx.fillRect(Math.round(x) - 1, Math.round(y), 3, 1); ctx.fillRect(Math.round(x), Math.round(y) - 1, 1, 3); }
+    }
+    ctx.globalAlpha = 1;
+  },
+
+  // ----- DUO LANDS: a shooting star streaks down across the sky every few seconds -----
+  drawShootingStars() {
+    const PERIOD = 200, FLY = 34;
+    for (const off of [0, 97]) {   // two independent streams, so they don't come at a steady beat
+      const t = this.t + off, n = Math.floor(t / PERIOD), k = (t % PERIOD) / FLY;
+      if (k > 1) continue;
+      const x0 = 40 + (n * 89) % (W - 20), y0 = 4 + (n * 37) % 50, len = 70;
+      const hx = x0 - k * len, hy = y0 + k * len * 0.45;   // head moves down-left
+      for (let i = 0; i < 12; i++) {                       // fading tail behind the head
+        ctx.globalAlpha = (1 - i / 12) * (k < 0.85 ? 1 : (1 - k) / 0.15);
+        ctx.fillStyle = i < 2 ? '#ffffff' : i < 6 ? '#ffe9a0' : '#9fe3ff';
+        ctx.fillRect(Math.round(hx + i * 2), Math.round(hy - i * 0.9), i < 2 ? 2 : 1, 1);
+      }
     }
     ctx.globalAlpha = 1;
   },
