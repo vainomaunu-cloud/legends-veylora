@@ -186,7 +186,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 4d. **DUO LANDS** (32 × 22 ruutua, MADONREIÄN itäpuolella)
    - Kirkas niitty, joka leijuu tähtitaivaalla: vaaleanvihreää ruohoa, **puskia** ryhmissä (niiden läpi voi kävellä, ja ne heiluvat), pari heinäpaalia, hiekkapolku ja sinisinä tuikkivia tähtikukkia. Niityn reunojen ulkopuolella on yötaivas, jota ei pääse läpi.
    - Niitty on kirkas ja värikäs, ja sen yllä on vain kevyt iltasävy. Taivaalla tuikkii tähtiä, ja muutaman sekunnin välein **tähdenlento** viuhahtaa taivaan poikki (`night`, `stars` ja `shootingStars` kartan tiedoissa).
-   - **Puskista voi tulla** **DOSOLO** (40 %), **PSYDUO** (20 %), **CANDYO** (20 %) tai **BALDUO** (20 %, jaettu sen 7 pallomuodon kesken) askelta kohden, tasoilla 10–20. Täällä taistellaan iltaisella niityllä tähtien alla. Kyltti on keskellä. Länsireunan polku vie takaisin MADONREIKÄÄN.
+   - **Puskista voi tulla** **DOSOLO** (40 %), **PSYDUO** (20 %), **CANDYO** (20 %) tai **BALDUO** (20 %, jaettu sen 7 pallomuodon kesken) askelta kohden, tasoilla 5–13. Täällä taistellaan iltaisella niityllä tähtien alla. Kyltti on keskellä. Länsireunan polku vie takaisin MADONREIKÄÄN.
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
    - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Sitten joko jokin nappaa ja otus **nousee vedestä** taisteluun (ALGISH, MOONORG tai SERPENALGE), tai "Mikään ei näykkinyt". Merellä taistellaan meren taustalla (vesi ja hiekkasärkät). Lista on kartan `fishing`-kohdassa.
@@ -265,7 +265,7 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 - **Palovamma** (BRN): otus menettää jokaisen vuoron lopussa 1/16 maksimi-HP:staan, ja sen fyysiset hyökkäykset tekevät puolet vähemmän vahinkoa. Pysyy, kunnes otus parannetaan HOITOLASSA.
 - **Myrkytetty** (PSN) otus menettää jokaisen vuoron lopussa 1/8 maksimi-HP:staan. Myrkky jää taistelun jälkeen voimaan, kunnes otus parannetaan HOITOLASSA. Tila näkyy merkkinä tietolaatikon vieressä.
 - Tilasta kärsivä villi otus on helpompi napata (×1,5).
-- **Tasot:** XP-raja on taso³. Villien otusten taso riippuu alueesta, ei omasta tiimistä: PUSKAMETSÄ 2–9, HYUJAL METSÄ 6–14, SAARIMERI (ranta, palmut ja kalastus) 9–18, SNOW MOUNTAIN 18–26, VEYLORAN KYLÄ 3–10 ja MAATILA 4–12 (`WILD_LEVELS` tiedostossa `js/main.js`). Pelaaja aloittaa DUCKONDAlla tasolta 5.
+- **Tasot:** XP-raja on taso³. Villien otusten taso riippuu alueesta, ei omasta tiimistä: PUSKAMETSÄ 2–9, HYUJAL METSÄ 6–14, SAARIMERI (ranta, palmut ja kalastus) 9–18, SNOW MOUNTAIN 18–26, VEYLORAN KYLÄ 3–10, MAATILA 4–12, MADONREIKÄ 30–40 ja DUO LANDS 5–13 (`WILD_LEVELS` tiedostossa `js/main.js`). Pelaaja aloittaa DUCKONDAlla tasolta 5.
 - **Kokemuspisteet** (vain taistelussa olevalle) = lajin XP-arvo · vihollisen taso / 7 (AMPERITE 50, AMPEREEM 120).
 - **Pakeneminen** onnistuu ensin 75 %:n todennäköisyydellä, ja jokainen epäonnistunut yritys nostaa mahdollisuutta.
 - Jos PP:t loppuvat kesken taistelun, otus käyttää automaattisesti RIMPUILU-hyökkäystä.
