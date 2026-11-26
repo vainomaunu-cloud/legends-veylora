@@ -414,8 +414,8 @@ function calcDamage(att, def, move) {
 }
 
 // speStage: -1..-3 from STICKY WEB (reset every battle)
-const SHINY_CHANCE = 1 / 500;
-const SHINY_CHANCE_CHARM = 1 / 400;  // with the SHINY CHARM (or the BEAST CHARM for ULTRA PEDOT)
+const SHINY_CHANCE = 1 / 150;
+const SHINY_CHANCE_CHARM = 1 / 100;  // with the SHINY CHARM (or the BEAST CHARM for ULTRA PEDOT)
 // SHINY CHARM raises the odds for ordinary creatures, BEAST CHARM for the ULTRA PEDOT (each charm only works on its own kind)
 const shinyChance = species => ((SPECIES[species] && SPECIES[species].ultra ? game.beastCharm : game.shinyCharm) ? SHINY_CHANCE_CHARM : SHINY_CHANCE);
 // every species that can be caught (the starter can only be chosen, not caught)
@@ -808,14 +808,14 @@ const battle = {
       this.flash = 8;
       for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
       yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
-      yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/400 (ennen 1/500).');
+      yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/100 (ennen 1/150).');
     }
     if (SPECIES[species].ultra && !game.beastCharm && beastCharmSpecies().every(id => game.caught.includes(id))) {
       game.beastCharm = true;
       this.flash = 8;
       for (let i = 0; i < 6; i++) { this.addFx('spark', rnd(40, 200), rnd(20, 90), [0, 0, 1, 1, 2, 2]); yield* wait(5); }
       yield* textBox.say('Olet napannut KAIKKI ULTRA PEDOT! Sait BEAST CHARMin!');
-      yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/400 (ennen 1/500).');
+      yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/100 (ennen 1/150).');
     }
   },
 

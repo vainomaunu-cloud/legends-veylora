@@ -76,7 +76,7 @@ const admin = {
 
       <h4>Kokoelma ja SHINY CHARM</h4>
       <div class="admRow">Napattu <b>${catchableSpecies().filter(id => game.caught.includes(id)).length}/${catchableSpecies().length}</b>
-        · SHINY CHARM <b>${game.shinyCharm ? 'ON (1/400)' : 'EI (1/500)'}</b> · BEAST CHARM <b>${game.beastCharm ? 'ON' : 'EI'}</b></div>
+        · SHINY CHARM <b>${game.shinyCharm ? 'ON (1/100)' : 'EI (1/150)'}</b> · BEAST CHARM <b>${game.beastCharm ? 'ON' : 'EI'}</b></div>
       <div class="admRow"><button data-act="catchall">Merkitse kaikki napatuiksi</button>
         <button data-act="charm">${game.shinyCharm ? 'Poista' : 'Anna'} SHINY CHARM</button>
         <button data-act="beastcharm">${game.beastCharm ? 'Poista' : 'Anna'} BEAST CHARM</button>

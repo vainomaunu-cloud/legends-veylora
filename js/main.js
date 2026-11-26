@@ -11,7 +11,7 @@ const game = {
   caught: [],           // species caught at least once (KOKOELMA)
   pc: [],               // creatures stored in the HOITOLA PC
   shinyCharm: false,
-  beastCharm: false,    // every ULTRA PETO caught: shiny ULTRA PEDOT 1/400
+  beastCharm: false,    // every ULTRA PETO caught: shiny ULTRA PEDOT 1/100
   regisCaught: [],      // regis caught from their pedestals (they don't come back)
   shards: [],           // REGI SHARDs picked up (ids of the maps they lay on)
   shardsGiven: false,   // the shards were given to the WORMHOLE KEEPER: the wormhole is open

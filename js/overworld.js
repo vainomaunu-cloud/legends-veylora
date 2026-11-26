@@ -312,8 +312,8 @@ const MAPS = {
     warps: { '39,16': { to: 'duo', x: 1, y: 11, dir: 'right' } },
     sign: 'MADONREIKÄ\nMadonreiän toisella puolella leijuu kivisiä asteroideja tähtien keskellä. Niillä vaeltavat ULTRA PEDOT: VIRTULEAST, DROISON, GOLBUZZ, ALGISHIOD, AMPERITIE ja DRISTIEL. Kävele pedon luo, niin taistelu alkaa.',
   },
-  // DUO LANDS: quiet fields floating under a starry night sky (T is the sky, like in MADONREIKÄ); reached along the
-  // star path east out of MADONREIKÄ.  , plowed soil  B golden wheat (walk through it)  M hay bale  * glowing star flowers
+  // DUO LANDS: a bright meadow with bushes floating under a starry sky (T is the sky, like in MADONREIKÄ); reached along the
+  // star path east out of MADONREIKÄ.  B bush (walk through it, no creatures yet)  M hay bale  * glowing star flowers
   duo: {
     name: 'DUO LANDS',
     tiles: 'tilesDuo', rustle: 'duoRustle', shade: '#0a0a26', music: 'hyujal', walls: 'space', stars: true, night: true, shootingStars: true, miniBg: '#0a0a26',
@@ -321,29 +321,29 @@ const MAPS = {
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTT.....*.......*......TTTTTT',
-      'TTTT..,,,,,,,,,..BBBBBBBBB..TTTT',
-      'TTT...,,,,,,,,,..BBBBBBBBB...TTT',
-      'TTT...,,,,,,,,,..BBBBBBBBB.*.TTT',
-      'TTT...,,,,,,,,,..BBBBBBBBB...TTT',
-      'TTT..........=.........M.....TTT',
+      'TTTT..BBB.....,..BBBB.....BBTTTT',
+      'TTT..BBBBB..........BBBB...BBTTT',
+      'TTT...BBB...,.BB...BBB...*...TTT',
+      'TTT.........BBBB.........BB..TTT',
+      'TTT..,.......=BB...........B.TTT',
       'TTT.*........=....S.....*....TTT',
-      'TTT..BBBBBB..=..,,,,,,,,,....TTT',
-      'TTT..BBBBBB..=..,,,,,,,,,....TTT',
-      'X============...,,,,,,,,,..*.TTT',
-      'TTT..BBBBBB..=..,,,,,,,,,....TTT',
-      'TTT..BBBBBB..=..,,,,,,,,,....TTT',
-      'TTT.*........=...............TTT',
-      'TTT..........=.....M..M......TTT',
-      'TTT...,,,,,,,=,,,,,,..BBBBBB.TTT',
-      'TTTT..,,,,,,,=,,,,,,..BBBBBB.TTT',
-      'TTTTT.,,,,,,,=,,,,,,..BBBBBBTTTT',
+      'TTT..BBBB....=...BBB...,..BB.TTT',
+      'TTT.BBBBBB...=..BBBBB....BBB.TTT',
+      'X============....BBB.......*.TTT',
+      'TTT.BBBBB....=.........BB....TTT',
+      'TTT..BBB.....=..,.....BBBB...TTT',
+      'TTT.*........=.......BBBBBB..TTT',
+      'TTT..........=.....M..BBBB...TTT',
+      'TTT..,..BB...=..........,..BBTTT',
+      'TTTT...BBBB..=...BBB......BBBTTT',
+      'TTTTT...BB...=..BBBBB..*...BTTTT',
       'TTTTTT.......=.......*.....TTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
-    encounters: [],   // only fields here: no creatures
+    encounters: [],   // bushes, but no creatures in them yet
     warps: { '0,11': { to: 'space', x: 38, y: 16, dir: 'left' } },
-    sign: 'DUO LANDS\nHiljaisia peltoja tähtitaivaan alla: kynnettyä maata, kultaista vehnää ja heinäpaaleja. Tähdenlentoja näkee täällä usein. Länteen: MADONREIKÄ.',
+    sign: 'DUO LANDS\nKirkas niitty puskineen tähtitaivaan alla. Tähdenlentoja näkee täällä usein. Länteen: MADONREIKÄ.',
   },
   // ~ water (fish here with F)  # bridge left-right  | bridge up-down  T palm
   // Q beach kiosk (3x2 tiles)  R kiosk counter (talk here)
@@ -481,7 +481,7 @@ const MINI_COLORS_MAP = {
   farm: { 'N': '#c8382e', 'B': '#d8c040', 'M': '#e8c860', 'Y': '#c68a4a', 'K': '#d8483a', 'O': '#8a5a2c' },
   temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78', 'W': '#c050f0' },
   space: { '.': '#4a4460', ',': '#4a4460', '*': '#38d8f0', '=': '#2a2440', 'T': '#0a0818', 'M': '#c050f0', 'S': '#7a7498', 'W': '#c050f0' },
-  duo: { '.': '#3e9a44', ',': '#7a4e28', '*': '#7ad8ff', '=': '#e2c489', 'X': '#e2c489', 'T': '#0a0a26', 'B': '#e8c860', 'M': '#c8a040', 'S': '#8a5a2c' },
+  duo: { '.': '#7cd860', ',': '#7cd860', '*': '#7ad8ff', '=': '#e2c489', 'X': '#e2c489', 'T': '#0a0a26', 'B': '#3f9a44', 'M': '#c8a040', 'S': '#8a5a2c' },
 };
 
 function buildMinimap(m) {
@@ -1012,7 +1012,7 @@ const overworld = {
           game.shinyCharm = true;
           yield* flashScreen(2);
           yield* textBox.say('KOKOELMASSASI on nyt KAIKKI otukset! Sait SHINY CHARMin!');
-          yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/400 (ennen 1/500).');
+          yield* textBox.say('Kiiltäviä otuksia näkee nyt useammin: 1/100 (ennen 1/150).');
         } else if (!game.shinyCharm) {
           yield* textBox.say(`Nappaa tai kehitä jokaista otusta vähintään yksi, niin saat SHINY CHARMin (${have}/${need.length}). Regejä ja ULTRA PETOJA ei tarvita! Sen kanssa kiiltäviä näkee useammin.`);
         }
@@ -1022,7 +1022,7 @@ const overworld = {
           game.beastCharm = true;
           yield* flashScreen(2);
           yield* textBox.say('Olet napannut KAIKKI ULTRA PEDOT! Sait BEAST CHARMin!');
-          yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/400 (ennen 1/500).');
+          yield* textBox.say('Kiiltäviä ULTRA PETOJA näkee nyt useammin: 1/100 (ennen 1/150).');
         } else if (!game.beastCharm && game.shardsGiven) {
           yield* textBox.say(`Nappaa jokainen ULTRA PETO, niin saat BEAST CHARMin (${gotBeasts}/${beasts.length}). SHINY CHARM ei auta ULTRA PETOJEN kanssa, mutta BEAST CHARM auttaa.`);
         }
@@ -1162,7 +1162,7 @@ const overworld = {
 
     if (m.glow) this.drawGlow();
     if (m.sparkle) this.drawGlow(['#ff9cf2', '#ffe0fa'], 0);
-    if (m.night) { ctx.fillStyle = 'rgba(12,10,60,0.32)'; ctx.fillRect(0, 0, W, H); }   // DUO LANDS: night over the fields
+    if (m.night) { ctx.fillStyle = 'rgba(30,30,90,0.10)'; ctx.fillRect(0, 0, W, H); }   // DUO LANDS: a soft evening hint over the bright fields
     if (m.stars) this.drawGlow(['#ffffff', '#9fe3ff'], 0);
     if (m.shootingStars) this.drawShootingStars();
     if (m.snowfall) this.drawSnowfall();
