@@ -136,8 +136,10 @@ const SHINY_FILES = {
   duckonda: 'duckonda kiiltävä.png',
   virtuleast: 'virtuleast kiiltävä.png', droison: 'droison kiiltävä.png', golbuzz: 'golbuzz kiiltävä.png',
   algishiod: 'algishiod kiiltävä.png', amperitie: 'amperitie kiiltävä.png', dristiel: 'dristiel kiiltävä.png',
-  dosolo: 'kiiltävä dosolo.png', psyduo: 'kiiltävä psyduo.png', candyo: 'kiiltävä candyo.png',
-  // the BALDUO shinies are made by the game's sprite script (each ball form its own colours)
+  dosolo: 'kiiltävä dosolo.png',
+  // PSYDUO and CANDYO: your shinies with the yellow sparkles added (made by the game's sprite script)
+  psyduo: 'sprites/shiny_psyduo.png', candyo: 'sprites/shiny_candyo.png',
+  // the BALDUO shinies are made by the game's sprite script (each ball form its own colours, with your yellow sparkles)
   balduo: 'sprites/shiny_balduo.png', greatbalduo: 'sprites/shiny_greatbalduo.png', ultrabalduo: 'sprites/shiny_ultrabalduo.png',
   masterbalduo: 'sprites/shiny_masterbalduo.png', moonbalduo: 'sprites/shiny_moonbalduo.png', safaribalduo: 'sprites/shiny_safaribalduo.png',
   luxurybalduo: 'sprites/shiny_luxurybalduo.png',
