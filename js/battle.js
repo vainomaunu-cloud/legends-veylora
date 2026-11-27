@@ -327,6 +327,22 @@ const SPECIES = {
     xpYield: 150, coins: 50, catchRate: 0.3, feetY: 0,
     sprites: { front: 'tentatealind', blink: 'tentatealindBlink', hurt: 'tentatealindHurt', attack: 'tentatealindAttack', back: 'tentatealindBack', backAttack: 'tentatealindBackAttack' },
   },
+  // HAUTAUSMAA: hides in the dry bushes by the church
+  gravey: {
+    name: 'GRAVEY',
+    base: { hp: 55, atk: 60, def: 70, spa: 60, spd: 60, spe: 50 },
+    moves: ['shadowsneak', 'graveshield', 'staringeye'],
+    xpYield: 65, coins: 25, catchRate: 0.5, feetY: 0,
+    evolveAt: 16, evolveTo: 'gravender',
+    sprites: { front: 'gravey', blink: 'graveyBlink', hurt: 'graveyHurt', attack: 'graveyAttack', back: 'graveyBack', backAttack: 'graveyBackAttack' },
+  },
+  gravender: {
+    name: 'GRAVENDER',
+    base: { hp: 80, atk: 80, def: 100, spa: 90, spd: 85, spe: 55 },
+    moves: ['psistrike', 'shadowsneak', 'graveshield', 'staringeye'],
+    xpYield: 150, coins: 40, catchRate: 0.3, feetY: 0,
+    sprites: { front: 'gravender', blink: 'gravenderBlink', hurt: 'gravenderHurt', attack: 'gravenderAttack', back: 'gravenderBack', backAttack: 'gravenderBackAttack' },
+  },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
     name: 'HUMMIRD',
@@ -458,6 +474,9 @@ const MOVES = {
   // OCTOTEAL line
   tealbeam: { id: 'tealbeam', name: 'TEAL BEAM', power: 75, acc: 100, pp: 15, special: true, anim: 'tealbeam' },
   wavecrash: { id: 'wavecrash', name: 'WAVE CRASH', power: 100, acc: 90, pp: 10, special: false, anim: 'wavecrash' },
+  // GRAVEY line
+  shadowsneak: { id: 'shadowsneak', name: 'SHADOW SNEAK', power: 40, acc: 100, pp: 30, special: false, priority: 1, anim: 'shadowsneak' },
+  graveshield: { id: 'graveshield', name: 'GRAVE SHIELD', power: 0, powerText: '-', acc: 100, pp: 15, special: true, raiseDef: 1, anim: 'graveshield' },
 };
 // used automatically when every move is out of PP
 const STRUGGLE = { name: 'RIMPUILU', power: 35, acc: 100, pp: 0, left: 0, special: false, anim: 'tackle', struggle: true };
@@ -500,7 +519,7 @@ function healParty() {
 function calcDamage(att, def, move) {
   // burn halves physical attacks; BABYDOLL EYES / CHARM lower them (atkStage -1..-3)
   const A = move.special ? att.spa : att.atk * (att.status === 'brn' ? 0.5 : 1) * 2 / (2 - (att.atkStage || 0));
-  const D = move.special ? def.spd : def.def;
+  const D = (move.special ? def.spd : def.def) * (2 + Math.max(0, def.defStage || 0)) / 2;   // GRAVE SHIELD raises defStage 0..3
   let dmg = Math.floor(Math.floor(Math.floor(2 * att.level / 5 + 2) * movePower(move, att, def) * A / D) / 50) + 2;
   const crit = Math.random() < (move.highCrit ? 1 / 8 : 1 / 16);   // PSYCHO CUT crits twice as often
   if (crit) dmg = Math.floor(dmg * 1.5);
@@ -543,6 +562,7 @@ const BATTLE_BG = {
   hyujal: { sky: '#d8c6f2', far: '#b08ee0', near: '#9470d0', ground: '#b39ae2', speck: '#9f82d6', platDark: '#7a52b8', plat: '#9a78da', glow: true },
   space: { sky: '#100c24', far: '#2a2048', near: '#3a3060', ground: '#4a4460', speck: '#5e5878', platDark: '#2a2440', plat: '#7a7498', glow: true },
   duo: { sky: '#1c2460', far: '#2c3c88', near: '#3c58a8', ground: '#8ee06a', speck: '#b4f08e', platDark: '#5cb048', plat: '#a8ec84', glow: true },
+  grave: { sky: '#3a4048', far: '#2e3a30', near: '#3e4c3c', ground: '#4e5e4a', speck: '#5e7058', platDark: '#3e4c3c', plat: '#6a7a62', glow: true },
 };
 const FOE_POS = { x: 150, y: 4 };
 const ME_POS = { x: 28, y: 48 };
@@ -574,7 +594,7 @@ const battle = {
     }
     this.foe.shiny = hasShinyArt(this.foe.species) && (opts.shiny !== undefined ? !!opts.shiny
       : this.kind === 'wild' && !SPECIES[this.foe.species].legendary && Math.random() < shinyChance(this.foe.species));
-    for (const m of game.party) { m.speStage = 0; m.atkStage = 0; m.evaStage = 0; m.flinch = false; m.trapTurns = 0; }
+    for (const m of game.party) { m.speStage = 0; m.atkStage = 0; m.evaStage = 0; m.defStage = 0; m.flinch = false; m.trapTurns = 0; }
     this.tint = 0; this.tintRGB = null;
     this.thrown = null; this.parts = null; this.waves = null; this.webFx = null; this.slashes = null;
     this.evo = null;
@@ -733,7 +753,8 @@ const battle = {
       const foeMove = this.pickFoeMove();
       const turns = [];
       if (myMove) {
-        const meFirst = speedOf(me) > speedOf(foe) || (speedOf(me) === speedOf(foe) && Math.random() < 0.5);
+        const pm = myMove.priority || 0, pf = foeMove.priority || 0;   // SHADOW SNEAK always strikes first
+        const meFirst = pm !== pf ? pm > pf : speedOf(me) > speedOf(foe) || (speedOf(me) === speedOf(foe) && Math.random() < 0.5);
         if (meFirst) turns.push([me, foe, myMove], [foe, me, foeMove]);
         else turns.push([foe, me, foeMove], [me, foe, myMove]);
       } else {
@@ -805,7 +826,7 @@ const battle = {
       if (m.hp <= 0) { yield* textBox.say(`${m.name} on uupunut eikä jaksa taistella.`); continue; }
       // call the current one back
       const old = this.me, mv = this.meV;
-      old.speStage = 0; old.atkStage = 0; old.evaStage = 0; old.trapTurns = 0; old.flinch = false;
+      old.speStage = 0; old.atkStage = 0; old.evaStage = 0; old.defStage = 0; old.trapTurns = 0; old.flinch = false;
       yield* textBox.say(`Tule takaisin, ${old.name}!`, { auto: 6, keep: true });
       this.addFx('spark', mv.x + 32, mv.y + 36, [0, 0, 1, 1, 2, 2]);
       yield* tween(12, k => { mv.scale = 1 - 0.9 * k; });
@@ -814,7 +835,7 @@ const battle = {
       textBox.hide();
       yield* wait(8);
       this.me = m;
-      m.speStage = 0; m.atkStage = 0; m.evaStage = 0; m.trapTurns = 0; m.flinch = false;
+      m.speStage = 0; m.atkStage = 0; m.evaStage = 0; m.defStage = 0; m.trapTurns = 0; m.flinch = false;
       yield* this.sendOut();
       return true;
     }
@@ -1027,6 +1048,16 @@ const battle = {
       textBox.hide();
       return;
     }
+    if (move.raiseDef) {   // GRAVE SHIELD: no damage, a gravestone shield rises: the user's defence goes up (both kinds of attack)
+      yield* this.animGraveShield(av);
+      if ((att.defStage || 0) >= 3) yield* textBox.say(`${who}n puolustus ei voi nousta enempää!`);
+      else {
+        att.defStage = (att.defStage || 0) + move.raiseDef;
+        yield* textBox.say(`${who} nosti hautakivikilven! Sen puolustus nousi!`);
+      }
+      textBox.hide();
+      return;
+    }
     if (move.rest) {   // REST: full HP and no status, but the user falls asleep (sleeps 2 turns)
       yield* this.animMindHeal(av, ['#bfe0ff', '#7ab0ff']);
       if (att.hp >= att.maxHp && !att.status) yield* textBox.say(`${who}n HP on jo täynnä!`);
@@ -1116,6 +1147,7 @@ const battle = {
     else if (move.anim === 'ballrain') yield* this.animBallRain(dv);
     else if (move.anim === 'tealbeam') yield* this.animTealBeam(av, dv);
     else if (move.anim === 'wavecrash') yield* this.animWaveCrash(av, dv);
+    else if (move.anim === 'shadowsneak') yield* this.animShadowSneak(av, dv, mine ? 1 : -1);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
     if (move.keepOne && dmg >= def.hp) dmg = Math.max(0, def.hp - 1);   // FALSE SWIPE leaves the target 1 HP
@@ -1987,6 +2019,44 @@ const battle = {
       yield;
     }
     this.parts = null;
+  },
+
+  // SHADOW SNEAK: the user's shadow slides along the ground to the target and strikes from below
+  *animShadowSneak(av, dv, dir) {
+    const sx = av.x + 32, tx = dv.x + 32, gy0 = av.y + 58, gy1 = dv.y + 58;
+    for (let i = 0; i <= 18; i++) {
+      const k = i / 18, x = sx + (tx - sx) * k, y = gy0 + (gy1 - gy0) * k;
+      this.parts = [];
+      for (let n = 0; n < 12; n++) this.parts.push({ x: x - 12 + n * 2, y: y + Math.sin(n + i) * 1, c: n % 3 ? '#1a1024' : '#3a2050', s: 3 });
+      yield;
+    }
+    for (let i = 0; i < 10; i++) {   // dark claws burst up out of the shadow
+      this.parts = [];
+      for (let n = 0; n < 5; n++) { const h = Math.min(30, i * 4); for (let k = 0; k < h; k += 3) this.parts.push({ x: tx - 10 + n * 5 + (k % 6 ? 1 : 0), y: dv.y + 58 - k, c: k > h - 4 ? '#9a4ad0' : '#2a0a3a', s: 2 }); }
+      if (i === 5) { this.shake = 7; this.addFx('hit', tx, dv.y + 34, [0, 0, 1, 1]); }
+      yield;
+    }
+    this.parts = null;
+    yield* wait(4);
+  },
+
+  // GRAVE SHIELD: a grey gravestone rises in front of the user, glows green and sinks back
+  *animGraveShield(av) {
+    av.pose = 'attack';
+    const cx = av.x + 32, base = av.y + 60;
+    const draw = (h, glow) => {
+      this.parts = [];
+      for (let y = 0; y < h; y += 2) for (let x = -12; x <= 12; x += 2) {
+        if (y > h - 6 && Math.abs(x) > 12 - (y - (h - 6)) * 2) continue;   // rounded top
+        const edge = Math.abs(x) >= 11 || y >= h - 2;
+        this.parts.push({ x: cx + x, y: base - y, c: edge ? '#5a5a66' : glow && (x + y) % 6 === 0 ? '#89ca67' : '#8c8c98', s: 2 });
+      }
+    };
+    for (let i = 0; i <= 14; i++) { draw(Math.round(40 * i / 14), false); yield; }
+    for (let i = 0; i < 20; i++) { draw(40, i % 6 < 3); if (i % 6 === 0) this.flash = 1; yield; }
+    for (let i = 14; i >= 0; i--) { draw(Math.round(40 * i / 14), false); yield; }
+    this.parts = null;
+    av.pose = 'idle';
   },
 
   // TEAL BEAM: a straight beam of teal light from the user to the target, flickering, then a teal flash

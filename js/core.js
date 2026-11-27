@@ -105,6 +105,7 @@ const DUO_FILES = {
   balduo: 'balduo.png', greatbalduo: 'great bolduo.png', ultrabalduo: 'ultra bolduo.png', masterbalduo: 'master balduo.png',
   moonbalduo: 'moon balduo.png', safaribalduo: 'safari balduo.png', luxurybalduo: 'luxury balduo.png',
   octoteal: 'octoteal.png', tentatealind: 'tentatealind.png',
+  gravey: 'gravey.png', gravender: 'gravender.png',
 };
 for (const [k, file] of Object.entries(DUO_FILES)) {
   SPRITES[k] = file;
@@ -149,6 +150,7 @@ const SHINY_FILES = {
   luxurybalduo: 'sprites/shiny_luxurybalduo.png',
   // OCTOTEAL line: shinies made by the game's sprite script (teal turned pink, with your yellow sparkles)
   octoteal: 'sprites/shiny_octoteal.png', tentatealind: 'sprites/shiny_tentatealind.png',
+  gravey: 'gravey kiiltävä.png', gravender: 'kiiltävä gravender.png',
 };
 for (const [k, file] of Object.entries(SHINY_FILES)) {
   SPRITES['shiny_' + k] = file;

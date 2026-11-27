@@ -185,7 +185,7 @@ const MAPS = {
   },
   // snowy forest north of PUSKAMETSÄ (no creatures yet)
   // HAUTAUSMAA east of HYUJAL METSÄ: a big stone church at the top, four fenced grave plots, lanterns and candles, bare dead trees, drifting fog lights
-  // C the big church (5x4 tiles, door in the middle of the bottom row)  G gravestone (rounded or a cross)  Y wrought-iron fence  M iron lantern  * candle  B dead bush (no creatures)  T dead tree
+  // C the big church (5x4 tiles, door in the middle of the bottom row)  G gravestone (rounded or a cross)  Y wrought-iron fence  M iron lantern  * candle  B dead bush (GRAVEYs hide in them)  T dead tree
   grave: {
     name: 'HAUTAUSMAA',
     tiles: 'tilesGrave', rustle: 'graveRustle', shade: '#232a22', music: 'hyujal', wisps: true,
@@ -195,9 +195,9 @@ const MAPS = {
       'TT..*...B.........B...*.TT',
       'TT.......M.......M......TT',
       'TT..B......CCCCC......B.TT',
-      'TT.........CCCCC........TT',
-      'TT..*......CCCCC.....*..TT',
-      'TT.........CCCCC........TT',
+      'TT.BBB.....CCCCC....BBB.TT',
+      'TT.BBB.....CCCCC....BBB.TT',
+      'TT.BBB.....CCCCC....BBB.TT',
       'TT..G.G......=......G.G.TT',
       'TT..*.......M=M......*..TT',
       'TT.YYYYYYYYY.=YYYYYYYYY.TT',
@@ -218,10 +218,14 @@ const MAPS = {
       'TTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTT',
     ],
-    encounters: [],
+    // chance per step in the dry bushes by the church
+    encounters: [
+      { species: 'gravey', chance: 0.30 },
+      { species: 'gravender', chance: 0.10 },
+    ],
     warps: { '0,16': { to: 'hyujal', x: 22, y: 9, dir: 'left' } },
     churchText: 'Kirkon raskas puuovi on lukossa. Sisältä kuuluu hiljaista urkumusiikkia, ja värikkäät lasimaalaukset hehkuvat kynttilöiden valossa...',
-    sign: 'HAUTAUSMAA\nHiljainen hautausmaa HYUJAL METSÄN takana. Lyhdyt ja kynttilät palavat yötä päivää, ja sumussa leijuu kalpeita valoja... Länteen: HYUJAL METSÄ.',
+    sign: 'HAUTAUSMAA\nHiljainen hautausmaa HYUJAL METSÄN takana. Lyhdyt ja kynttilät palavat yötä päivää, ja sumussa leijuu kalpeita valoja... Kirkon vieressä kuivissa pensaissa piileskelee GRAVEYjä ja harvinaisia GRAVENDEReitä. Länteen: HYUJAL METSÄ.',
   },
   snow: {
     name: 'SNOW MOUNTAIN',

@@ -35,6 +35,7 @@ const WILD_LEVELS = {
   farm: [4, 12],      // MAATILA (corn field)
   space: [30, 40],    // MADONREIKÄ (ULTRA PEDOT)
   duo: [5, 13],       // DUO LANDS (DOSOLO evolves at 14)
+  grave: [10, 18],    // HAUTAUSMAA (GRAVEY evolves at 16)
 };
 
 function wildLevel() {
