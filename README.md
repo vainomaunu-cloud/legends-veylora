@@ -66,6 +66,11 @@ PUSKAMETSÄN puskissa kohtaamisen mahdollisuus on yhteensä 43 % askelta kohden,
 
 Avaa `index.html` selaimessa (Chrome tai Edge, tuplaklikkaus riittää). Asennuksia ei tarvita.
 
+**Lataa tai asenna peli** (napit pelin alla):
+- **⬇ Lataa peli** (tietokoneella): lataa koko pelin ZIP-tiedostona GitHubista. Pura se ja avaa `index.html`, niin peli toimii ilman nettiä. Huom: ladatulla pelillä on omat tallennukset, eli selaimen sivulla tallennetut pelit eivät siirry sinne.
+- **📲 Asenna**: asentaa pelin sovellukseksi (oma kuvake, avautuu ilman selaimen palkkeja ja toimii myös ilman nettiä, kun sitä on pelattu kerran verkossa). Nappi näkyy Chromessa, Edgessä ja Androidilla, kun selain tarjoaa asennusta; iPhonella ja iPadilla nappi neuvoo lisäämään pelin Safarin Jaa-valikosta Koti-valikkoon. Tietokoneella ja Androidilla asennettu peli käyttää samoja tallennuksia kuin sivu (iPhonen kotinäytön pelillä on omat tallennuksensa). Asennettu peli päivittyy itsestään aina, kun sivu päivittyy.
+- Tiedostot: `manifest.webmanifest` (sovelluksen nimi ja kuvakkeet `sprites/icon_192.png` ja `sprites/icon_512.png`, tehty DUCKONDA-kuvastasi), `sw.js` (tallentaa pelin tiedostot laitteelle ilman nettiä pelaamista varten) ja `js/app.js` (napit).
+
 | Näppäin | Toiminto |
 |---|---|
 | Nuolet / WASD | Liiku, valitse valikossa |

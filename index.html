@@ -7,6 +7,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#14141c">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="sprites/icon_192.png">
 <title>Legends Veylora</title>
 <style>
   html, body { margin: 0; height: 100%; background: #14141c; }
@@ -26,6 +29,13 @@
   #invBtn { font: 600 14px system-ui, sans-serif; color: #fff; background: #8a5a2c; border: 2px solid #c68a4a;
             border-radius: 8px; padding: 6px 14px; cursor: pointer; touch-action: manipulation; }
   #invBtn:active { transform: scale(0.96); }
+  #installBtn, #dlBtn { font: 600 14px system-ui, sans-serif; color: #fff; background: #3a6aa8; border: 2px solid #6a9ad8;
+                       border-radius: 8px; padding: 6px 12px; cursor: pointer; text-decoration: none; white-space: nowrap; }
+  #dlBtn { background: #3a4260; border-color: #6a74a0; }
+  #installBtn:hover, #dlBtn:hover { filter: brightness(1.15); }
+  #installBtn[hidden] { display: none; }
+  body.touch #dlBtn { display: none; }   /* phones: use 📲 Asenna instead of a ZIP */
+  body.touch:not(.portrait) #installBtn { width: 130px; }
   body.touch:not(.portrait) #saveBar button { width: 130px; }
   #saveBtn:active { transform: scale(0.96); }
   #saveMsg.bad { color: #ff9a8a; }
@@ -82,7 +92,7 @@
 </head>
 <body>
 <canvas id="game" width="240" height="160"></canvas>
-<div id="saveBar"><button id="saveBtn" type="button">💾 Tallenna</button><button id="invBtn" type="button">🎒 Reppu</button><span id="saveMsg"></span><form id="codeForm" autocomplete="off"><input id="codeInput" type="text" placeholder="Koodi" aria-label="Koodi" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"><button id="codeOk" type="submit">OK</button></form></div>
+<div id="saveBar"><button id="saveBtn" type="button">💾 Tallenna</button><button id="invBtn" type="button">🎒 Reppu</button><button id="installBtn" type="button" hidden>📲 Asenna</button><a id="dlBtn" href="https://github.com/vainomaunu-cloud/legends-veylora/archive/refs/heads/main.zip" download title="Lataa koko peli ZIP-tiedostona. Pura se ja avaa index.html, niin peli toimii ilman nettiä.">⬇ Lataa peli</a><span id="saveMsg"></span><form id="codeForm" autocomplete="off"><input id="codeInput" type="text" placeholder="Koodi" aria-label="Koodi" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="go"><button id="codeOk" type="submit">OK</button></form></div>
 <div id="help"><kbd>Nuolet</kbd> / <kbd>WASD</kbd> liiku · <kbd>Z</kbd> / <kbd>Enter</kbd> OK · <kbd>X</kbd> / <kbd>Esc</kbd> takaisin · <kbd>F</kbd> kalasta · <kbd>M</kbd> musiikki päälle/pois</div>
 <div id="error"></div>
 <div id="touch">
@@ -96,18 +106,19 @@
     <div class="btn" id="btnM" data-key="KeyM">♪</div>
   </div>
 </div>
-<script>window.GAME_VERSION = '202611261840';   // changed on every publish so phones and browsers load the new files</script>
-<script src="js/font.js?v=202611261840"></script>
-<script src="js/core.js?v=202611261840"></script>
-<script src="js/touch.js?v=202611261840"></script>
-<script src="js/music.js?v=202611261840"></script>
-<script src="js/overworld.js?v=202611261840"></script>
-<script src="js/battle.js?v=202611261840"></script>
-<script src="js/save.js?v=202611261840"></script>
-<script src="js/main.js?v=202611261840"></script>
-<script src="js/admin.js?v=202611261840"></script>
-<script src="js/inventory.js?v=202611261840"></script>
-<script src="js/pcscreen.js?v=202611261840"></script>
-<script src="js/dex.js?v=202611261840"></script>
+<script>window.GAME_VERSION = '202611271829';   // changed on every publish so phones and browsers load the new files</script>
+<script src="js/font.js?v=202611271829"></script>
+<script src="js/core.js?v=202611271829"></script>
+<script src="js/touch.js?v=202611271829"></script>
+<script src="js/music.js?v=202611271829"></script>
+<script src="js/overworld.js?v=202611271829"></script>
+<script src="js/battle.js?v=202611271829"></script>
+<script src="js/save.js?v=202611271829"></script>
+<script src="js/main.js?v=202611271829"></script>
+<script src="js/admin.js?v=202611271829"></script>
+<script src="js/inventory.js?v=202611271829"></script>
+<script src="js/pcscreen.js?v=202611271829"></script>
+<script src="js/dex.js?v=202611271829"></script>
+<script src="js/app.js?v=202611271829"></script>
 </body>
 </html>
