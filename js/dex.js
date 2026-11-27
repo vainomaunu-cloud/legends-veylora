@@ -46,6 +46,7 @@ const dexScreen = {
     for (const m of Object.values(MAPS)) {
       for (const e of m.encounters || []) if (e.species === id) out.push(`${m.name}: ${m.encounterTiles ? 'kivellä' : 'puskat'} ${String(+(e.chance * 100).toFixed(1)).replace('.', ',')} %`);
       for (const e of m.fishing || []) if (e.species === id) out.push(`${m.name}: kalastus ${Math.round(e.chance * 100)} %`);
+      for (const e of m.surfEncounters || []) if (e.species === id) out.push(`${m.name}: ratsastaessa SERPENALGElla vedessä ${Math.round(e.chance * 100)} %`);
       if (m.wanderers) {   // walking around on the map: its share of the creatures there
         const tot = m.wanderers.species.reduce((a, s) => a + s.weight, 0);
         for (const e of m.wanderers.species) if (e.species === id) out.push(`${m.name}: kävelee kartalla (${Math.round(e.weight / tot * 100)} % otuksista)`);

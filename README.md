@@ -25,6 +25,8 @@ Pieni vanhan ajan otuspeli. Kävelet metsässä, ja puskista voi hypätä villi 
 | ALGISH | 1. vaihe | `algish.png` + `sprites/algish_*.png` | POISON JAB, SLEEP POWDER | kalastus 40 % (SAARIMERI) | 25 kolikkoa | helppo (0,7) |
 | SERPENALGE | 2. vaihe (kehittyy tasolla 12) | `serpenalge.png` + `sprites/serpenalge_*.png` | CRUNCH, FLAMETHROWER, POISON JAB, SLEEP POWDER | kalastus 10 % | 50 kolikkoa | vaikea (0,35) |
 | MOONORG | ei kehity | `moonorg.png` + `sprites/moonorg_*.png` | DARK PULSE, CRUNCH, POISON JAB | kalastus 15 % | 35 kolikkoa | keskitaso (0,45) |
+| OCTOTEAL | 1. vaihe | `octoteal.png` + `sprites/octoteal_*.png` | TEAL BEAM, DARK PULSE, WAVE CRASH | SAARIMEREN vedessä ratsastaessa SERPENALGElla 12 % | 25 kolikkoa | keskitaso (0,5) |
+| TENTATEALIND | 2. vaihe (kehittyy tasolla 16, oppii STARING EYEn) | `tentatealind.png` + `sprites/tentatealind_*.png` | STARING EYE, TEAL BEAM, DARK PULSE, WAVE CRASH | SAARIMEREN vedessä ratsastaessa 4 % | 50 kolikkoa | vaikea (0,3) |
 | BINCHULCIN | 1. vaihe | `binchulin.png` + `sprites/binchulin_*.png` | ICE CREAM THROW, BLIZZARD | 30 % (SNOW MOUNTAIN) | 15 kolikkoa | helppo (0,7) |
 | OVERCHILL | 2. vaihe (kehittyy tasolla 9) | `overchill.png` + `sprites/overchill_*.png` | ICE FANG, ICE CREAM THROW, BLIZZARD | 10 % (SNOW MOUNTAIN) | 35 kolikkoa | keskitaso (0,45) |
 | UNDERCHILL | 3. vaihe (kehittyy tasolla 16) | `underchill.png` + `sprites/underchill_*.png` | IRON HEAD, ICE FANG, ICE CREAM THROW, BLIZZARD | 3 % (SNOW MOUNTAIN) | 55 kolikkoa | hyvin vaikea (0,25) |
@@ -195,6 +197,8 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
 5. **SAARIMERI** (30 × 20 ruutua)
    - Hiekkaranta palmuineen, kolme ruohoista saarta ja niiden välillä puusillat. Rantaviivassa vaahtoaa, ja vesi aaltoilee.
    - **Kalastus:** seiso veden (tai sillan) reunalla katse veteen ja paina **F**. Siima lentää veteen, ja koho kelluu hetken. Sitten joko jokin nappaa ja otus **nousee vedestä** taisteluun (ALGISH, MOONORG tai SERPENALGE), tai "Mikään ei näykkinyt". Merellä taistellaan meren taustalla (vesi ja hiekkasärkät). Lista on kartan `fishing`-kohdassa.
+   - **Ratsastus vedessä:** jos tiimissäsi on SERPENALGE (joka jaksaa), voit ratsastaa sillä merellä. Kävele veteen (peli kysyy, ratsastatko) tai paina Z veden edessä. Ratsastaessa SERPENALGE makaa pitkänä ja aaltoilevana veden päällä kuin lauta, ja pelaaja seisoo sen selässä. Sen pää osoittaa suuntaan, johon viimeksi menit sivuttain (kiiltävä SERPENALGE on punainen). Kun astut rantaan tai sillalle, hyppäät pois. Ilman SERPENALGEa veteen ei pääse. KYLÄN lammessa ei voi ratsastaa.
+     - Vedessä voi tulla vastaan **OCTOTEAL** (12 %) tai **TENTATEALIND** (4 %) askelta kohden (kartan `surfEncounters`), tasoilla 9–18: "Villi … nousi aalloista!"
    - **RANTAKIOSKI:** mene tiskin eteen ja paina Z. Kioskista saa:
      - PYYDYSPALLO, 50 kolikkoa.
      - GREAT PALLO, 75 kolikkoa (`GREAT_PRICE`). Nappaa **kaksi kertaa** paremmin.

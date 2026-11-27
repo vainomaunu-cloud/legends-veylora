@@ -311,6 +311,22 @@ const SPECIES = {
     xpYield: 150, coins: 50, catchRate: 0.35, feetY: 0,
     sprites: { front: 'luxurybalduo', blink: 'luxurybalduoBlink', hurt: 'luxurybalduoHurt', attack: 'luxurybalduoAttack', back: 'luxurybalduoBack', backAttack: 'luxurybalduoBackAttack' },
   },
+  // SAARIMERI, out on the open water: only met while riding a SERPENALGE (see `surf` on the sea map)
+  octoteal: {
+    name: 'OCTOTEAL',
+    base: { hp: 55, atk: 50, def: 55, spa: 70, spd: 60, spe: 55 },
+    moves: ['tealbeam', 'darkpulse', 'wavecrash'],
+    xpYield: 65, coins: 25, catchRate: 0.5, feetY: 0,
+    evolveAt: 16, evolveTo: 'tentatealind',
+    sprites: { front: 'octoteal', blink: 'octotealBlink', hurt: 'octotealHurt', attack: 'octotealAttack', back: 'octotealBack', backAttack: 'octotealBackAttack' },
+  },
+  tentatealind: {
+    name: 'TENTATEALIND',
+    base: { hp: 80, atk: 75, def: 75, spa: 100, spd: 85, spe: 75 },
+    moves: ['staringeye', 'tealbeam', 'darkpulse', 'wavecrash'],
+    xpYield: 150, coins: 50, catchRate: 0.3, feetY: 0,
+    sprites: { front: 'tentatealind', blink: 'tentatealindBlink', hurt: 'tentatealindHurt', attack: 'tentatealindAttack', back: 'tentatealindBack', backAttack: 'tentatealindBackAttack' },
+  },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
     name: 'HUMMIRD',
@@ -439,6 +455,9 @@ const MOVES = {
   // DOSOLO evolutions
   candyblast: { id: 'candyblast', name: 'CANDY BLAST', power: 90, acc: 100, pp: 10, special: true, anim: 'candyblast' },
   ballrain: { id: 'ballrain', name: 'BALL RAIN', power: 90, acc: 95, pp: 10, special: false, anim: 'ballrain' },
+  // OCTOTEAL line
+  tealbeam: { id: 'tealbeam', name: 'TEAL BEAM', power: 75, acc: 100, pp: 15, special: true, anim: 'tealbeam' },
+  wavecrash: { id: 'wavecrash', name: 'WAVE CRASH', power: 100, acc: 90, pp: 10, special: false, anim: 'wavecrash' },
 };
 // used automatically when every move is out of PP
 const STRUGGLE = { name: 'RIMPUILU', power: 35, acc: 100, pp: 0, left: 0, special: false, anim: 'tackle', struggle: true };
@@ -663,7 +682,7 @@ const battle = {
     } else if (this.kind === 'regi') {
       yield* textBox.say(`${foe.name} heräsi kivijalustaltaan!`);
     } else {
-      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : this.from === 'space' ? `ULTRA PETO ${foe.name} hyökkäsi kimppuusi!` : this.from === 'walk' ? `Villi ${foe.name} hyökkäsi kimppuusi!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
+      yield* textBox.say(this.from === 'fish' ? `Villi ${foe.name} nousi vedestä!` : this.from === 'palm' ? `Villi ${foe.name} syöksyi alas palmusta!` : this.from === 'space' ? `ULTRA PETO ${foe.name} hyökkäsi kimppuusi!` : this.from === 'walk' ? `Villi ${foe.name} hyökkäsi kimppuusi!` : this.from === 'surf' ? `Villi ${foe.name} nousi aalloista!` : `Villi ${foe.name} hyppäsi esiin pusikosta!`);
     }
     if (foe.shiny) yield* textBox.say(`Vau! Se on KIILTÄVÄ ${foe.name}!`);
     yield* tween(18, k => { this.trainer.x = Math.round(36 - 110 * k); });
@@ -1095,6 +1114,8 @@ const battle = {
     else if (move.anim === 'mindcontrol') yield* this.animMindControl(av, dv);
     else if (move.anim === 'candyblast') yield* this.animCandyBlast(av, dv);
     else if (move.anim === 'ballrain') yield* this.animBallRain(dv);
+    else if (move.anim === 'tealbeam') yield* this.animTealBeam(av, dv);
+    else if (move.anim === 'wavecrash') yield* this.animWaveCrash(av, dv);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
     if (move.keepOne && dmg >= def.hp) dmg = Math.max(0, def.hp - 1);   // FALSE SWIPE leaves the target 1 HP
@@ -1966,6 +1987,49 @@ const battle = {
       yield;
     }
     this.parts = null;
+  },
+
+  // TEAL BEAM: a straight beam of teal light from the user to the target, flickering, then a teal flash
+  *animTealBeam(av, dv) {
+    av.pose = 'attack';
+    const sx = av.x + 32, sy = av.y + 28, tx = dv.x + 32, ty = dv.y + 34;
+    for (let i = 0; i < 30; i++) {
+      this.parts = [];
+      const len = Math.min(1, i / 10);
+      for (let t = 0; t <= len; t += 0.03) {
+        const x = sx + (tx - sx) * t, y = sy + (ty - sy) * t, w = Math.sin(t * 20 + i) > 0 ? 1 : 0;
+        this.parts.push({ x, y, c: '#2a9a8a', s: 5 }, { x, y, c: i % 4 < 2 ? '#78d7cc' : '#00ffe1', s: 3 }, { x, y: y - w, c: '#e8fffb', s: 1 });
+      }
+      if (i > 10 && i % 5 === 0) this.shake = 3;
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    this.flash = 2;
+    this.addFx('hit', tx, ty, [0, 0, 1, 1, 1]);
+    yield* wait(6);
+  },
+
+  // WAVE CRASH: a big wave rises behind the target and crashes down on it
+  *animWaveCrash(av, dv) {
+    av.pose = 'attack';
+    const cx = dv.x + 32, base = dv.y + 62;
+    for (let i = 0; i < 40; i++) {
+      this.parts = [];
+      const rise = Math.min(1, i / 18), fall = Math.max(0, (i - 22) / 14);
+      for (let n = 0; n < 30; n++) {
+        const x = cx - 36 + n * 2.5;
+        const h = (40 + Math.sin(n * 0.5) * 6) * rise * (1 - fall * 0.8);
+        const curl = fall * 20 * Math.sin(n / 30 * Math.PI);
+        for (let k = 0; k < h; k += 4) this.parts.push({ x: x + curl * (k / Math.max(1, h)), y: base - k, c: k > h - 5 ? '#ffffff' : (n + k) % 3 ? '#3e9be0' : '#86c4ec', s: 3 });
+      }
+      if (i > 22 && i % 4 === 0) this.shake = 6;
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    this.addFx('hit', cx, dv.y + 34, [0, 0, 1, 1]);
+    yield* wait(4);
   },
 
   // BALL RAIN: little red-and-white balls rain down on the target

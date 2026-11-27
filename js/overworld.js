@@ -381,6 +381,11 @@ const MAPS = {
       '~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~',
     ],
     encounters: [],   // no creatures here yet
+    // riding a SERPENALGE on the water (chance per step on water)
+    surfEncounters: [
+      { species: 'octoteal', chance: 0.12 },
+      { species: 'tentatealind', chance: 0.04 },
+    ],
     fishing: [        // chance per cast
       { species: 'algish', chance: 0.40 },
       { species: 'moonorg', chance: 0.15 },
@@ -388,7 +393,7 @@ const MAPS = {
     ],
     warps: { '0,10': { to: 'forest', x: 26, y: 10, dir: 'left' } },
     signs: {
-      '4,9': 'SAARIMERI\nRantakioskista saa palloja. Kalasta menemällä veden eteen ja painamalla F. Polku vasemmalle vie PUSKAMETSÄÄN.',
+      '4,9': 'SAARIMERI\nRantakioskista saa palloja. Kalasta menemällä veden eteen ja painamalla F. Jos tiimissäsi on SERPENALGE, voit ratsastaa sillä vedessä: kävele veteen tai paina Z veden edessä. Ulapalla asuu OCTOTEALeja ja harvinaisia TENTATEALINDeja. Polku vasemmalle vie PUSKAMETSÄÄN.',
       '16,14': 'PIKKUSAARI\nVedessä uiskentelee ALGISHeja, MOONORGeja ja harvinaisia SERPENALGEja. Kalasta F:llä!',
     },
   },
@@ -647,7 +652,7 @@ const overworld = {
     this.map = MAPS[id];
     this.rustles = [];
     this.fishing = null;
-    Object.assign(this.player, { tx: x, ty: y, dir, moving: false, offset: 0, justWalked: false });
+    Object.assign(this.player, { tx: x, ty: y, dir, moving: false, offset: 0, justWalked: false, surfing: false });
     this.banner = { text: this.map.name, t: 0 };
     this.rollPalmBirds();
     // cows in the farm pen: tile position, pixel position, where they are walking to
@@ -803,6 +808,7 @@ const overworld = {
     if (this.runner.busy) { this.runner.update(); return; }
 
     const p = this.player;
+    if (!p.surfing && !p.moving && this.tileAt(p.tx, p.ty) === WATER) p.surfing = true;   // e.g. a save made out on the water
     if (p.moving) {
       p.offset += WALK_SPEED;
       if (p.offset < TILE) return;   // (offset may overshoot 16 slightly; it is reset below)
@@ -831,7 +837,9 @@ const overworld = {
     const regi = this.regiAt(nx, ny);
     if (regi) { this.runner.run(this.regiTouch(regi)); return; }    // touched a regi on its pedestal
     if (this.tileAt(nx, ny) === 'W') { this.runner.run(this.wormholeTouch()); return; }   // touched the wormhole
-    if (!SOLID.has(this.tileAt(nx, ny))) { p.moving = true; p.offset = 0; p.steps++; }
+    const ahead = this.tileAt(nx, ny);
+    if (ahead === WATER && !p.surfing && this.map.surfEncounters && this.surfRider()) { this.runner.run(this.askSurf(true)); return; }   // deep water: ride a SERPENALGE?
+    if (!SOLID.has(ahead) || (p.surfing && ahead === WATER)) { p.moving = true; p.offset = 0; p.steps++; }
     else if (this.birds && this.birds.has(`${nx},${ny}`)) {   // walked into a palm with a HUMMIRD on it
       this.birds.delete(`${nx},${ny}`);
       startEncounter(this.map.palmBirds.species, 'palm');
@@ -843,6 +851,13 @@ const overworld = {
     const warp = this.map.warps[`${p.tx},${p.ty}`];
     if (warp) { warpTo(warp); return true; }
     if (this.shardHere(p.tx, p.ty)) { this.runner.run(this.pickShard()); return true; }
+    if (p.surfing && this.tileAt(p.tx, p.ty) !== WATER) p.surfing = false;   // stepped ashore (or onto a bridge): off the SERPENALGE
+    if (p.surfing) {   // out on the water: OCTOTEALs and TENTATEALINDs live here
+      this.stepsSinceBattle++;
+      const species = this.stepsSinceBattle > 2 && rollEncounter(this.map.surfEncounters || []);
+      if (species) { this.stepsSinceBattle = 0; startEncounter(species, 'surf'); return true; }
+      return false;
+    }
     this.stepsSinceBattle++;
     const tile = this.tileAt(p.tx, p.ty);
     if (tile !== 'B' && !(this.map.encounterTiles || '').includes(tile)) return false;
@@ -875,6 +890,27 @@ const overworld = {
   *regiTouch(regi) {
     yield* textBox.say(`${SPECIES[regi].name} tuijottaa sinua kivijalustaltaan...`);
     startEncounter(regi, 'regi', { level: 50, regi: true });
+  },
+
+  // ----- riding a SERPENALGE on deep water (maps with `surfEncounters`: SAARIMERI) -----
+  surfRider() { return game.party.find(m => m.species === 'serpenalge' && m.hp > 0); },
+
+  // asked when you walk into the water (only if you have a SERPENALGE) or press Z facing it
+  *askSurf(fromBump) {
+    const p = this.player;
+    if (!this.map.surfEncounters) { if (!fromBump) yield* textBox.say('Tässä vedessä ei voi ratsastaa.'); return; }
+    const rider = this.surfRider();
+    if (!rider) {
+      yield* textBox.say('Vesi on syvää. Jos tiimissäsi olisi SERPENALGE, voisit ratsastaa sillä vedessä.');
+      return;
+    }
+    textBox.show(`Vesi on syvää. Ratsastatko ${rider.name}lla?`);
+    const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
+    textBox.hide();
+    if (yes !== 0) return;
+    yield* textBox.say(`Hyppäsit ${rider.name}n selkään!`, { auto: 30 });
+    p.surfing = true;
+    p.moving = true; p.offset = 0; p.steps++;   // and off into the water
   },
 
   // ----- REGI SHARDs: one lies on each map with `shard`, until picked up -----
@@ -914,6 +950,7 @@ const overworld = {
     if (regi) { this.runner.run(this.regiTouch(regi)); return; }
     const tile = this.tileAt(fx, fy);
     if (tile === 'W') { this.runner.run(this.wormholeTouch()); return; }
+    if (tile === WATER && !p.surfing) { this.runner.run(this.askSurf(false)); return; }
     if (tile === 'S') this.say((this.map.signs && this.map.signs[`${fx},${fy}`]) || this.map.sign);
     if (tile === 'O') this.say((this.map.houseTexts && this.map.houseTexts[`${fx},${fy}`]) || 'Ovi on lukossa.');
     if (tile === 'N') this.say(this.map.barnText || 'Navetan ovi on kiinni.');
@@ -1393,9 +1430,46 @@ const overworld = {
     drawTextCenter(ctx, b.text, W / 2, y + 6, '#283040', 2);
   },
 
+  // a long SERPENALGE swimming flat on the water (like a surfboard), its body waving; head toward `face` (1 right, -1 left).
+  // Colours from your serpenalge.png (or the shiny one). Returns the y of its back under the middle, where the player stands.
+  drawSerpentRide(cx, cy, face, shiny) {
+    const pal = shiny
+      ? { body: '#ce6361', light: '#e8a8a6', dark: '#874342' }
+      : { body: '#5a8a5e', light: '#91a392', dark: '#436846' };
+    const L = 40, t = this.t;
+    const yAt = i => Math.round(cy + Math.sin(i / 5 - t / 9) * 1.6);   // i: 0 = tail ... L = head
+    const xAt = i => cx + face * (i - L / 2);
+    ctx.fillStyle = 'rgba(216,244,255,0.8)';   // foam where it cuts through the water
+    ctx.fillRect(xAt(L) + face * 2 - 1, yAt(L) - 1, 2, 5); ctx.fillRect(xAt(0) - face * 2, yAt(0) + 1, 2, 2);
+    for (let i = 0; i <= L; i++) {
+      const x = xAt(i), y = yAt(i);
+      const th = i < 6 ? 1 + (i >> 1) : 4;   // thin tail, thicker body
+      ctx.fillStyle = pal.dark; ctx.fillRect(x, y - th + 2, 1, th + 1);
+      ctx.fillStyle = pal.body; ctx.fillRect(x, y - th + 2, 1, th);
+      ctx.fillStyle = pal.light; ctx.fillRect(x, y - th + 2, 1, 1);
+      if (i % 6 === 3 && i > 6) { ctx.fillStyle = pal.dark; ctx.fillRect(x, y, 1, 1); }   // scale marks
+    }
+    // head: a bit taller than the body, yellow eye with a black pupil, a small open mouth
+    const hx = xAt(L) + face * 1, hy = yAt(L);
+    ctx.fillStyle = pal.dark; ctx.fillRect(face > 0 ? hx : hx - 5, hy - 4, 6, 7);
+    ctx.fillStyle = pal.body; ctx.fillRect(face > 0 ? hx : hx - 4, hy - 3, 5, 5);
+    ctx.fillStyle = pal.light; ctx.fillRect(face > 0 ? hx : hx - 4, hy - 3, 5, 1);
+    ctx.fillStyle = '#f0dd70'; ctx.fillRect(hx + face * 2 - (face > 0 ? 0 : 1), hy - 2, 2, 2);
+    ctx.fillStyle = '#080808'; ctx.fillRect(hx + face * 3 - (face > 0 ? 0 : 1) - (face > 0 ? 1 : 0), hy - 2, 1, 1);
+    ctx.fillStyle = '#2a1a1a'; ctx.fillRect(face > 0 ? hx + 4 : hx - 5, hy + 1, 2, 1);
+    return yAt(L / 2) - 2;
+  },
+
   drawPlayer(sx, sy, camX, camY) {
     const p = this.player;
     const col = p.moving && p.offset < 8 ? (p.steps % 2 ? 1 : 2) : 0;
+    if (p.surfing) {   // riding a SERPENALGE: it lies stretched out on the water and the player stands on its back
+      if (p.dir === 'left' || p.dir === 'right') p.surfFace = p.dir;   // the head points the way you last went sideways
+      const rider = this.surfRider();
+      const mid = this.drawSerpentRide(sx + 8, sy + 13, p.surfFace === 'right' ? 1 : -1, rider && rider.shiny);
+      drawFrame(IMG.player, DIR_ROW[p.dir] * 3, 16, 16, sx, mid - 17);
+      return;
+    }
     drawFrame(IMG.player, DIR_ROW[p.dir] * 3 + col, 16, 16, sx, sy - 4);
     // front leaves of the bush the player stands in
     const px = sx + camX, py = sy + camY;
