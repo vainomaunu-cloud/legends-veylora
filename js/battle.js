@@ -343,6 +343,16 @@ const SPECIES = {
     xpYield: 150, coins: 40, catchRate: 0.3, feetY: 0,
     sprites: { front: 'gravender', blink: 'gravenderBlink', hurt: 'gravenderHurt', attack: 'gravenderAttack', back: 'gravenderBack', backAttack: 'gravenderBackAttack' },
   },
+  // MEGA GRAVENDER: the boss in the HAUTAUSMAA church tower, and what your own GRAVENDER becomes when you mega evolve it
+  // (REPPU, 4 hours, once every 3 days). Never caught or met in the wild, so it isn't in the KOKOELMA.
+  // The boss is never shiny; a shiny GRAVENDER that mega evolves uses the shiny mega art.
+  megagravender: {
+    name: 'MEGA GRAVENDER', evolveOnly: true, mega: true,
+    base: { hp: 120, atk: 105, def: 125, spa: 120, spd: 110, spe: 70 },
+    moves: ['psistrike', 'shadowsneak', 'graveshield', 'staringeye'],
+    xpYield: 300, coins: 0, catchRate: 0, feetY: 0,
+    sprites: { front: 'megagravender', blink: 'megagravenderBlink', hurt: 'megagravenderHurt', attack: 'megagravenderAttack', back: 'megagravenderBack', backAttack: 'megagravenderBackAttack' },
+  },
   // SAARIMERI: sits on top of beach palms, bump into the palm to fight it
   hummird: {
     name: 'HUMMIRD',
@@ -480,6 +490,12 @@ const MOVES = {
 };
 // used automatically when every move is out of PP
 const STRUGGLE = { name: 'RIMPUILU', power: 35, acc: 100, pp: 0, left: 0, special: false, anim: 'tackle', struggle: true };
+// MEGA GRAVENDER boss: PIMEÄ VOIMA charges (its stone shield is up: it takes 1/4 damage), next turn HAUTAKELLO hits very hard
+const BOSS_CHARGE = { id: 'bosscharge', name: 'PIMEÄ VOIMA', power: 0, powerText: '-', acc: 100, pp: 0, left: 0, special: true, charge: true, noPP: true };
+const BOSS_BELL = { id: 'bossbell', name: 'HAUTAKELLO', power: 150, acc: 100, pp: 0, left: 0, special: true, noPP: true, anim: 'hautakello' };
+const BOSS_STUN_TURNS = 3;   // ringing the church bell during the charge: the turn of the ring + 2 turns of double damage
+const BOSS_REWARD = 1000;   // coins for beating MEGA GRAVENDER
+const BOSS_LEVEL = 30;      // MEGA GRAVENDER in the church tower
 
 const xpForLevel = L => L ** 3;
 
@@ -490,6 +506,35 @@ function calcStats(m) {
 }
 
 const newMove = id => ({ ...MOVES[id], left: MOVES[id].pp });
+
+// ---------- Mega evolution (REPPU): a GRAVENDER becomes MEGA GRAVENDER for 4 hours, once every 3 days ----------
+const MEGA_FORMS = { gravender: 'megagravender' };
+const MEGA_HOURS = 4, MEGA_COOLDOWN_DAYS = 3;
+function megaChange(m, toSpecies) {   // switch form, keep level / XP / moves / HP share
+  const share = m.maxHp ? m.hp / m.maxHp : 1;
+  m.species = toSpecies; m.name = SPECIES[toSpecies].name;
+  calcStats(m);
+  m.hp = m.hp > 0 ? Math.max(1, Math.round(m.maxHp * share)) : 0;
+}
+function megaEvolve(m) {
+  const now = Date.now();
+  m.megaFrom = m.species;
+  m.megaUntil = now + MEGA_HOURS * 3600e3;
+  game.megaNextAt = now + MEGA_COOLDOWN_DAYS * 24 * 3600e3;
+  megaChange(m, MEGA_FORMS[m.species]);
+}
+// turn back every mega whose 4 hours are over (team and PC); called now and then outside battles
+function checkMegaTimers() {
+  const now = Date.now();
+  for (const m of [...game.party, ...(game.pc || [])]) {
+    if (m.megaUntil && now >= m.megaUntil) { megaChange(m, m.megaFrom || 'gravender'); delete m.megaUntil; delete m.megaFrom; }
+  }
+}
+// "2 pv 5 h" / "3 h 12 min" / "45 min"
+function timeLeftText(ms) {
+  const min = Math.max(1, Math.ceil(ms / 60000)), h = Math.floor(min / 60), d = Math.floor(h / 24);
+  return d ? `${d} pv ${h % 24} h` : h ? `${h} h ${min % 60} min` : `${min} min`;
+}
 
 function makeMon(species, level) {
   const sp = SPECIES[species];
@@ -561,6 +606,7 @@ const BATTLE_BG = {
   sea: { sky: '#d6efff', far: '#a6d6f2', near: '#86c4ec', ground: '#62b2e8', speck: '#8ccaf2', platDark: '#cbaa5e', plat: '#f2db9a' },
   hyujal: { sky: '#d8c6f2', far: '#b08ee0', near: '#9470d0', ground: '#b39ae2', speck: '#9f82d6', platDark: '#7a52b8', plat: '#9a78da', glow: true },
   space: { sky: '#100c24', far: '#2a2048', near: '#3a3060', ground: '#4a4460', speck: '#5e5878', platDark: '#2a2440', plat: '#7a7498', glow: true },
+  tower: { sky: '#241c2c', far: '#3a3242', near: '#4a4254', ground: '#5a5262', speck: '#6e6676', platDark: '#3a3242', plat: '#6a6272', glow: true },
   duo: { sky: '#1c2460', far: '#2c3c88', near: '#3c58a8', ground: '#8ee06a', speck: '#b4f08e', platDark: '#5cb048', plat: '#a8ec84', glow: true },
   grave: { sky: '#3a4048', far: '#2e3a30', near: '#3e4c3c', ground: '#4e5e4a', speck: '#5e7058', platDark: '#3e4c3c', plat: '#6a7a62', glow: true },
 };
@@ -582,7 +628,10 @@ const battle = {
   start(foeSpecies, foeLevel, from = 'bush', opts = {}) {
     this.from = from;
     this.enemy = opts.enemy || null;
-    this.kind = this.enemy ? 'trainer' : opts.regi ? 'regi' : 'wild';
+    this.kind = this.enemy ? 'trainer' : opts.regi ? 'regi' : opts.boss ? 'boss' : 'wild';
+    this.bg = opts.bg || null;   // battle background other than the map's (the church tower)
+    // boss fight (MEGA GRAVENDER): every 3rd turn it charges HAUTAKELLO; ring the church bell then to stun it
+    this.bossState = this.kind === 'boss' ? { turn: 0, charging: false, stunned: 0 } : null;
     this.me = game.party.find(m => m.hp > 0);
     if (this.enemy) {
       const team = this.enemy.team.map(t => makeMon(t.species, t.level));
@@ -699,6 +748,8 @@ const battle = {
     if (this.kind === 'trainer') {
       yield* textBox.say(`${this.enemy.name} haastaa sinut taisteluun!`);
       yield* textBox.say(`${this.enemy.name} lähetti ${foe.name}n!`);
+    } else if (this.kind === 'boss') {
+      yield* textBox.say(`${foe.name} kirkuu kellotornin huipulla!`);
     } else if (this.kind === 'regi') {
       yield* textBox.say(`${foe.name} heräsi kivijalustaltaan!`);
     } else {
@@ -718,7 +769,10 @@ const battle = {
         yield* textBox.say(choice === 1 ? 'Toisen kouluttajan otusta ei voi napata!' : 'Kouluttajataistelusta ei voi paeta!');
         continue;
       }
-      if (choice === 2) {
+      if (choice === 3 && this.kind === 'boss') { yield* textBox.say('Kellotornista ei voi paeta! Portaat ovat pedon takana.'); continue; }
+      if (choice === 1 && this.kind === 'boss') {
+        yield* this.ringBell();   // KELLO (instead of PALLO): the tactic against MEGA GRAVENDER
+      } else if (choice === 2) {
         // switch to another team member; the switch uses up this turn and the foe attacks the newcomer
         if (!(yield* this.switchMon())) continue;
         me = this.me;
@@ -750,16 +804,19 @@ const battle = {
         if (!myMove) continue;
       }
 
-      const foeMove = this.pickFoeMove();
+      const foeMove = this.pickFoeMove();   // null: a stunned boss loses its turn
       const turns = [];
-      if (myMove) {
+      if (myMove && foeMove) {
         const pm = myMove.priority || 0, pf = foeMove.priority || 0;   // SHADOW SNEAK always strikes first
         const meFirst = pm !== pf ? pm > pf : speedOf(me) > speedOf(foe) || (speedOf(me) === speedOf(foe) && Math.random() < 0.5);
         if (meFirst) turns.push([me, foe, myMove], [foe, me, foeMove]);
         else turns.push([foe, me, foeMove], [me, foe, myMove]);
-      } else {
+      } else if (myMove) {
+        turns.push([me, foe, myMove]);
+      } else if (foeMove) {
         turns.push([foe, me, foeMove]);
       }
+      if (!foeMove && this.bossState) yield* textBox.say(`${foe.name} on pyörryksissä eikä pysty liikkumaan!`);
       me.flinch = foe.flinch = false;
       let newFoe = false;
       for (const [a, d, m] of turns) {
@@ -782,11 +839,13 @@ const battle = {
 
   // "Villi ZUBUG" / "Vastustajan PSISTIEL" / just "REGIACID"
   foeName(m) {
-    return this.kind === 'trainer' ? `Vastustajan ${m.name}` : this.kind === 'regi' ? m.name : `Villi ${m.name}`;
+    return this.kind === 'trainer' ? `Vastustajan ${m.name}` : this.kind === 'regi' || this.kind === 'boss' ? m.name : `Villi ${m.name}`;
   },
 
   // poison, burn and FIRE SPIN damage at the end of every turn
   *endOfTurn() {
+    const bs = this.bossState;   // the stunned boss slowly comes round
+    if (bs && bs.stunned > 0 && --bs.stunned === 0 && this.foe.hp > 0) yield* textBox.say(`${this.foe.name} toipui pyörtymisestä!`);
     for (const mine of [true, false]) {
       const m = mine ? this.me : this.foe, v = mine ? this.meV : this.foeV;
       const name = mine ? m.name : this.foeName(m);
@@ -979,6 +1038,12 @@ const battle = {
   },
 
   pickFoeMove() {
+    const b = this.bossState;
+    if (b) {   // MEGA GRAVENDER: stunned -> no move; charged -> HAUTAKELLO; every 3rd turn it starts charging
+      if (b.stunned > 0) return null;
+      if (b.charging) { b.charging = false; return BOSS_BELL; }
+      if (++b.turn % 3 === 0) return BOSS_CHARGE;
+    }
     const usable = this.foe.moves.filter(m => m.left > 0);
     if (!usable.length) return STRUGGLE;
     return usable[rnd(0, usable.length - 1)];
@@ -1007,8 +1072,15 @@ const battle = {
       yield* textBox.say(`${who} säpsähti eikä pystynyt liikkumaan!`);
       return;
     }
-    if (!move.struggle) move.left--;
+    if (!move.struggle && !move.noPP) move.left--;
     yield* textBox.say(`${who} käytti ${move.name}!`, { auto: 14, keep: true });
+    if (move.charge) {   // MEGA GRAVENDER gathers dark power into the tower bell; its stone shield rises meanwhile
+      yield* this.animBossCharge(av);
+      this.bossState.charging = true;
+      yield* textBox.say(`${who} kerää pimeää voimaa kellotornin kelloon! Sen kivikilpi nousi, ja ensi vuorolla se iskee HAUTAKELLOLLA!`);
+      textBox.hide();
+      return;
+    }
     // HAY HIDE raises the target's evasion: each stage makes attacks on it miss more (3 / (3 + stages))
     const eva = move.heal || move.evade ? 0 : Math.max(0, def.evaStage || 0);
     if (Math.random() * 100 >= move.acc * 3 / (3 + eva)) {
@@ -1102,6 +1174,11 @@ const battle = {
       return;
     }
     let { dmg, crit } = calcDamage(att, def, move);
+    let bossNote = null;   // MEGA GRAVENDER: shielded while charging (1/4 damage), stunned after the bell (double damage)
+    if (this.bossState && def === this.foe) {
+      if (this.bossState.charging) { dmg = Math.max(1, Math.ceil(dmg / 4)); bossNote = 'Kivikilpi vaimensi iskun!'; }
+      else if (this.bossState.stunned > 0) { dmg *= 2; bossNote = 'Pyörryksissä oleva peto otti tuplavahinkoa!'; }
+    }
     if (move.anim === 'thunder') yield* this.animThunder(av, dv);
     else if (move.anim === 'electro') yield* this.animElectro(av, dv);
     else if (move.anim === 'buzz') yield* this.animBuzz(av, dv);
@@ -1148,6 +1225,7 @@ const battle = {
     else if (move.anim === 'tealbeam') yield* this.animTealBeam(av, dv);
     else if (move.anim === 'wavecrash') yield* this.animWaveCrash(av, dv);
     else if (move.anim === 'shadowsneak') yield* this.animShadowSneak(av, dv, mine ? 1 : -1);
+    else if (move.anim === 'hautakello') yield* this.animHautakello(av, dv);
     else yield* this.animTackle(av, dv, mine ? 1 : -1);
     if (move.flinch && Math.random() < move.flinch) def.flinch = true;
     if (move.keepOne && dmg >= def.hp) dmg = Math.max(0, def.hp - 1);   // FALSE SWIPE leaves the target 1 HP
@@ -1155,6 +1233,7 @@ const battle = {
     yield* this.hurt(dv);
     yield* this.drainHp(dv, def);
     if (crit) yield* textBox.say('Kriittinen osuma!');
+    if (bossNote) yield* textBox.say(bossNote);
     if (def.hp > 0 && move.paralyze && !def.status && Math.random() < move.paralyze) {
       def.status = 'par';
       this.flash = 3;
@@ -2021,6 +2100,71 @@ const battle = {
     this.parts = null;
   },
 
+  // ----- MEGA GRAVENDER boss fight -----
+  // KELLO: pull the church bell rope. During PIMEÄ VOIMA the sound breaks the charge and stuns the boss.
+  *ringBell() {
+    yield* textBox.say('Vedit kirkonkellon köydestä...', { auto: 10, keep: true });
+    for (let r = 0; r < 3; r++) {   // BONG: rings of sound spread from the bell above the boss
+      for (let i = 0; i < 16; i++) {
+        this.parts = [];
+        for (let a = 0; a < Math.PI * 2; a += 0.25) this.parts.push({ x: 120 + Math.cos(a) * i * 5, y: 20 + Math.sin(a) * i * 3, c: i % 4 < 2 ? '#e8c860' : '#fff0b0', s: 2 });
+        if (i === 0) { this.flash = 2; this.shake = 4; }
+        yield;
+      }
+    }
+    this.parts = null;
+    const b = this.bossState;
+    if (b.charging) {
+      b.charging = false;
+      b.stunned = BOSS_STUN_TURNS;
+      this.foeV.dx = 0;
+      yield* textBox.say('BONG! BONG! Kirkonkello kumisee koko tornissa!');
+      yield* textBox.say(`${this.foe.name} säikähti kellon ääntä! Pimeä voima hajosi, kivikilpi murtui, ja se meni pyörryksiin!`);
+    } else {
+      yield* textBox.say('Kello kumahti, mutta mitään ei tapahtunut. Soita sitä, kun peto kerää voimaa!');
+    }
+    textBox.hide();
+  },
+
+  // PIMEÄ VOIMA: green-black darkness swirls into the boss, which trembles
+  *animBossCharge(av) {
+    av.pose = 'attack';
+    const cx = av.x + 32, cy = av.y + 32;
+    for (let i = 0; i < 40; i++) {
+      this.parts = [];
+      for (let n = 0; n < 16; n++) {
+        const a = n * Math.PI / 8 + i * 0.25, r = 30 - (i % 20) * 1.3;
+        this.parts.push({ x: cx + Math.cos(a) * r, y: cy + Math.sin(a) * r * 0.8, c: n % 2 ? '#22ff00' : '#1a1024', s: 3 });
+      }
+      av.dx = i % 4 < 2 ? 1 : -1;
+      yield;
+    }
+    av.dx = 0;
+    this.parts = null;
+    av.pose = 'idle';
+  },
+
+  // HAUTAKELLO: a deep toll from the tower bell; dark rings crash down on the target
+  *animHautakello(av, dv) {
+    av.pose = 'attack';
+    this.tintRGB = '10,0,20';
+    yield* tween(10, k => { this.tint = 0.55 * k; });
+    const tx = dv.x + 32, ty = dv.y + 34;
+    for (let i = 0; i < 44; i++) {
+      this.parts = [];
+      for (let ring = 0; ring < 3; ring++) {
+        const r = ((i * 2 + ring * 14) % 42);
+        for (let a = 0; a < Math.PI * 2; a += 0.3) this.parts.push({ x: tx + Math.cos(a) * r, y: ty + Math.sin(a) * r * 0.7, c: ring === 1 ? '#22ff00' : '#3a2050', s: 3 });
+      }
+      if (i % 11 === 0) { this.flash = 2; this.shake = 9; }
+      yield;
+    }
+    this.parts = null;
+    av.pose = 'idle';
+    yield* tween(8, k => { this.tint = 0.55 * (1 - k); });
+    this.tint = 0; this.tintRGB = null;
+  },
+
   // SHADOW SNEAK: the user's shadow slides along the ground to the target and strikes from below
   *animShadowSneak(av, dv, dir) {
     const sx = av.x + 32, tx = dv.x + 32, gy0 = av.y + 58, gy1 = dv.y + 58;
@@ -2338,6 +2482,11 @@ const battle = {
       yield* textBox.say(`Voitit: ${this.enemy.name}!`);
       yield* textBox.say(`Sait ${this.enemy.reward} kolikkoa! Kolikoita yhteensä: ${game.coins}.`);
       if (this.enemy.onWin) yield* this.enemy.onWin();
+    } else if (this.kind === 'boss') {   // MEGA GRAVENDER beaten for good
+      game.megaBossBeaten = true;
+      game.coins += BOSS_REWARD;
+      yield* textBox.say(`Voitit ${this.foe.name}${/[AEIOUYÄÖ]$/.test(this.foe.name) ? "n" : "in"}! Kellotorni on taas hiljainen.`);
+      yield* textBox.say(`Sait ${BOSS_REWARD} kolikkoa! Kolikoita yhteensä: ${game.coins}.`);
     } else {
       const coins = SPECIES[this.foe.species].coins;
       game.coins += coins;
@@ -2367,7 +2516,7 @@ const battle = {
   },
 
   drawBackground() {
-    const c = BATTLE_BG[overworld.map.id] || BATTLE_BG.forest;
+    const c = BATTLE_BG[this.bg || overworld.map.id] || BATTLE_BG.forest;
     ctx.fillStyle = c.sky; ctx.fillRect(0, 0, W, 112);
     for (let i = 0; i < 17; i++) fillEllipse(i * 15 - 2, 44 + (i % 3) * 3, 11, 11, c.far);
     for (let i = 0; i < 14; i++) fillEllipse(i * 18 + 6, 52 + (i % 2) * 3, 10, 9, c.near);
@@ -2438,7 +2587,8 @@ const battle = {
     if (this.menu.type === 'main') {
       drawBox(136, 112, 104, 48);
       drawText(ctx, 'TAISTELE', 158, 115);
-      drawText(ctx, 'PALLO', 158, 125); drawTextRight(ctx, 'X' + totalBalls(), 230, 125, '#586070');
+      if (this.kind === 'boss') drawText(ctx, 'KELLO', 158, 125, '#8a5a2c');   // ring the church bell instead of throwing a ball
+      else { drawText(ctx, 'PALLO', 158, 125); drawTextRight(ctx, 'X' + totalBalls(), 230, 125, '#586070'); }
       drawText(ctx, 'VAIHDA', 158, 135);
       drawText(ctx, 'PAKENE', 158, 145);
       drawText(ctx, '►', 147, 115 + this.menu.index * 10, '#e04838');

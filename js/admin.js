@@ -83,6 +83,8 @@ const admin = {
         <button data-act="resetdex">Tyhjennä kokoelma</button></div>
 
       <h4>REGI TEMPPELI</h4>
+      <div class="admRow">MEGA GRAVENDER <b>${game.megaBossBeaten ? 'voitettu' : game.bossQuest ? 'kirkko auki' : 'ei aloitettu'}</b> <button data-act="bossReset">Palauta pomo</button>
+        · Mega-kehitys <b>${(game.megaNextAt || 0) > Date.now() ? 'odottaa' : 'valmis'}</b> <button data-act="megaReady">Mega valmiiksi</button></div>
       <div class="admRow">TYHJÄT TM:T <b>${game.emptyTMs}</b> <button data-act="tms" data-n="1">+1</button><button data-act="tms" data-n="5">+5</button>
         · FALSE SWIPE TM <b>${game.falseSwipeTM ? 'on' : 'ei'}</b> <button data-act="fstm">${game.falseSwipeTM ? 'Poista' : 'Anna'}</button></div>
       <div class="admRow">REGI SHARDIT <b>${game.shards.length}/${SHARD_TOTAL}${game.shardsGiven ? ', annettu' : ''}</b>
@@ -150,6 +152,8 @@ const admin = {
         return;
       }
       case 'regis': game.regisCaught = []; return this.changed('Regit palautettu jalustoille');
+      case 'bossReset': game.bossQuest = false; game.megaBossBeaten = false; return this.changed('MEGA GRAVENDER palautettu torniin');
+      case 'megaReady': game.megaNextAt = 0; return this.changed('Mega-kehityksen odotus nollattu');
       case 'tms': game.emptyTMs += n; return this.changed(`+${n} TYHJÄ TM`);
       case 'fstm': game.falseSwipeTM = !game.falseSwipeTM; return this.changed(`FALSE SWIPE TM ${game.falseSwipeTM ? 'annettu' : 'poistettu'}`);
       case 'shards': game.shards = Object.values(MAPS).filter(q => q.shard).map(q => q.id); return this.changed('Kaikki REGI SHARDIT kerätty');

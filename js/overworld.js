@@ -189,6 +189,7 @@ const MAPS = {
   grave: {
     name: 'HAUTAUSMAA',
     tiles: 'tilesGrave', rustle: 'graveRustle', shade: '#232a22', music: 'hyujal', wisps: true,
+    npcs: ['priest'],   // KIRKKOHERRA by the church door: starts the MEGA GRAVENDER boss fight
     rows: [
       'TTTTTTTTTTTTTTTTTTTTTTTTTT',
       'TTTTTTTTTTTTTTTTTTTTTTTTTT',
@@ -642,6 +643,25 @@ const NPCS = {
       saveGame.save(true);
     },
   },
+  // HAUTAUSMAA: the church's KIRKKOHERRA. Talking to him opens the way up the bell tower to the MEGA GRAVENDER boss.
+  priest: {
+    sprite: 'priest',
+    pos: () => ({ x: 12, y: 8, dir: 'down' }),
+    *talk() {
+      const N = 'KIRKKOHERRA';
+      if (game.megaBossBeaten) {
+        yield* textBox.say(`${N}: Kiitos! Kellotorni on taas hiljainen, ja kirkonkello soi vain sunnuntaisin.`);
+        yield* textBox.say(`${N}: Jos sinulla on GRAVENDER, voit mega-kehittää sen REPUSTA neljäksi tunniksi, kerran kolmessa päivässä.`);
+        return;
+      }
+      yield* textBox.say(`${N}: Voi, onneksi tulit! Kirkon kellotornin huipulle on pesiytynyt pelottava peto: MEGA GRAVENDER!`);
+      yield* textBox.say(`${N}: Se on liian vahva voitettavaksi pelkällä voimalla. Kun se kerää pimeää voimaa, sen kivikilpi nousee, ja sitten se iskee kauhealla HAUTAKELLOLLA.`);
+      yield* textBox.say(`${N}: Mutta muinainen kirkonkello saa pedot säikähtämään! Soita KELLOA juuri silloin, kun peto kerää voimaa. Silloin se menee pyörryksiin, ja iskusi osuvat tuplasti.`);
+      yield* textBox.say(`${N}: Ovi on nyt auki. Kiipeä kellotorniin, kun olet valmis. Parantele otuksesi ensin!`);
+      game.bossQuest = true;
+      saveGame.save(true);
+    },
+  },
   // side quest in VEYLORAN KYLÄ: bring five TYHJÄ TMs (25 coins each in the HOITOLA shop) and get the FALSE SWIPE TM
   tmcollector: {
     sprite: 'tmcollector',
@@ -940,6 +960,20 @@ const overworld = {
     startEncounter(regi, 'regi', { level: 50, regi: true });
   },
 
+  // ----- HAUTAUSMAA church door: locked until the KIRKKOHERRA has told you about the beast; then up the tower to the boss -----
+  *churchDoor() {
+    if (game.megaBossBeaten) { yield* textBox.say('Kirkossa on nyt rauhallista. Kellotornista ei kuulu enää kirkunaa.'); return; }
+    if (!game.bossQuest) { yield* textBox.say(this.map.churchText || 'Kirkon ovi on lukossa.'); return; }
+    if (!game.party.some(m => m.hp > 0)) { yield* textBox.say('Otuksesi ovat liian väsyneitä. Parantele ne ensin HOITOLASSA.'); return; }
+    textBox.show('Kiipeätkö kellotorniin MEGA GRAVENDERin luo?');
+    const yes = yield* menuBox.choose(['KYLLÄ', 'EI'], 176, 78, 60);
+    textBox.hide();
+    if (yes !== 0) return;
+    yield* textBox.say('Kiipeät kapeita kiviportaita ylös kellotorniin...');
+    yield* textBox.say('Tornin huipulla, suuren kirkonkellon vieressä, hehkuu kaksi vihreää silmää!');
+    startEncounter('megagravender', 'tower', { level: BOSS_LEVEL, boss: true, shiny: false, bg: 'tower' });
+  },
+
   // ----- riding a SERPENALGE on deep water (maps with `surfEncounters`: SAARIMERI) -----
   surfRider() { return game.party.find(m => m.species === 'serpenalge' && m.hp > 0); },
 
@@ -1002,7 +1036,7 @@ const overworld = {
     if (tile === 'S') this.say((this.map.signs && this.map.signs[`${fx},${fy}`]) || this.map.sign);
     if (tile === 'O') this.say((this.map.houseTexts && this.map.houseTexts[`${fx},${fy}`]) || 'Ovi on lukossa.');
     if (tile === 'N') this.say(this.map.barnText || 'Navetan ovi on kiinni.');
-    if (tile === 'C') this.say(this.map.churchText || 'Kirkon ovi on kiinni.');
+    if (tile === 'C') { this.runner.run(this.churchDoor()); return; }
     if (this.cowAt(fx, fy)) this.runner.run(this.cowTalk());
     const wild = this.wandererAt(fx, fy);
     if (wild) this.runner.run(this.wandererTouch(wild));

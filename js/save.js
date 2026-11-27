@@ -92,7 +92,7 @@ const saveGame = {
       pc: game.pc.map(pack),
       coins: game.coins, balls: game.balls, greatBalls: game.greatBalls, ultraBalls: game.ultraBalls, masterBalls: game.masterBalls,
       caught: game.caught, shinyCharm: game.shinyCharm, beastCharm: game.beastCharm,
-      regisCaught: game.regisCaught, shards: game.shards, shardsGiven: game.shardsGiven, emptyTMs: game.emptyTMs, falseSwipeTM: game.falseSwipeTM,
+      regisCaught: game.regisCaught, shards: game.shards, shardsGiven: game.shardsGiven, emptyTMs: game.emptyTMs, falseSwipeTM: game.falseSwipeTM, bossQuest: game.bossQuest, megaBossBeaten: game.megaBossBeaten, megaNextAt: game.megaNextAt,
       map: overworld.map.id, x: p.tx, y: p.ty, dir: p.dir,
     };
     try { localStorage.setItem(slotKey(this.slotId), JSON.stringify(d)); } catch (e) { return false; }
@@ -129,6 +129,9 @@ const saveGame = {
     game.shardsGiven = !!d.shardsGiven;
     game.emptyTMs = Math.max(0, d.emptyTMs | 0);
     game.falseSwipeTM = !!d.falseSwipeTM;
+    game.bossQuest = !!d.bossQuest;
+    game.megaBossBeaten = !!d.megaBossBeaten;
+    game.megaNextAt = +d.megaNextAt || 0;
     const map = MAPS[d.map] ? d.map : 'forest';
     const m = MAPS[map];
     let x = d.x | 0, y = d.y | 0;

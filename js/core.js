@@ -67,6 +67,7 @@ const SPRITES = {
   regiShard: 'sprites/regi_shard.png',   // 2 frames 16x16 REGI SHARD lying on the ground
   wormkeeper: 'sprites/wormkeeper.png',  // MADONREIÄN VARTIJA (player sheet re-coloured)
   tmcollector: 'sprites/tmcollector.png', // TM-KERÄILIJÄ in VEYLORAN KYLÄ (player sheet re-coloured)
+  priest: 'sprites/priest.png',           // KIRKKOHERRA at the HAUTAUSMAA church (player sheet re-coloured)
   tmEmpty: 'sprites/tm_empty.png',       // 16x16 TYHJÄ TM disc
   tmFalseSwipe: 'sprites/tm_false_swipe.png', // 16x16 FALSE SWIPE TM disc
   masterBall: 'sprites/master_ball.png',  // 3 frames 16x16 MASTER PALLO
@@ -106,6 +107,7 @@ const DUO_FILES = {
   moonbalduo: 'moon balduo.png', safaribalduo: 'safari balduo.png', luxurybalduo: 'luxury balduo.png',
   octoteal: 'octoteal.png', tentatealind: 'tentatealind.png',
   gravey: 'gravey.png', gravender: 'gravender.png',
+  megagravender: 'mega gravender.png',
 };
 for (const [k, file] of Object.entries(DUO_FILES)) {
   SPRITES[k] = file;
@@ -151,6 +153,7 @@ const SHINY_FILES = {
   // OCTOTEAL line: shinies made by the game's sprite script (teal turned pink, with your yellow sparkles)
   octoteal: 'sprites/shiny_octoteal.png', tentatealind: 'sprites/shiny_tentatealind.png',
   gravey: 'gravey kiiltävä.png', gravender: 'kiiltävä gravender.png',
+  megagravender: 'kiiltävä mega gravender.png',   // only your own shiny GRAVENDER mega evolved; the boss is never shiny
 };
 for (const [k, file] of Object.entries(SHINY_FILES)) {
   SPRITES['shiny_' + k] = file;

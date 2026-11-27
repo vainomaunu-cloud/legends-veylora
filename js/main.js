@@ -17,6 +17,9 @@ const game = {
   shardsGiven: false,   // the shards were given to the WORMHOLE KEEPER: the wormhole is open
   emptyTMs: 0,          // TYHJÄ TMs bought (the TM-KERÄILIJÄ wants 5)
   falseSwipeTM: false,  // got the FALSE SWIPE TM from the TM-KERÄILIJÄ (it never runs out)
+  bossQuest: false,     // the KIRKKOHERRA told you about the MEGA GRAVENDER: the church door is open
+  megaBossBeaten: false, // MEGA GRAVENDER beaten in the church tower
+  megaNextAt: 0,        // time (ms) when your GRAVENDER can mega evolve again (once every 3 days)
   runner: new Runner(), // transitions
   fade: 0, wipe: 0, white: 0, t: 0,
 };
@@ -85,7 +88,7 @@ function newGame(name = saveGame.defaultName()) {
   game.party = [starter];
   game.coins = 0; game.balls = 0; game.greatBalls = 0; game.ultraBalls = 0; game.masterBalls = 0;
   game.caught = []; game.shinyCharm = false; game.beastCharm = false; game.pc = [];
-  game.regisCaught = []; game.shards = []; game.shardsGiven = false; game.emptyTMs = 0; game.falseSwipeTM = false;
+  game.regisCaught = []; game.shards = []; game.shardsGiven = false; game.emptyTMs = 0; game.falseSwipeTM = false; game.bossQuest = false; game.megaBossBeaten = false; game.megaNextAt = 0;
   overworld.init();
   startGame();
 }
@@ -257,6 +260,7 @@ function update() {
   game.t++;
   if (!game.locked && SCENES[game.view]) SCENES[game.view].update();
   game.runner.update();
+  if (game.t % 300 === 0 && game.view === 'overworld') checkMegaTimers();   // a mega form's 4 hours ran out: back to GRAVENDER
   clearPressed();
   // quiet autosave every 10 seconds while walking around
   if (game.t % 600 === 0 && !overworld.runner.busy) saveGame.save();

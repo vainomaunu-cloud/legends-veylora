@@ -6,6 +6,7 @@ const inventory = {
   el: null,
 
   open() {
+    if (typeof checkMegaTimers === 'function') checkMegaTimers();   // turn back any mega whose time ran out
     window.invOpen = true;
     for (const k in held) held[k] = false;   // let go of any game keys
     dirStack.length = 0;
@@ -16,7 +17,29 @@ const inventory = {
   close() {
     window.invOpen = false;
     this.teach = null;
+    this.megaMsg = null;
     this.el.style.display = 'none';
+  },
+
+  // ----- mega evolution: GRAVENDER -> MEGA GRAVENDER for 4 hours, once every 3 days -----
+  megaRow(m, i) {
+    if (m.megaUntil) return `<div class="invMega on">⚡ MEGA · palaa GRAVENDERiksi ${timeLeftText(m.megaUntil - Date.now())} päästä</div>`;
+    if (!MEGA_FORMS[m.species]) return '';
+    const wait = (game.megaNextAt || 0) - Date.now();
+    if (wait > 0) return `<div class="invMega">⚡ Mega-kehitys taas ${timeLeftText(wait)} päästä</div>`;
+    return `<div class="invMega"><button type="button" data-mega="${i}">⚡ MEGA-KEHITÄ (${MEGA_HOURS} h)</button></div>`;
+  },
+
+  megaClick(i) {
+    const m = game.party[i];
+    if (!m || !MEGA_FORMS[m.species]) return;
+    if (game.view === 'battle') { this.megaMsg = 'Mega-kehitys ei onnistu taistelun aikana.'; this.render(); return; }
+    if ((game.megaNextAt || 0) > Date.now()) return;
+    const old = m.name;
+    megaEvolve(m);
+    this.megaMsg = `${old} mega-kehittyi ${m.name}iksi! Se pysyy megana ${MEGA_HOURS} tuntia.`;
+    saveGame.save(true);
+    this.render();
   },
 
   // ----- FALSE SWIPE TM: teach it to team members (the TM never runs out) -----
@@ -68,7 +91,7 @@ const inventory = {
     if (!game.party.length) {
       team = '<p class="invNote">Aloita tai jatka peliä nähdäksesi tiimisi.</p>';
     } else {
-      team = game.party.map(m => {
+      team = game.party.map((m, i) => {
         const sp = SPECIES[m.species];
         const key = spriteKey(m, sp.sprites.front);
         const img = IMG[key] ? IMG[key].src : '';
@@ -85,6 +108,7 @@ const inventory = {
               <div class="invBar"><div style="width:${Math.round(f * 100)}%;background:${color}"></div></div>
               <div class="invSmall">HP ${m.hp}/${m.maxHp} · XP ${m.xp - lo}/${next - lo}</div>
               <div class="invMoves">${moves}</div>
+              ${this.megaRow(m, i)}
             </div>
           </div>`;
       }).join('');
@@ -102,6 +126,7 @@ const inventory = {
           ${game.falseSwipeTM ? `<div class="invItem"><img src="sprites/tm_false_swipe.png" class="invBall" alt=""> FALSE SWIPE TM <button type="button" data-tm="open">Opeta</button></div>` : ""}
           <div class="invItem">🪙 KOLIKOT <b>${game.coins}</b></div>
         </div>
+        ${this.megaMsg ? `<p class="invMegaMsg">${this.megaMsg}</p>` : ''}
         ${this.tmPanel()}
         <h4>Tiimi (${game.party.length}/6)</h4>
         ${team}
@@ -115,6 +140,8 @@ const inventory = {
     document.body.appendChild(el);
     this.el = el;
     el.addEventListener('click', e => {
+      const mega = e.target.closest('[data-mega]');
+      if (mega) { this.megaClick(+mega.dataset.mega); return; }
       const tm = e.target.closest('[data-tm]');
       if (tm) { this.tmClick(tm); return; }
       if (e.target === el || e.target.closest('[data-close]')) this.close();   // backdrop or close button
@@ -158,6 +185,10 @@ const inventory = {
       #inventory .invMove small { color: #9aa3b5; }
       #inventory .invNote { color: #9aa3b5; }
       #inventory .invItem button { margin-left: auto; background: #b8453a; border-color: #e07a6a; }
+      #inventory .invMega { margin-top: 5px; font-size: 12px; color: #9aa3b5; }
+      #inventory .invMega.on { color: #8dea7a; font-weight: 700; }
+      #inventory .invMega button { background: #2e5a2a; border-color: #8dea7a; }
+      #inventory .invMegaMsg { color: #8dea7a; font-weight: 700; margin: 8px 0 0; }
       #inventory .invTeach { margin-top: 10px; background: #2c2440; border: 1px solid #8a6ad0; border-radius: 8px; padding: 8px 10px; display: flex; flex-wrap: wrap; gap: 6px; }
       #inventory .invTeach p { width: 100%; margin: 0 0 4px; font-weight: 600; }
       #inventory .invTeach button[disabled] { opacity: .45; cursor: default; }`;
