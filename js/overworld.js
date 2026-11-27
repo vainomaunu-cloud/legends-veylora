@@ -159,7 +159,7 @@ const MAPS = {
       'TT....*....S=...*.....TT',
       'TT.,........=........,TT',
       'TT...M......=.......M.TT',
-      'TT......=========.....TT',
+      'TT......===============X',   // path east to HAUTAUSMAA
       'TT.BBBB.=.......=.BBBBTT',
       'TTBBBBBB=.......=BBBBBTT',
       'TT.BBBB.=.*...*.=.BBB.TT',
@@ -177,10 +177,52 @@ const MAPS = {
       { species: 'eyevil', chance: 0.30 },
       { species: 'eyebaldon', chance: 0.10 },
     ],
-    warps: { '12,0': { to: 'forest', x: 12, y: 18, dir: 'up' } },
-    sign: 'HYUJAL METSÄ\nPuut ja sienet hohtavat... Liilojen puskien seassa piileskelee SQUISHROOMeja, myrkyllisiä SHROOCIDeja ja salaperäisiä PSISTIELejä. Varjoissa vaanii EYEVILejä ja niiden isoja EYEBALDONeja, ja joskus harvoin näkyy jopa PSIDUOCIPE!',
+    warps: {
+      '12,0': { to: 'forest', x: 12, y: 18, dir: 'up' },
+      '23,9': { to: 'grave', x: 1, y: 16, dir: 'right' },
+    },
+    sign: 'HYUJAL METSÄ\nPuut ja sienet hohtavat... Liilojen puskien seassa piileskelee SQUISHROOMeja, myrkyllisiä SHROOCIDeja ja salaperäisiä PSISTIELejä. Varjoissa vaanii EYEVILejä ja niiden isoja EYEBALDONeja, ja joskus harvoin näkyy jopa PSIDUOCIPE! Itään: HAUTAUSMAA.',
   },
   // snowy forest north of PUSKAMETSÄ (no creatures yet)
+  // HAUTAUSMAA east of HYUJAL METSÄ: a big stone church at the top, four fenced grave plots, lanterns and candles, bare dead trees, drifting fog lights
+  // C the big church (5x4 tiles, door in the middle of the bottom row)  G gravestone (rounded or a cross)  Y wrought-iron fence  M iron lantern  * candle  B dead bush (no creatures)  T dead tree
+  grave: {
+    name: 'HAUTAUSMAA',
+    tiles: 'tilesGrave', rustle: 'graveRustle', shade: '#232a22', music: 'hyujal', wisps: true,
+    rows: [
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TT..*...B.........B...*.TT',
+      'TT.......M.......M......TT',
+      'TT..B......CCCCC......B.TT',
+      'TT.........CCCCC........TT',
+      'TT..*......CCCCC.....*..TT',
+      'TT.........CCCCC........TT',
+      'TT..G.G......=......G.G.TT',
+      'TT..*.......M=M......*..TT',
+      'TT.YYYYYYYYY.=YYYYYYYYY.TT',
+      'TT.Y.G.G.G.Y.=Y.G.G.G.Y.TT',
+      'TT.Y.*.....Y.=Y.....*.Y.TT',
+      'TT.Y.G.G.G.Y.=Y.G.G.G.Y.TT',
+      'TT.YYYYY.YYY.=YYY.YYYYY.TT',
+      'TT..M...=....=...=...M..TT',
+      'X======================.TT',
+      'TT..M...=...S=...=...M..TT',
+      'TT.YYYYY.YYY.=YYY.YYYYY.TT',
+      'TT.Y.G.G.G.Y.=Y.G.G.G.Y.TT',
+      'TT.Y.....*.Y.=Y.*.....Y.TT',
+      'TT.Y.G.G.G.Y.=Y.G.G.G.Y.TT',
+      'TT.YYYYYYYYY.=YYYYYYYYY.TT',
+      'TT.B..*.....M=....*..B..TT',
+      'TTT......B..........B..TTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+      'TTTTTTTTTTTTTTTTTTTTTTTTTT',
+    ],
+    encounters: [],
+    warps: { '0,16': { to: 'hyujal', x: 22, y: 9, dir: 'left' } },
+    churchText: 'Kirkon raskas puuovi on lukossa. Sisältä kuuluu hiljaista urkumusiikkia, ja värikkäät lasimaalaukset hehkuvat kynttilöiden valossa...',
+    sign: 'HAUTAUSMAA\nHiljainen hautausmaa HYUJAL METSÄN takana. Lyhdyt ja kynttilät palavat yötä päivää, ja sumussa leijuu kalpeita valoja... Länteen: HYUJAL METSÄ.',
+  },
   snow: {
     name: 'SNOW MOUNTAIN',
     shard: { x: 23, y: 3 },
@@ -411,6 +453,7 @@ for (const [id, m] of Object.entries(MAPS)) {
     if (ch === 'H') m.center = { x, y };   // ends at the top-left H
     if (ch === 'Q') m.kiosk = { x, y };    // ends at the top-left Q
     if (ch === 'W') m.wormhole = { x, y }; // ends at the top-left W
+    if (ch === 'C') m.church = { x, y };   // ends at the top-left C
   }
   // houses: the top-left K of each 3x3 house block; roof colour (red, blue, green, orange, purple) in reading order
   m.houses = [];
@@ -439,7 +482,7 @@ for (const [id, m] of Object.entries(MAPS)) {
   }
 }
 
-const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15, 'N': 0, 'W': 0 };
+const TILE_INDEX = { '.': 0, ',': 1, '=': 2, 'P': 2, 'X': 2, '*': 3, 'B': 6, 'M': 7, 'S': 9, 'H': 0, 'D': 0, '~': 13, '#': 15, '|': 16, 'Q': 2, 'R': 2, ':': 17, 'A': 0, 'E': 0, 'K': 0, 'O': 0, 'Y': 15, 'N': 0, 'W': 0, 'G': 13, 'C': 0 };
 const WALL_FACE = 11, WALL_TOP = 12;   // maps with walls: true (REGI TEMPPELI) draw T as bricks
 // walls: 'space' (MADONREIKÄ) draws T as open space, with the rock edge (WALL_FACE) right below the floor
 const SHARD_TOTAL = 5;                 // REGI SHARDs to find (one per map with `shard`)
@@ -470,7 +513,7 @@ const TM_QUEST_COUNT = 5;
 const shopItem = key => (key === EMPTY_TM.key ? EMPTY_TM : ballType(key));
 const totalBalls = () => BALL_TYPES.reduce((n, b) => n + game[b.key], 0);
 const BUSH_FRONT = 10, TREE_A = 11, TREE_B = 12;
-const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E', 'K', 'O', 'Y', 'N', 'W']);
+const SOLID = new Set(['T', 'S', 'H', 'D', 'M', '~', 'Q', 'R', 'A', 'E', 'K', 'O', 'Y', 'N', 'W', 'G', 'C']);
 const DIR_ROW = { down: 0, up: 1, left: 2, right: 3 };
 const WALK_SPEED = 1.5;        // pixels per frame (16 px tile = about 11 frames)
 const TREE_LIFT = 6;           // trees are drawn this many px up so the rows overlap
@@ -493,6 +536,7 @@ const MINI_COLORS_MAP = {
   temple: { '.': '#c89ad8', ',': '#c89ad8', '*': '#ff9cf2', '=': '#6a2a8e', 'X': '#6a2a8e', 'T': '#2e1248', 'A': '#8752b4', 'E': '#b48ad4', 'M': '#ff7ad8', 'S': '#5a3a78', 'W': '#c050f0' },
   space: { '.': '#4a4460', ',': '#4a4460', '*': '#38d8f0', '=': '#2a2440', 'T': '#0a0818', 'M': '#c050f0', 'S': '#7a7498', 'W': '#c050f0' },
   duo: { '.': '#7cd860', ',': '#7cd860', '*': '#7ad8ff', '=': '#e2c489', 'X': '#e2c489', 'T': '#0a0a26', 'B': '#3f9a44', 'M': '#c8a040', 'S': '#8a5a2c' },
+  grave: { '.': '#4e5e4a', ',': '#4e5e4a', '*': '#ffc040', '=': '#6e6458', 'X': '#6e6458', 'T': '#232a22', 'B': '#6a5e4e', 'M': '#ffc040', 'S': '#4a3a2a', 'G': '#8c8c98', 'Y': '#2c2c34', 'C': '#8e8e9a' },
 };
 
 function buildMinimap(m) {
@@ -954,6 +998,7 @@ const overworld = {
     if (tile === 'S') this.say((this.map.signs && this.map.signs[`${fx},${fy}`]) || this.map.sign);
     if (tile === 'O') this.say((this.map.houseTexts && this.map.houseTexts[`${fx},${fy}`]) || 'Ovi on lukossa.');
     if (tile === 'N') this.say(this.map.barnText || 'Navetan ovi on kiinni.');
+    if (tile === 'C') this.say(this.map.churchText || 'Kirkon ovi on kiinni.');
     if (this.cowAt(fx, fy)) this.runner.run(this.cowTalk());
     const wild = this.wandererAt(fx, fy);
     if (wild) this.runner.run(this.wandererTouch(wild));
@@ -1140,6 +1185,7 @@ const overworld = {
         if (ch === '*') idx = 3 + (Math.floor(this.t / 40) % 2);
         if (ch === 'M') idx = 7 + (Math.floor((this.t + tx * 13) / 36) % 2);
         if (ch === 'X' && m.exitTile) idx = m.exitTile;
+        if (ch === 'G') idx = 13 + (((tx >> 1) + (ty >> 1) + (tx * ty) % 3) % 2);   // HAUTAUSMAA: rounded gravestones and crosses mixed
         drawFrame(tiles, idx, 16, 16, sx, sy);
       }
     }
@@ -1169,6 +1215,7 @@ const overworld = {
       }
       for (const h of m.houses) if (ty === h.y + 2) drawFrame(IMG.houses, h.style, 48, 48, h.x * TILE - camX, h.y * TILE - camY);
       for (const b of m.barns) if (ty === b.y + 2) ctx.drawImage(IMG.barn, b.x * TILE - camX, (b.y - 1) * TILE - camY);   // roof reaches one row up
+      if (m.church && ty === m.church.y + 3) ctx.drawImage(IMG.church, m.church.x * TILE - camX, (m.church.y - 3) * TILE - camY);   // roof and steeple reach 3 rows up
       for (const c of this.cows || []) {
         if (Math.floor((c.py + 8) / TILE) !== ty) continue;
         const walking = c.px !== c.tx * TILE || c.py !== c.ty * TILE;
@@ -1207,6 +1254,7 @@ const overworld = {
     if (m.sparkle) this.drawGlow(['#ff9cf2', '#ffe0fa'], 0);
     if (m.night) { ctx.fillStyle = 'rgba(30,30,90,0.10)'; ctx.fillRect(0, 0, W, H); }   // DUO LANDS: a soft evening hint over the bright fields
     if (m.stars) this.drawGlow(['#ffffff', '#9fe3ff'], 0);
+    if (m.wisps) this.drawGlow(['#d8e8d0', '#c8d0ff'], 0.14);   // HAUTAUSMAA: a little gloom and pale lights drifting in the fog
     if (m.shootingStars) this.drawShootingStars();
     if (m.snowfall) this.drawSnowfall();
     if (!menuBox.active) this.drawMinimap(px, py);

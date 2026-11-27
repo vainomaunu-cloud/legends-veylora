@@ -163,7 +163,11 @@ Kaikki ovat 8 tahdin luuppeja: pulssiaaltomelodia, toinen pulssiaalto säestää
    - Liiloista puskista voi tulla **EYEVIL** (30 %), **EYEBALDON** (10 %), **SQUISHROOM** (20 %), **SHROOCID** (15 %), **PSISTIEL** (10 %) tai **PSIDUOCIPE** (5 %) askelta kohden.
    - Täällä taistellessa taustakin on liila, ja taivaalla tuikkii sinisiä ja liiloja valoja.
    - Kun menet alueelle, sen nimi liukuu hetkeksi ruudun yläreunaan. Sama tapahtuu palatessa PUSKAMETSÄÄN.
-   - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Kyltti on polun varrella.
+   - Pohjoisreunan polku vie takaisin PUSKAMETSÄÄN. Itäreunan polku vie **HAUTAUSMAALLE**. Kyltti on polun varrella.
+3b. **HAUTAUSMAA** (26 × 27 ruutua, HYUJAL METSÄN itäpuolella)
+   - **Iso kivikirkko** hautausmaan yläpäässä (`CCCCC`, 5 × 4 ruutua, `sprites/church.png`): harmaat kiviseinät, liuskekivikatto, korkea kellotorni kellolla, kultainen risti tornin huipulla, pyöreä ruusuikkuna, värikkäät lasimaalausikkunat ja kaareva puinen pariovi. Keskikäytävän polku vie ovelle; paina Z ovella (kirkko on lukossa, kartan `churchText`).
+   - Hämärä hautausmaa: neljä rautaaidan ympäröimää hautapalstaa, joissa on pyöreitä hautakiviä ja ristejä (`G`), lepattavia kynttilöitä, rautalyhtyjä, kuivia pensaita ja lehdettömiä kuolleita puita. Ilmassa on hieman hämärää, ja sumussa leijuu kalpeita valoja (`wisps`). Soi HYUJAL METSÄN musiikki.
+   - Palstoille pääsee aitojen porteista. Täällä ei ole otuksia. Kyltti on keskellä, ja länsireunan polku vie takaisin HYUJAL METSÄÄN.
 4. **SNOW MOUNTAIN** (26 × 20 ruutua)
    - Luminen metsä PUSKAMETSÄN pohjoispuolella: lumiset kuuset, lumihuippuiset puskat, kimaltelevaa lunta ja tallattu lumipolku keskellä. Lunta sataa koko ajan.
    - Lumisista puskista voi tulla **BINCHULCIN** (30 %), **SINIRAMEN** (15 %), **OVERCHILL** (10 %), **POLTEARAMEN** (5 %) tai **UNDERCHILL** (3 %). Kyltti on polun varrella.
@@ -334,6 +338,9 @@ Kaikki otusspritet ovat sinun piirtämiäsi. Animaatiokuvat on tehty niistä. Ka
 | `sprites/tiles_temple.png` | 208×16 | REGI TEMPPELIN ruudut: lattia (0–1, 5–6, 10), matto (2), hehkuva riimu (3–4), kivimalja pinkillä liekillä (7–8), kivitaulu (9), tiiliseinän etupuoli (11) ja seinän yläosa (12) |
 | `sprites/tiles_space.png` | 208×16 | MADONREIÄN ruudut: asteroidikivi (0–1, 5–6, 10), tähtipolku (2), tuikkiva tähtikristalli (3–4), leijuva violetti kristalli (7–8), kivitaulu (9), kiven reuna avaruuden yllä (11) ja avaruus (12) |
 | `sprites/tiles_duo.png` | 208×16 | DUO LANDSIN ruudut: ruoho (0, 1, 5), polku (2), tuikkivat tähtikukat (3–4), puska (6), heinäpaali (7–8), kyltti (9), puskan etuosa (10), niityn reuna taivaan yllä (11) ja tähtitaivas (12); kirkkaammiksi värjätyt |
+| `sprites/tiles_grave.png` | 320×16 | HAUTAUSMAAN ruudut: tumma ruoho (0–1, 5), polku (2), kynttilä (3–4), kuiva pensas (6, etuosa 10), rautalyhty (7–8), vanha kyltti (9), kuolleet puut (11–12), hautakivi ja risti (13–14), rauta-aita (15–19) |
+| `sprites/grave_rustle.png` | 48×16 | Kuivan pensaan heilunta, 3 kuvaa |
+| `sprites/church.png` | 80×112 | HAUTAUSMAAN kirkko: pohja 5 × 4 ruutua, katto ja torni nousevat 3 ruutua ylemmäs |
 | `sprites/duo_rustle.png` | 48×16 | Puskan heilunta, 3 kuvaa (kirkkaampi kuin metsässä) |
 | `sprites/wormhole.png` | 128×32 | MADONREIKÄ: 4 pyörivää kuvaa 32×32 |
 | `sprites/regi_shard.png` | 32×16 | REGI SHARD: kristalli ja kimaltava kuva |
