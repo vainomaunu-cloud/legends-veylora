@@ -84,7 +84,7 @@ const admin = {
 
       <h4>REGI TEMPPELI</h4>
       <div class="admRow">MEGA GRAVENDER <b>${game.megaBossBeaten ? 'voitettu' : game.bossQuest ? 'kirkko auki' : 'ei aloitettu'}</b> <button data-act="bossReset">Palauta pomo</button>
-        · Mega-kehitys <b>${(game.megaNextAt || 0) > Date.now() ? 'odottaa' : 'valmis'}</b> <button data-act="megaReady">Mega valmiiksi</button></div>
+        · MEGA GRAVENDERITE <b>${game.megaBossBeaten ? 'on' : 'ei'}</b> · Mega-kehitys <b>${(game.megaNextAt || 0) > Date.now() ? 'odottaa' : 'valmis'}</b> <button data-act="megaReady">Mega valmiiksi</button></div>
       <div class="admRow">TYHJÄT TM:T <b>${game.emptyTMs}</b> <button data-act="tms" data-n="1">+1</button><button data-act="tms" data-n="5">+5</button>
         · FALSE SWIPE TM <b>${game.falseSwipeTM ? 'on' : 'ei'}</b> <button data-act="fstm">${game.falseSwipeTM ? 'Poista' : 'Anna'}</button></div>
       <div class="admRow">REGI SHARDIT <b>${game.shards.length}/${SHARD_TOTAL}${game.shardsGiven ? ', annettu' : ''}</b>

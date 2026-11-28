@@ -25,6 +25,7 @@ const inventory = {
   megaRow(m, i) {
     if (m.megaUntil) return `<div class="invMega on">⚡ MEGA · palaa GRAVENDERiksi ${timeLeftText(m.megaUntil - Date.now())} päästä</div>`;
     if (!MEGA_FORMS[m.species]) return '';
+    if (!hasMegaStone()) return '<div class="invMega">⚡ Mega-kehitykseen tarvitaan MEGA GRAVENDERITE (voita kellotornin peto)</div>';
     const wait = (game.megaNextAt || 0) - Date.now();
     if (wait > 0) return `<div class="invMega">⚡ Mega-kehitys taas ${timeLeftText(wait)} päästä</div>`;
     return `<div class="invMega"><button type="button" data-mega="${i}">⚡ MEGA-KEHITÄ (${MEGA_HOURS} h)</button></div>`;
@@ -32,7 +33,7 @@ const inventory = {
 
   megaClick(i) {
     const m = game.party[i];
-    if (!m || !MEGA_FORMS[m.species]) return;
+    if (!m || !MEGA_FORMS[m.species] || !hasMegaStone()) return;
     if (game.view === 'battle') { this.megaMsg = 'Mega-kehitys ei onnistu taistelun aikana.'; this.render(); return; }
     if ((game.megaNextAt || 0) > Date.now()) return;
     const old = m.name;
@@ -124,6 +125,7 @@ const inventory = {
           ${game.shards.length || game.shardsGiven ? `<div class="invItem"><img src="sprites/regi_shard.png" class="invBall" alt=""> REGI SHARDIT <b>${game.shardsGiven ? "annettu" : game.shards.length + "/" + SHARD_TOTAL}</b></div>` : ""}
           ${game.emptyTMs ? `<div class="invItem"><img src="sprites/tm_empty.png" class="invBall" alt=""> TYHJÄT TM:T <b>${game.emptyTMs}</b></div>` : ""}
           ${game.falseSwipeTM ? `<div class="invItem"><img src="sprites/tm_false_swipe.png" class="invBall" alt=""> FALSE SWIPE TM <button type="button" data-tm="open">Opeta</button></div>` : ""}
+          ${hasMegaStone() ? `<div class="invItem"><img src="sprites/mega_stone.png" class="invBall" alt=""> MEGA GRAVENDERITE <b>1</b></div>` : ""}
           <div class="invItem">🪙 KOLIKOT <b>${game.coins}</b></div>
         </div>
         ${this.megaMsg ? `<p class="invMegaMsg">${this.megaMsg}</p>` : ''}

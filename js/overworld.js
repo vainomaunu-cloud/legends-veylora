@@ -651,12 +651,13 @@ const NPCS = {
       const N = 'KIRKKOHERRA';
       if (game.megaBossBeaten) {
         yield* textBox.say(`${N}: Kiitos! Kellotorni on taas hiljainen, ja kirkonkello soi vain sunnuntaisin.`);
-        yield* textBox.say(`${N}: Jos sinulla on GRAVENDER, voit mega-kehittää sen REPUSTA neljäksi tunniksi, kerran kolmessa päivässä.`);
+        yield* textBox.say(`${N}: Pidä hyvää huolta MEGA GRAVENDERITESTA! Sen avulla GRAVENDER voi mega-kehittyä REPUSTA neljäksi tunniksi, kerran kolmessa päivässä.`);
         return;
       }
       yield* textBox.say(`${N}: Voi, onneksi tulit! Kirkon kellotornin huipulle on pesiytynyt pelottava peto: MEGA GRAVENDER!`);
       yield* textBox.say(`${N}: Se on liian vahva voitettavaksi pelkällä voimalla. Kun se kerää pimeää voimaa, sen kivikilpi nousee, ja sitten se iskee kauhealla HAUTAKELLOLLA.`);
       yield* textBox.say(`${N}: Mutta muinainen kirkonkello saa pedot säikähtämään! Soita KELLOA juuri silloin, kun peto kerää voimaa. Silloin se menee pyörryksiin, ja iskusi osuvat tuplasti.`);
+      yield* textBox.say(`${N}: Kerrotaan, että pedon voittaja saa sen mega-kiven, MEGA GRAVENDERITEN. Sillä GRAVENDER voi itsekin mega-kehittyä!`);
       yield* textBox.say(`${N}: Ovi on nyt auki. Kiipeä kellotorniin, kun olet valmis. Parantele otuksesi ensin!`);
       game.bossQuest = true;
       saveGame.save(true);

@@ -508,6 +508,8 @@ function calcStats(m) {
 const newMove = id => ({ ...MOVES[id], left: MOVES[id].pp });
 
 // ---------- Mega evolution (REPPU): a GRAVENDER becomes MEGA GRAVENDER for 4 hours, once every 3 days ----------
+// Needs the MEGA GRAVENDERITE, which you get for beating the MEGA GRAVENDER boss (game.megaBossBeaten).
+const hasMegaStone = () => !!game.megaBossBeaten;
 const MEGA_FORMS = { gravender: 'megagravender' };
 const MEGA_HOURS = 4, MEGA_COOLDOWN_DAYS = 3;
 function megaChange(m, toSpecies) {   // switch form, keep level / XP / moves / HP share
@@ -2487,6 +2489,9 @@ const battle = {
       game.coins += BOSS_REWARD;
       yield* textBox.say(`Voitit ${this.foe.name}${/[AEIOUYÄÖ]$/.test(this.foe.name) ? "n" : "in"}! Kellotorni on taas hiljainen.`);
       yield* textBox.say(`Sait ${BOSS_REWARD} kolikkoa! Kolikoita yhteensä: ${game.coins}.`);
+      this.flash = 6;
+      yield* textBox.say('MEGA GRAVENDER jätti jälkeensä hehkuvan kiven... Sait MEGA GRAVENDERITEN!');
+      yield* textBox.say('Sen avulla GRAVENDER voi mega-kehittyä REPUSTA neljäksi tunniksi, kerran kolmessa päivässä.');
     } else {
       const coins = SPECIES[this.foe.species].coins;
       game.coins += coins;
